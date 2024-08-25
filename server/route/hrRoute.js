@@ -8,6 +8,7 @@ import {
   deleteBus,
   deleteDriver,
   deleteTso,
+  getHBOfficer,
   UpdateBOOfficer,
   UpdateBOOfficerPassword,
   UpdateBus,
@@ -28,6 +29,7 @@ const router = express.Router();
 //bus operator
 router.post("/addbo", BOOfficer);
 router.get("/bo/get/:id", ViewHBOfficer);
+router.get("/bo/get", getHBOfficer);
 router.put("/bo/update/:id", UpdateBOOfficer);
 router.put("/bo/update/password/:id", UpdateBOOfficerPassword);
 router.delete("/bo/delete/:id", deleteBOOfficer);

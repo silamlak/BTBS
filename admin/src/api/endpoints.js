@@ -64,6 +64,8 @@ export const endpoints = {
   confirm: `${api}/auth/confirm-otp`,
   request_reset: `${api}/auth/request/reset`,
   reset_password: `${api}/auth/reset`,
+  
+  reset_password: `${api}/auth/reset`,
 
   //service or prioduct
   update_product: `/admin/service/edit`,

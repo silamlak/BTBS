@@ -34,6 +34,16 @@ export const ViewHBOfficer = async (req, res, next) => {
   }
 };
 
+export const getHBOfficer = async (req, res, next) => {
+  try {
+    const Bo = await boofficerModel.find();
+    if (!Bo) return next(custom_error_handler(404, "Bus Operators not found"));
+    res.status(200).json(Bo);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const UpdateBOOfficer = async (req, res, next) => {
   const { id } = req.params;
   try {
