@@ -12,13 +12,16 @@ import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import Order from './pages/orders/Order';
 import SingleOrder from './pages/singleorder/SingleOrder';
-import Catagories from './pages/catagories/Catagories';
+import Booking from "./pages/booking/Booking";
+import SearchResult from "./pages/booking/SearchResult";
+import PassangerInfo from "./pages/booking/PassangerInfo";
 import SingleCatagorie from './pages/singleCatagorie/SingleCatagorie';
 import SingleProduct from './pages/product/SingleProduct';
 import Product from './pages/product/Product';
 import CreateProduct from './pages/product/CreateProduct';
 import Customer from './pages/customer/Customer';
 import SingleCustomer from './pages/customer/SingleCustomer';
+import SeatSelection from './pages/booking/SeatSelection';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -26,7 +29,7 @@ const App = () => {
       path: "/",
       element: (
         // <ProtectedRoute>
-          <Layout />
+        <Layout />
         // </ProtectedRoute>
       ),
       children: [
@@ -44,7 +47,19 @@ const App = () => {
         },
         {
           path: "/categorie",
-          element: <Catagories />,
+          element: <Booking />,
+        },
+        {
+          path: "/search",
+          element: <SearchResult />,
+        },
+        {
+          path: "/passenger",
+          element: <PassangerInfo />,
+        },
+        {
+          path: "/seat",
+          element: <SeatSelection />,
         },
         {
           path: "/categorie/:id",

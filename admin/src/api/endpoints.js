@@ -64,14 +64,20 @@ export const endpoints = {
   confirm: `${api}/auth/confirm-otp`,
   request_reset: `${api}/auth/request/reset`,
   reset_password: `${api}/auth/reset`,
-  
-  reset_password: `${api}/auth/reset`,
 
+  //bus operators
+  get_bo: `${api}/hr/bo/get`,
+  update_bo: `${api}/hr/bo/update`,
+  update_bo_password: `${api}/hr/bo/update/password`,
+  delete_bo: `${api}/hr/bo/delete`,
+
+  //booking
+  search_booking: `${api}/tso/search`,
+  
   //service or prioduct
   update_product: `/admin/service/edit`,
   get_product: `/admin/service/get`,
   create_product: `/admin/service/add`,
-
   //orders
   get_orders: `/admin/order/get`,
   delete_orders: `/admin/order/delete`,

@@ -4,18 +4,23 @@ import storage from "redux-persist/lib/storage";
 
 const initialState = {
   orderData: [],
-//   max_index: null,
-//   min_index: 1,
-//   currentDataId: null,
-//   currentIndex: null,
+  currentData: null,
+  //   max_index: null,
+  //   min_index: 1,
+  //   currentDataId: null,
+  //   currentIndex: null,
 };
 
 export const customerSlice = createSlice({
-  name: "customer",
+  name: "bo",
   initialState,
   reducers: {
-    addCustomer: (state, action) => {
+    addbo: (state, action) => {
       state.orderData = action.payload;
+      //   state.max_index = action.payload.length;
+    },
+    addboDetail: (state, action) => {
+      state.currentData = action.payload;
       //   state.max_index = action.payload.length;
     },
 
@@ -43,7 +48,7 @@ export const customerSlice = createSlice({
     //     state.currentIndex--;
     //   }
     // },
-    deleteCustomerFiles: (state, action) => {
+    deleteboFiles: (state, action) => {
       const idsToDelete = action.payload; // Array of IDs to delete
       state.orderData = state.orderData.filter(
         (file) => !idsToDelete.includes(file._id)
@@ -53,15 +58,16 @@ export const customerSlice = createSlice({
 });
 
 export const {
-  addCustomer,
+  addbo,
+  addboDetail,
   //   addOrderDetail,
   //   prevOrderDetail,
   //   nextOrderDetail,
-  deleteCustomerFiles,
+  deleteboFiles,
 } = customerSlice.actions;
 
 const persistConfig = {
-  key: "c",
+  key: "bo",
   storage,
 };
 

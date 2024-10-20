@@ -4,11 +4,11 @@ import Loader from "../../components/Loader";
 import toast from "react-hot-toast";
 import DataTable, { createTheme } from "react-data-table-component";
 import { useDispatch, useSelector } from "react-redux";
-import { getCustomerFun, getDeleteCustomerFun } from "../../features/customer/customerApi";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { addOrder, deleteFiles } from "../../features/order/orderSlice";
 import { AiOutlineMinusCircle } from "react-icons/ai";
-import { addCustomer, deleteCustomerFiles } from "../../features/customer/customerSlice";
+import { getBusOperator } from "../../features/busOperator/busOeratorApi";
+import { addbo, deleteboFiles } from "../../features/busOperator/busOperatorSlice";
 
 createTheme("dark", {
   text: {
@@ -43,41 +43,38 @@ const customStyles = {
 
 const columns = [
   {
-    name: "Name", // Updated to match the `serviceId`
-    selector: (row) => `${row?.first_name} ${row?.father_name}`,
+    name: "Full Name",
+    selector: (row) => `${row?.first_name} ${row?.middle_name}`,
     sortable: true,
   },
   {
     name: "Phone",
-    selector: (row) => row?.ethPhone,
+    selector: (row) => row?.phone,
     sortable: true,
     hide: "md",
   },
   {
-    name: "Total Price", // Updated to display total price
-    selector: (row) => row?.total_price,
+    name: "Employment Status",
+    selector: (row) => row?.employment_status,
     sortable: true,
-    cell: (row) => <span className="text-green-500">{row?.total_price || 0} ETB</span>, // Displaying total price with `$`
+    cell: (row) => (
+      <span className="text-green-500">{row?.employment_status}</span>
+    ),
   },
   {
-    name: "Payment Method",
+    name: "Hired Date",
     selector: (row) => row?.createdAt,
     sortable: true,
     hide: "sm",
     cell: (row) => (
-      <span className="">{new Date(row?.createdAt).toLocaleDateString()}</span>
+      <span className="">{new Date(row?.hire_date).toLocaleDateString()}</span>
     ),
   },
-  //   {
-  //     name: "Purchase Date", // Added to show purchase date
-  //     selector: (row) => row?.purchaseDate.split("T")[0], // Formatting date to `YYYY-MM-DD`
-  //     sortable: true,
-  //   },
 ];
 
 const Customer = () => {
-    const theme = useSelector((state) => state.theme.theme)
-  const orderedData = useSelector((state) => state.customer.orderData);
+  const theme = useSelector((state) => state.theme.theme);
+  const orderedData = useSelector((state) => state.bo.orderData);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -100,8 +97,6 @@ const Customer = () => {
   const [filterType, setFilterType] = useState("");
   const [customValue, setCustomValue] = useState("");
   const [filterText, setFilterText] = useState("");
-
-
 
   useEffect(() => {
     const queryParams = new URLSearchParams();
@@ -150,7 +145,7 @@ const Customer = () => {
       price,
     ],
     queryFn: () =>
-      getCustomerFun({
+      getBusOperator({
         limit,
         currentPage,
         searchQuery,
@@ -164,42 +159,42 @@ const Customer = () => {
 
   useEffect(() => {
     if (data) {
-      dispatch(addCustomer(data?.users));
+      dispatch(addbo(data));
     }
   }, [data]);
-  console.log(data);
+  // console.log(orderedData);
 
   const handleDateChange = (e) => {
     setDateValue(e.target.value);
-    setCurrentPage(1); // Reset to first page when date changes
+    setCurrentPage(1); 
   };
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1); // Reset to first page when search query changes
+    setCurrentPage(1);
   };
 
-    const handleFilterTypeChange = (e) => {
-      setFilterType(e.target.value);
-      setCustomValue(""); // Clear custom value when filter type changes
-      setDateValue("");
-    };
+  const handleFilterTypeChange = (e) => {
+    setFilterType(e.target.value);
+    setCustomValue(""); 
+    setDateValue("");
+  };
 
-      const handleResetFilters = () => {
-        setFilterText("");
-        setFilterType("");
-        setCustomValue("");
-        setDateValue("");
-        setPrice("");
-      };
-        const handleCustomValueChange = (e) => {
-          setPrice(e.target.value);
-        };
+  const handleResetFilters = () => {
+    setFilterText("");
+    setFilterType("");
+    setCustomValue("");
+    setDateValue("");
+    setPrice("");
+  };
+  const handleCustomValueChange = (e) => {
+    setPrice(e.target.value);
+  };
 
   const mutation = useMutation({
     mutationFn: () => getDeleteCustomerFun(toDelete),
     onSuccess: (data) => {
       console.log(data);
-      dispatch(deleteCustomerFiles(toDelete));
+      dispatch(deleteboFiles(toDelete));
       setToDelete([]);
       toast.success(data?.msg);
     },
@@ -215,10 +210,10 @@ const Customer = () => {
     mutation.mutate(toDelete);
   };
 
-    const handleRowClick = (row) => {
+  const handleRowClick = (row) => {
     //   dispatch(addOrderDetail(row._id));
-      navigate(`/customer/${row?._id}`);
-    };
+    navigate(`/customer/${row?._id}`);
+  };
 
   return (
     <div className="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl shadow-md">

@@ -2,11 +2,15 @@ import axios from "axios";
 import axiosInstance, { endpoints } from "../../api/endpoints";
 import { handleError } from "../../api/handleError";
 
-export const getCatagorieFun = async (form) => {
+export const getBookingSearchFun = async (fromPlace, toPlace, travelDate) => {
   try {
-    const res = await axiosInstance.get(endpoints.get_catagories, {
-      withCredentials: true, // Make sure cookies are sent with the request
-    });
+    console.log(fromPlace, toPlace, travelDate);
+    const res = await axios.get(
+      `${endpoints.search_booking}?from=${fromPlace}&to=${toPlace}&date=${travelDate}`,
+      {
+        withCredentials: true,
+      }
+    );
     return res.data;
   } catch (error) {
     return handleError(error);

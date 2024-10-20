@@ -30,8 +30,8 @@ const router = express.Router();
 router.post("/addbo", BOOfficer);
 router.get("/bo/get/:id", ViewHBOfficer);
 router.get("/bo/get", getHBOfficer);
-router.put("/bo/update/:id", UpdateBOOfficer);
-router.put("/bo/update/password/:id", UpdateBOOfficerPassword);
+router.post("/bo/update/:id", UpdateBOOfficer);
+router.post("/bo/update/password/:id", UpdateBOOfficerPassword);
 router.delete("/bo/delete/:id", deleteBOOfficer);
 
 //ticket sells officer

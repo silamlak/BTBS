@@ -50,9 +50,9 @@ export const UpdateBOOfficer = async (req, res, next) => {
     const sanitizedData = mongoSanitize(req.body);
     const Bo = await boofficerModel.findByIdAndUpdate(id, {
       $set: sanitizedData,
-    });
+    }, {new: true});
     if (!Bo) return next(custom_error_handler(404, "Bus Operator not found"));
-    res.status(200).json({ msg: "Bus Operator info updated" });
+    res.status(200).json({ msg: "Bus Operator info updated", Bo });
   } catch (error) {
     next(error);
   }
