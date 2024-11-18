@@ -21,7 +21,7 @@ const mutation = useMutation({
 });
   const handleCancel = () => {
     console.log("Cancel clicked");
-    mutation.mutate(data?._id)
+    mutation.mutate(data?._id);
   };
   return (
     <div>
