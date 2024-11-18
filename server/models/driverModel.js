@@ -48,15 +48,15 @@ const DriverSchema = new mongoose.Schema(
     employment_status: {
       type: String,
       required: true,
-      enum: ["Active", "Inactive", "Suspended"],
+      enum: ["active", "Inactive", "Suspended"],
     },
     profile_picture_url: {
       type: String,
-      required: false,
+      // required: false,
     },
     license_picture_url: {
       type: String,
-      required: true,
+      // required: true,
     },
   },
   { timestamps: true }

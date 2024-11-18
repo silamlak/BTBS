@@ -70,10 +70,38 @@ export const endpoints = {
   update_bo: `${api}/hr/bo/update`,
   update_bo_password: `${api}/hr/bo/update/password`,
   delete_bo: `${api}/hr/bo/delete`,
+  add_bo: `${api}/hr/addbo`,
+
+  //hr
+  get_hr: `${api}/admin/hr/get`,
+  update_hr: `${api}/admin/hr/update`,
+  update_hr_password: `${api}/admin/hr/update/password`,
+  delete_hr: `${api}/admin/hr/delete`,
+  add_hr: `${api}/admin/addhr`,
+  //tso
+  get_tso: `${api}/hr/tso/get`,
+  update_tso: `${api}/hr/tso/update`,
+  add_tso: `${api}/hr/adddtso`,
+
+  //drivers
+  get_driver: `${api}/hr/driver/get`,
+  update_driver: `${api}/hr/driver/update`,
+  add_driver: `${api}/hr/adddriver`,
+
+  //buses
+  get_bus: `${api}/hr/bus/get`,
+  update_bus: `${api}/hr/bus/update`,
+  add_bus: `${api}/hr/addbus`,
+
+  //tsoo
+  booking: `${api}/tso/book`,
+  seat: `${api}/tso/seat`,
+  get_booking: `${api}/tso/booking`,
+  cancel_booking: `${api}/tso/booking/cancel`,
 
   //booking
   search_booking: `${api}/tso/search`,
-  
+
   //service or prioduct
   update_product: `/admin/service/edit`,
   get_product: `/admin/service/get`,

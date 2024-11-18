@@ -2,6 +2,8 @@ import mongoSanitize from "mongo-sanitize";
 import routeModel from "../models/routeModel.js";
 import scheduleModel from "../models/scheduleModel.js";
 import { custom_error_handler } from "../errorHandler/errorHandler.js";
+import bookingModel from "../models/bookingModel.js";
+import seatModel from "../models/seatModel.js";
 
 function generateSixDigitNumber() {
   return Math.floor(100000 + Math.random() * 900000);
@@ -42,7 +44,84 @@ export const searchSchedules = async (req, res, next) => {
   }
 };
 
+//book
+export const bookTicket = async (req, res, next) => {
+  try {
+    const booking = bookingModel(req.body);
+    const booked = await booking.save();
+    res.status(200).json({ booked, msg: "booked succ" });
+  } catch (error) {
+    next(error);
+  }
+};
 
+export const addSeat = async (req, res, next) => {
+  try {
+    console.log(req.body);
+
+    if (!Array.isArray(req.body)) {
+      return res
+        .status(400)
+        .json({ msg: "Invalid data format. Expected an array." });
+    }
+
+    // Use `Promise.all` to save all objects in the array concurrently
+    const savedSeats = await Promise.all(
+      req.body.map(async (seatData) => {
+        const seatInfo = new seatModel(seatData); // Create a new seat instance
+        return seatInfo.save(); // Save to the database
+      })
+    );
+
+    res.status(201).json({
+      msg: "All seats added successfully",
+      savedSeats,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSeats = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const takenSeats = await seatModel.find({ scheduleId: id });
+    res.status(201).json(takenSeats);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getBooking = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const booking = await bookingModel.findById(id);
+    res.status(201).json(booking);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const cancelBooking = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const CancelledBooking = await bookingModel.findByIdAndUpdate(
+      id,
+      {
+        $set: { status: "Cancelled" },
+      },
+      { new: true }
+    );
+    const CancelledSeats = await seatModel.updateMany(
+      { bookId: id },
+      { $set: { status: "Cancelled" } },
+      { new: true }
+    );
+    res.status(201).json({ CancelledBooking, CancelledSeats });
+  } catch (error) {
+    next(error);
+  }
+};
 
 //route controller
 export const addRoute = async (req, res, next) => {

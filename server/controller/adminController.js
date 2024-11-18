@@ -20,6 +20,41 @@ export const HROfficer = async (req, res, next) => {
   }
 };
 
+export const getHr = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+    const date = req.query.date ? new Date(get.query.date) : null;
+    const skip = (page - 1) * limit;
+    let query = {};
+    if (date) {
+      const startOfDay = new Date(date.setHours(0, 0, 0, 0));
+      const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+
+      query.createdAt = {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      };
+    }
+    if (search) {
+      query.first_name = { $regex: search, $options: "i" };
+    }
+    const hr = await hrofficerModel.find(query).skip(skip).limit(limit);
+    const totalCount = await hrofficerModel.countDocuments(query);
+    const totalPages = Math.ceil(totalCount / limit);
+    if (!hr) return next(custom_error_handler(404, "Buses not found"));
+    res.status(200).json({
+      currentPage: page,
+      totalPages: totalPages,
+      totalCount: totalCount,
+      hr,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const ViewHROfficer = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -37,9 +72,9 @@ export const UpdateHROfficer = async (req, res, next) => {
     const sanitizedData = mongoSanitize(req.body);
     const Hr = await hrofficerModel.findByIdAndUpdate(id, {
       $set: sanitizedData,
-    });
+    }, {new: true});
     if (!Hr) return next(custom_error_handler(404, "HR not found"));
-    res.status(200).json({ msg: "HR info updated" });
+    res.status(200).json({hr, msg: "HR info updated" });
   } catch (error) {
     next(error);
   }

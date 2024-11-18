@@ -15,12 +15,16 @@ const Sidebar = ({ theme }) => {
     { name: "Categorie", link: "/categorie", icon: FiMessageSquare },
     {
       name: "Product",
-      link: "/product",
+      link: "/search-booking",
       icon: TbReportAnalytics,
       margin: true,
     },
     { name: "Create Product", link: "/product/create", icon: FiFolder },
-    { name: "Customer", link: "/customer", icon: FiShoppingCart },
+    { name: "BusOperator", link: "/bus-operator", icon: FiShoppingCart },
+    { name: "Drivers", link: "/drivers", icon: FiShoppingCart },
+    { name: "Buses", link: "/buses", icon: FiShoppingCart },
+    { name: "Tso", link: "/tso", icon: FiShoppingCart },
+    { name: "HR", link: "/hr", icon: FiShoppingCart },
   ];
 
   const [open, setOpen] = useState(true);

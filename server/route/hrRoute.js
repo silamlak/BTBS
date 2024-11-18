@@ -8,7 +8,10 @@ import {
   deleteBus,
   deleteDriver,
   deleteTso,
+  getBuses,
+  getDrivers,
   getHBOfficer,
+  getTso,
   UpdateBOOfficer,
   UpdateBOOfficerPassword,
   UpdateBus,
@@ -36,22 +39,25 @@ router.delete("/bo/delete/:id", deleteBOOfficer);
 
 //ticket sells officer
 router.post("/adddtso", addTso);
+router.get("/tso/get", getTso);
 router.get("/tso/get/:id", ViewTso);
-router.put("/tso/update/:id", UpdateTso);
-router.put("/tso/update/password/:id", UpdateTsoPassword);
+router.post("/tso/update/:id", UpdateTso);
+router.post("/tso/update/password/:id", UpdateTsoPassword);
 router.delete("/tso/delete/:id", deleteTso);
 
 //driver
 router.post("/adddriver", addDriver);
+router.get("/driver/get", getDrivers);
 router.get("/driver/get/:id", ViewDriver);
-router.put("/driver/update/:id", UpdateDriver);
-router.put("/driver/update/password/:id", UpdateDriverPassword);
+router.post("/driver/update/:id", UpdateDriver);
+router.post("/driver/update/password/:id", UpdateDriverPassword);
 router.delete("/driver/delete/:id", deleteDriver);
 
 //bus
 router.post("/addbus", addBus);
+router.get("/bus/get", getBuses);
 router.get("/bus/get/:id", ViewBus);
-router.put("/bus/update/:id", UpdateBus);
+router.post("/bus/update/:id", UpdateBus);
 router.delete("/bus/delete/:id", deleteBus);
 
 export default router;

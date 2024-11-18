@@ -56,7 +56,7 @@ const HROfficerSchema = new mongoose.Schema(
     },
     id_url: {
       type: Array,
-      required: true,
+      // required: true,
     },
     education: {
       type: String,

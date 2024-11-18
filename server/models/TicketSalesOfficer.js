@@ -52,16 +52,16 @@ const TicketSalesOfficerSchema = new mongoose.Schema(
     },
     profile_picture_url: {
       type: String,
-      required: false,
+      // required: false,
     },
     id_picture_url: {
       type: String,
-      required: true,
+      // required: true,
     },
     assigned_station: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Station", // Reference to a Station schema (if applicable)
-      required: true,
+      // required: true,
     },
     ticket_sales: [
       {

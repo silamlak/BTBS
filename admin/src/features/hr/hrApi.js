@@ -2,7 +2,7 @@ import axios from "axios";
 import axiosInstance, { endpoints } from "../../api/endpoints";
 import { handleError } from "../../api/handleError";
 
-export const getBusOperator = async ({
+export const getHrFun = async ({
   currentPage,
   limit,
   searchQuery,
@@ -10,7 +10,7 @@ export const getBusOperator = async ({
 }) => {
   try {
     const res = await axiosInstance.get(
-      endpoints.get_bo,
+      endpoints.get_hr,
       {
         params: {
           page: currentPage,
@@ -29,9 +29,9 @@ export const getBusOperator = async ({
   }
 };
 
-export const getSingleBusOperatorFun = async (id) => {
+export const getSingleHrFun = async (id) => {
   try {
-    const res = await axiosInstance.get(`${endpoints.get_bo}/${id}`, {
+    const res = await axiosInstance.get(`${endpoints.get_hr}/${id}`, {
       withCredentials: true, // Make sure cookies are sent with the request
     });
     return res.data;
@@ -40,10 +40,10 @@ export const getSingleBusOperatorFun = async (id) => {
   }
 };
 
-export const updateBusOperatorFun = async ({ id, formData }) => {
+export const updateHrFun = async ({ id, formData }) => {
   try {
     const res = await axiosInstance.post(
-      `${endpoints.update_bo}/${id}`,
+      `${endpoints.update_hr}/${id}`,
       formData,
       {
         withCredentials: true,
@@ -55,10 +55,10 @@ export const updateBusOperatorFun = async ({ id, formData }) => {
   }
 };
 
-export const updateBusOperatorPasswordFun = async (id) => {
+export const updateHrPasswordFun = async (id) => {
   try {
     const res = await axiosInstance.put(
-      `${endpoints.update_bo_password}/${id}`,
+      `${endpoints.update_hr_password}/${id}`,
       {
         withCredentials: true,
       }
@@ -69,9 +69,9 @@ export const updateBusOperatorPasswordFun = async (id) => {
   }
 };
 
-export const deleteBusOperatorFun = async (id) => {
+export const deleteHrFun = async (id) => {
   try {
-    const res = await axiosInstance.delete(`${endpoints.delete_bo}/${id}`, {
+    const res = await axiosInstance.delete(`${endpoints.delete_hr}/${id}`, {
       withCredentials: true,
     });
     return res.data;
@@ -80,9 +80,9 @@ export const deleteBusOperatorFun = async (id) => {
   }
 };
 
-export const addBusOperatorFun = async (data) => {
+export const addHrFun = async (data) => {
   try {
-    const res = await axiosInstance.post(endpoints.add_bo, data, {
+    const res = await axiosInstance.post(endpoints.add_hr, data, {
       withCredentials: true,
     });
   } catch (error) {}

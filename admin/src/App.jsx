@@ -1,27 +1,54 @@
-import React from 'react'
-import {createBrowserRouter, RouterProvider} from 'react-router-dom' 
-import ProtectedRoute from './routeCheck/ProtectedRoute'
-import PublicRoute from './routeCheck/PublicRoute'
-import Home from './pages/dashboard/Home';
-import Layout from './routeCheck/Layout';
-import Signin from './pages/auth/Signin';
-import Signup from './pages/auth/Signup';
-import NotFound from './pages/notFound/NotFound';
-import ConfirmationPage from './pages/auth/ConfirmationPage';
-import ResetPasswordPage from './pages/auth/ResetPasswordPage';
-import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
-import Order from './pages/orders/Order';
-import SingleOrder from './pages/singleorder/SingleOrder';
+import React from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import ProtectedRoute from "./routeCheck/ProtectedRoute";
+import PublicRoute from "./routeCheck/PublicRoute";
+import Home from "./pages/dashboard/Home";
+import Layout from "./routeCheck/Layout";
+import Signin from "./pages/auth/Signin";
+import Signup from "./pages/auth/Signup";
+import NotFound from "./pages/notFound/NotFound";
+import ConfirmationPage from "./pages/auth/ConfirmationPage";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
+import Order from "./pages/orders/Order";
+import SingleOrder from "./pages/singleorder/SingleOrder";
 import Booking from "./pages/booking/Booking";
 import SearchResult from "./pages/booking/SearchResult";
 import PassangerInfo from "./pages/booking/PassangerInfo";
-import SingleCatagorie from './pages/singleCatagorie/SingleCatagorie';
-import SingleProduct from './pages/product/SingleProduct';
-import Product from './pages/product/Product';
-import CreateProduct from './pages/product/CreateProduct';
-import Customer from './pages/customer/Customer';
-import SingleCustomer from './pages/customer/SingleCustomer';
-import SeatSelection from './pages/booking/SeatSelection';
+import SingleCatagorie from "./pages/singleCatagorie/SingleCatagorie";
+import SingleProduct from "./pages/product/SingleProduct";
+import Product from "./pages/product/Product";
+import CreateProduct from "./pages/product/CreateProduct";
+
+//bus operator
+import BusOperator from "./pages/BO/BusOperator";
+import SingleBusOperator from "./pages/BO/SingleBusOperator";
+import AddBusOperator from "./pages/BO/AddBusOperator";
+
+//drivers
+import Drivers from "./pages/driver/Drivers";
+import SingleDriver from './pages/driver/SingleDriver'
+import AddDriver from './pages/driver/AddDriver'
+
+//buses
+import Buses from "./pages/bus/Buses";
+import SingleBus from './pages/bus/SingleBus'
+import AddBus from './pages/bus/AddBus'
+
+//TSO
+import Tso from "./pages/tso/Tso"
+import AddTso from "./pages/tso/AddTso"
+import SingleTso from "./pages/tso/SingleTso"
+
+//HR
+import Hr from "./pages/hr/Hr";
+import AddHr from './pages/hr/AddHr'
+import SingleHr from './pages/hr/SingleHr'
+
+import SeatSelection from "./pages/booking/SeatSelection";
+import Payment from "./pages/booking/Payment";
+import SearchBooking from "./pages/manageBooking/SearchBooking";
+import MyBooking from "./pages/manageBooking/MyBooking";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -50,6 +77,14 @@ const App = () => {
           element: <Booking />,
         },
         {
+          path: "/search-booking",
+          element: <SearchBooking />,
+        },
+        {
+          path: "/my-booking",
+          element: <MyBooking />,
+        },
+        {
           path: "/search",
           element: <SearchResult />,
         },
@@ -60,6 +95,10 @@ const App = () => {
         {
           path: "/seat",
           element: <SeatSelection />,
+        },
+        {
+          path: "/payment",
+          element: <Payment />,
         },
         {
           path: "/categorie/:id",
@@ -77,13 +116,70 @@ const App = () => {
           path: "/product/:id",
           element: <SingleProduct />,
         },
+        //bo
         {
-          path: "/customer",
-          element: <Customer />,
+          path: "/bus-operator",
+          element: <BusOperator />,
         },
         {
-          path: "/customer/:id",
-          element: <SingleCustomer />,
+          path: "/bus-operator/:id",
+          element: <SingleBusOperator />,
+        },
+        {
+          path: "/add-bus-operator",
+          element: <AddBusOperator />,
+        },
+        //driver
+        {
+          path: "/drivers",
+          element: <Drivers />,
+        },
+        {
+          path: "/driver/:id",
+          element: <SingleDriver />,
+        },
+        {
+          path: "/add-driver",
+          element: <AddDriver />,
+        },
+        //bus
+        {
+          path: "/buses",
+          element: <Buses />,
+        },
+        {
+          path: "/bus/:id",
+          element: <SingleBus />,
+        },
+        {
+          path: "/add-bus",
+          element: <AddBus />,
+        },
+        //tso
+        {
+          path: "/tso",
+          element: <Tso />,
+        },
+        {
+          path: "/tso/:id",
+          element: <SingleTso />,
+        },
+        {
+          path: "/add-tso",
+          element: <AddTso />,
+        },
+        //hr
+        {
+          path: "/hr",
+          element: <Hr />,
+        },
+        {
+          path: "/hr/:id",
+          element: <SingleHr />,
+        },
+        {
+          path: "/add-hr",
+          element: <AddHr />,
         },
       ],
     },
@@ -132,9 +228,7 @@ const App = () => {
       element: <NotFound />,
     },
   ]);
-  return (
-    <RouterProvider router={router} />
-  )
-}
+  return <RouterProvider router={router} />;
+};
 
-export default App
+export default App;

@@ -5,10 +5,13 @@ import toast from "react-hot-toast";
 import DataTable, { createTheme } from "react-data-table-component";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addOrder, deleteFiles } from "../../features/order/orderSlice";
 import { AiOutlineMinusCircle } from "react-icons/ai";
-import { getBusOperator } from "../../features/busOperator/busOeratorApi";
-import { addbo, deleteboFiles } from "../../features/busOperator/busOperatorSlice";
+import {
+  addBus,
+  deleteBusFiles,
+} from "../../features/buses/busSlice";
+import { IoMdAdd } from "react-icons/io";
+import { getBusesFun } from "../../features/buses/busApi";
 
 createTheme("dark", {
   text: {
@@ -43,23 +46,21 @@ const customStyles = {
 
 const columns = [
   {
-    name: "Full Name",
-    selector: (row) => `${row?.first_name} ${row?.middle_name}`,
+    name: "Bus ID",
+    selector: (row) => `${row?.bus_id}`,
     sortable: true,
   },
   {
-    name: "Phone",
-    selector: (row) => row?.phone,
+    name: "License Plate",
+    selector: (row) => row?.license_plate,
     sortable: true,
     hide: "md",
   },
   {
-    name: "Employment Status",
-    selector: (row) => row?.employment_status,
+    name: "Status",
+    selector: (row) => row?.status,
     sortable: true,
-    cell: (row) => (
-      <span className="text-green-500">{row?.employment_status}</span>
-    ),
+    cell: (row) => <span className="text-green-500">{row?.status}</span>,
   },
   {
     name: "Hired Date",
@@ -67,14 +68,14 @@ const columns = [
     sortable: true,
     hide: "sm",
     cell: (row) => (
-      <span className="">{new Date(row?.hire_date).toLocaleDateString()}</span>
+      <span className="">{new Date(row?.createdAt).toLocaleDateString()}</span>
     ),
   },
 ];
 
-const Customer = () => {
+const Buses = () => {
   const theme = useSelector((state) => state.theme.theme);
-  const orderedData = useSelector((state) => state.bo.orderData);
+  const orderedData = useSelector((state) => state.bus.orderData);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -83,16 +84,12 @@ const Customer = () => {
   const pageFromURL = parseInt(queryParams.get("page"), 10) || 1;
   const limitFromURL = parseInt(queryParams.get("limit"), 10) || 10;
   const searchFromURL = queryParams.get("search") || "";
-  //   const categoryFromURL = queryParams.get("status");
   const dateFromURL = queryParams.get("date") || "";
-  const priceFromURL = queryParams.get("p") || "";
 
   const [currentPage, setCurrentPage] = useState(pageFromURL);
   const [limit, setLimit] = useState(limitFromURL);
   const [searchQuery, setSearchQuery] = useState(searchFromURL);
-  // const [selectedCategory, setSelectedCategory] = useState(categoryFromURL);
   const [dateValue, setDateValue] = useState(dateFromURL || "");
-  const [price, setPrice] = useState(priceFromURL || "");
   const [toDelete, setToDelete] = useState([]);
   const [filterType, setFilterType] = useState("");
   const [customValue, setCustomValue] = useState("");
@@ -103,55 +100,30 @@ const Customer = () => {
     queryParams.set("page", currentPage);
     queryParams.set("limit", limit);
     if (searchQuery) queryParams.set("search", searchQuery);
-    // queryParams.set("status", selectedCategory || "Pending");
     if (dateValue) queryParams.set("date", dateValue);
-    if (price) queryParams.set("p", price);
     navigate({ search: queryParams.toString() });
-  }, [
-    currentPage,
-    limit,
-    price,
-    dateValue,
-    searchQuery,
-    // selectedCategory,
-    navigate,
-  ]);
+  }, [currentPage, limit, dateValue, searchQuery, navigate]);
 
   useEffect(() => {
     const pageFromURL = parseInt(queryParams.get("page"), 10) || 1;
     const limitFromURL = parseInt(queryParams.get("limit"), 10) || 10;
     const searchFromURL = queryParams.get("search") || "";
-    // const categoryFromURL = queryParams.get("status") || "";
     const dateFromURL = queryParams.get("date") || "";
-    const priceFromURL = queryParams.get("p") || "";
 
     setCurrentPage(pageFromURL);
     setLimit(limitFromURL);
     setSearchQuery(searchFromURL);
-    // setSelectedCategory(categoryFromURL);
-    // setSelectedStatus(categoryFromURL);
     setDateValue(dateFromURL);
-    setPrice(priceFromURL);
   }, [location.search]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: [
-      "orders",
-      currentPage,
-      limit,
-      searchQuery,
-      //   selectedCategory,
-      dateValue,
-      price,
-    ],
+    queryKey: ["buses", currentPage, limit, searchQuery, dateValue],
     queryFn: () =>
-      getBusOperator({
+      getBusesFun({
         limit,
         currentPage,
         searchQuery,
-        // selectedCategory,
         dateValue,
-        price,
       }),
     // enabled: !!filterType,
     keepPreviousData: true,
@@ -159,14 +131,14 @@ const Customer = () => {
 
   useEffect(() => {
     if (data) {
-      dispatch(addbo(data));
+      dispatch(addBus(data.buses));
     }
   }, [data]);
-  // console.log(orderedData);
+  console.log(data);
 
   const handleDateChange = (e) => {
     setDateValue(e.target.value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -175,7 +147,7 @@ const Customer = () => {
 
   const handleFilterTypeChange = (e) => {
     setFilterType(e.target.value);
-    setCustomValue(""); 
+    setCustomValue("");
     setDateValue("");
   };
 
@@ -184,17 +156,13 @@ const Customer = () => {
     setFilterType("");
     setCustomValue("");
     setDateValue("");
-    setPrice("");
-  };
-  const handleCustomValueChange = (e) => {
-    setPrice(e.target.value);
   };
 
   const mutation = useMutation({
     mutationFn: () => getDeleteCustomerFun(toDelete),
     onSuccess: (data) => {
       console.log(data);
-      dispatch(deleteboFiles(toDelete));
+      dispatch(deleteBusFiles(toDelete));
       setToDelete([]);
       toast.success(data?.msg);
     },
@@ -212,26 +180,24 @@ const Customer = () => {
 
   const handleRowClick = (row) => {
     //   dispatch(addOrderDetail(row._id));
-    navigate(`/customer/${row?._id}`);
+    navigate(`/bus/${row?._id}`);
+  };
+
+  const handleAddBo = (row) => {
+    navigate(`/add-bus`);
   };
 
   return (
     <div className="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl shadow-md">
       <div className="flex flex-row-reverse gap-4 justify-between">
         <div className="mb-4 flex items-center space-x-2">
+          <button onClick={handleAddBo}>
+            <IoMdAdd />
+          </button>
           {isLoading && !isError && (
             <div>
               <Loader />
             </div>
-          )}
-          {filterType === "min-value" && (
-            <input
-              type="number"
-              placeholder="Enter min value..."
-              value={price}
-              onChange={(e) => handleCustomValueChange(e)}
-              className="p-2 focus:outline dark:outline-orange-400 outline-blue-500 rounded ml-2 text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-700"
-            />
           )}
           {filterType === "date" && (
             <input
@@ -247,7 +213,6 @@ const Customer = () => {
             className="p-2 rounded bg-slate-100 focus:outline dark:outline-orange-400 outline-blue-500 dark:bg-slate-700 text-slate-800 dark:text-slate-100"
           >
             <option value="">Select Filter Type</option>
-            <option value="min-value">Min Value</option>
             <option value="date">Date</option>
           </select>
           {filterType !== "" && (
@@ -314,4 +279,4 @@ const Customer = () => {
   );
 };
 
-export default Customer;
+export default Buses;

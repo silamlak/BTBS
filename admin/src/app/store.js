@@ -6,6 +6,11 @@ import authSlice from "../features/auth/authSlice";
 import themeSlice from "./themeSlice";
 import orderSlice from "../features/order/orderSlice";
 import busOperatorSlice from "../features/busOperator/busOperatorSlice";
+import driverSlice from "../features/drivers/driverSlice";
+import busSlice from "../features/buses/busSlice";
+import tsoSlice from "../features/tso/tsoSlice";
+import hrSlice from "../features/hr/hrSlice";
+import bookingSlice from "../features/booking/bookingSlice";
 
 import catagorieSlice from "../features/catagorie/catagorieSlice";
 
@@ -19,6 +24,11 @@ const rootReducer = combineReducers({
   theme: themeSlice,
   order: orderSlice,
   bo: busOperatorSlice,
+  driver: driverSlice,
+  bus: busSlice,
+  tso: tsoSlice,
+  hr: hrSlice,
+  booking: bookingSlice,
   catagorie: catagorieSlice,
 });
 

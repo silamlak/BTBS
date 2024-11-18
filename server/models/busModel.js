@@ -45,15 +45,15 @@ const BusSchema = new mongoose.Schema(
       {
         service_date: {
           type: Date,
-          required: true,
+          // required: true,
         },
         description: {
           type: String,
-          required: true,
+          // required: true,
         },
         performed_by: {
           type: String,
-          required: true,
+          // required: true,
         },
       },
     ],

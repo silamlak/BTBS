@@ -5,24 +5,38 @@ import persistReducer from "redux-persist/es/persistReducer";
 import storage from "redux-persist/lib/storage";
 
 const initialState = {
+  scheduleId: null,
+  busId: null,
   adults: 0,
   children: 0,
   passengerData: [], // Stores data for all passengers
   selectedPassengerIndex: 0, // Index of the currently selected passenger
   selectedSeats: {},
+  seats: [],
 };
 
 const passengerSlice = createSlice({
   name: "passenger",
   initialState,
   reducers: {
+    setScheduleId: (state, action) => {
+      state.scheduleId = action.payload.id;
+      state.busId = action.payload.bus_id;
+    },
     setPassengerData: (state, action) => {
       state.passengerData = action.payload;
+    },
+    setSeats: (state, action) => {
+      state.seats = action.payload;
     },
     setSelectedPassengerIndex: (state, action) => {
       state.selectedPassengerIndex = action.payload;
     },
     updatePassenger: (state, action) => {
+      const { index, field, value } = action.payload;
+      state.passengerData[index][field] = value;
+    },
+    updateSeats: (state, action) => {
       const { index, field, value } = action.payload;
       state.passengerData[index][field] = value;
     },
@@ -60,6 +74,20 @@ const passengerSlice = createSlice({
 
       // Assign new seat to the passenger
       state.selectedSeats[seatNumber] = passengerIndex;
+      // state.selectedSeats = {};
+      state.passengerData[passengerIndex].seat = seatNumber;
+      state.seats[passengerIndex].seatNo = seatNumber;
+    },
+
+    clearAll: (state) => {
+      state.scheduleId = null;
+      state.busId = null;
+      state.adults = 0;
+      state.children = 0;
+      state.passengerData = []; // Stores data for all passengers
+      state.selectedPassengerIndex = 0; // Index of the currently selected passenger
+      state.selectedSeats = {};
+      state.seats = [];
     },
   },
 });
@@ -69,8 +97,11 @@ export const {
   setSelectedPassengerIndex,
   updatePassenger,
   setAdults,
+  setSeats,
+  setScheduleId,
   setChildren,
   setSelectedSeat,
+  clearAll,
 } = passengerSlice.actions;
 
 const persistConfig = {
