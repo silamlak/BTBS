@@ -17,6 +17,7 @@ const mutation = useMutation({
   mutationFn: cancelBookingFun,
   onSuccess: (data) => {
     console.log(data);
+    console.log(data);
   }
 });
   const handleCancel = () => {
