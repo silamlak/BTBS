@@ -7,6 +7,7 @@ import {
   deletePlace,
   deleteRoute,
   deleteSchedule,
+  getStations,
   UpdatePlace,
   UpdateRoute,
   UpdateSchedule,
@@ -24,8 +25,9 @@ router.delete("/route/delete/:id", deleteRoute);
 
 //stationPlace
 router.post("/addplace", addPlace);
+router.get("/place/get", getStations);
 router.get("/place/get/:id", ViewPlace);
-router.put("/place/update/:id", UpdatePlace);
+router.post("/place/update/:id", UpdatePlace);
 router.delete("/place/delete/:id", deletePlace);
 
 //schedule

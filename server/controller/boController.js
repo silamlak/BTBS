@@ -70,6 +70,41 @@ export const addPlace = async (req, res, next) => {
   }
 };
 
+export const getStations = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+    const date = req.query.date ? new Date(get.query.date) : null;
+    const skip = (page - 1) * limit;
+    let query = {};
+    if (date) {
+      const startOfDay = new Date(date.setHours(0, 0, 0, 0));
+      const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+
+      query.createdAt = {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      };
+    }
+    if (search) {
+      query.name = { $regex: search, $options: "i" };
+    }
+    const stations = await stationPlaceModel.find(query).skip(skip).limit(limit);
+    const totalCount = await stationPlaceModel.countDocuments(query);
+    const totalPages = Math.ceil(totalCount / limit);
+    if (!stations) return next(custom_error_handler(404, "Stations not found"));
+    res.status(200).json({
+      currentPage: page,
+      totalPages: totalPages,
+      totalCount: totalCount,
+      stations,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const ViewPlace = async (req, res, next) => {
   const { id } = req.params;
   try {

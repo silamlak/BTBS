@@ -45,6 +45,11 @@ import Hr from "./pages/hr/Hr";
 import AddHr from './pages/hr/AddHr'
 import SingleHr from './pages/hr/SingleHr'
 
+//station
+import Stations from "./pages/station/Stations";
+import AddStation from "./pages/station/AddStation";
+import SingleStation from "./pages/station/SingleStation";
+
 import SeatSelection from "./pages/booking/SeatSelection";
 import Payment from "./pages/booking/Payment";
 import SearchBooking from "./pages/manageBooking/SearchBooking";
@@ -180,6 +185,19 @@ const App = () => {
         {
           path: "/add-hr",
           element: <AddHr />,
+        },
+        //station
+        {
+          path: "/station",
+          element: <Stations />,
+        },
+        {
+          path: "/station/:id",
+          element: <SingleStation />,
+        },
+        {
+          path: "/add-station",
+          element: <AddStation />,
         },
       ],
     },

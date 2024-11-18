@@ -14,16 +14,16 @@ const StationPlaceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    operating_hours: {
-      open: {
-        type: String,
-        required: true,
-      },
-      close: {
-        type: String,
-        required: true,
-      },
-    },
+    // operating_hours: {
+    //   open: {
+    //     type: String,
+    //     required: true,
+    //   },
+    //   close: {
+    //     type: String,
+    //     required: true,
+    //   },
+    // },
     // assigned_officers: [
     //   {
     //     type: mongoose.Schema.Types.ObjectId,

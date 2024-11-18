@@ -11,6 +11,7 @@ import busSlice from "../features/buses/busSlice";
 import tsoSlice from "../features/tso/tsoSlice";
 import hrSlice from "../features/hr/hrSlice";
 import bookingSlice from "../features/booking/bookingSlice";
+import stationSlice from "../features/station/stationSlice";
 
 import catagorieSlice from "../features/catagorie/catagorieSlice";
 
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   tso: tsoSlice,
   hr: hrSlice,
   booking: bookingSlice,
+  station: stationSlice,
   catagorie: catagorieSlice,
 });
 

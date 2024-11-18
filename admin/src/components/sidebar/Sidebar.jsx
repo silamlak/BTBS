@@ -25,6 +25,7 @@ const Sidebar = ({ theme }) => {
     { name: "Buses", link: "/buses", icon: FiShoppingCart },
     { name: "Tso", link: "/tso", icon: FiShoppingCart },
     { name: "HR", link: "/hr", icon: FiShoppingCart },
+    { name: "Station", link: "/station", icon: AiOutlineUser },
   ];
 
   const [open, setOpen] = useState(true);

@@ -93,6 +93,11 @@ export const endpoints = {
   update_bus: `${api}/hr/bus/update`,
   add_bus: `${api}/hr/addbus`,
 
+  //station
+  get_station: `${api}/bo/place/get`,
+  update_station: `${api}/bo/place/update`,
+  add_station: `${api}/bo/addplace`,
+
   //tsoo
   booking: `${api}/tso/book`,
   seat: `${api}/tso/seat`,
