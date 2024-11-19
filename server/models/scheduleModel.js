@@ -17,11 +17,11 @@ const ScheduleSchema = new mongoose.Schema(
       ref: "Bus",
       required: true,
     },
-    driver_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Driver",
-      required: true,
-    },
+    // driver_id: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Driver",
+    //   required: true,
+    // },
     schedule_date: {
       type: Date,
       required: true,

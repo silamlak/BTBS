@@ -50,6 +50,16 @@ import Stations from "./pages/station/Stations";
 import AddStation from "./pages/station/AddStation";
 import SingleStation from "./pages/station/SingleStation";
 
+//route
+import Routes from "./pages/route/Routes";
+import AddRoute from "./pages/route/AddRoute";
+import SingleRoute from "./pages/route/SingleRoute"
+
+//schedule
+import Schedules from "./pages/schedule/Schedules";
+import AddSchedule from "./pages/schedule/AddSchedule"
+import SingleSchedule from "./pages/schedule/SingleSchedule"
+
 import SeatSelection from "./pages/booking/SeatSelection";
 import Payment from "./pages/booking/Payment";
 import SearchBooking from "./pages/manageBooking/SearchBooking";
@@ -198,6 +208,32 @@ const App = () => {
         {
           path: "/add-station",
           element: <AddStation />,
+        },
+        //route
+        {
+          path: "/route",
+          element: <Routes />,
+        },
+        {
+          path: "/route/:id",
+          element: <SingleRoute />,
+        },
+        {
+          path: "/add-route",
+          element: <AddRoute />,
+        },
+        //schedule
+        {
+          path: "/schedule",
+          element: <Schedules />,
+        },
+        {
+          path: "/schedule/:id",
+          element: <SingleSchedule />,
+        },
+        {
+          path: "/add-schedule",
+          element: <AddSchedule />,
         },
       ],
     },

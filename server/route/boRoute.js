@@ -7,6 +7,8 @@ import {
   deletePlace,
   deleteRoute,
   deleteSchedule,
+  getRoute,
+  getSchedule,
   getStations,
   UpdatePlace,
   UpdateRoute,
@@ -19,8 +21,9 @@ const router = express.Router();
 
 //route
 router.post("/addroute", addRoute);
+router.get("/route/get", getRoute);
 router.get("/route/get/:id", ViewRoute);
-router.put("/route/update/:id", UpdateRoute);
+router.post("/route/update/:id", UpdateRoute);
 router.delete("/route/delete/:id", deleteRoute);
 
 //stationPlace
@@ -32,8 +35,9 @@ router.delete("/place/delete/:id", deletePlace);
 
 //schedule
 router.post("/addschedule", addSchedule);
+router.get("/schedule/get", getSchedule);
 router.get("/schedule/get/:id", ViewSchedule);
-router.put("/schedule/update/:id", UpdateSchedule);
+router.post("/schedule/update/:id", UpdateSchedule);
 router.delete("/schedule/delete/:id", deleteSchedule);
 
 export default router;

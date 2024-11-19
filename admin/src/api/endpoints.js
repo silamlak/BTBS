@@ -98,6 +98,16 @@ export const endpoints = {
   update_station: `${api}/bo/place/update`,
   add_station: `${api}/bo/addplace`,
 
+  //schedule
+  get_schedule: `${api}/bo/schedule/get`,
+  update_schedule: `${api}/bo/schedule/update`,
+  add_schedule: `${api}/bo/addschedule`,
+
+  //route
+  get_route: `${api}/bo/route/get`,
+  update_route: `${api}/bo/route/update`,
+  add_route: `${api}/bo/addroute`,
+
   //tsoo
   booking: `${api}/tso/book`,
   seat: `${api}/tso/seat`,

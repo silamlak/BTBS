@@ -24,21 +24,19 @@ const RouteSchema = new mongoose.Schema(
       required: true,
     },
     estimated_time: {
-      type: Number, 
+      type: Number,
       required: true,
     },
-    stops: [
-      {
-        stop_name: {
-          type: String,
-          required: true,
-        },
-        location: {
-          type: String,
-          required: true,
-        },
+    stops: {
+      stop_name: {
+        type: String,
+        required: true,
       },
-    ],
+      location: {
+        type: String,
+        required: true,
+      },
+    },
     bidirectional: {
       type: Boolean,
       default: true,

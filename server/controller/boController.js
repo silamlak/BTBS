@@ -22,6 +22,41 @@ export const addRoute = async (req, res, next) => {
   }
 };
 
+export const getRoute = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+    const date = req.query.date ? new Date(get.query.date) : null;
+    const skip = (page - 1) * limit;
+    let query = {};
+    if (date) {
+      const startOfDay = new Date(date.setHours(0, 0, 0, 0));
+      const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+
+      query.createdAt = {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      };
+    }
+    if (search) {
+      query.route_name = { $regex: search, $options: "i" };
+    }
+    const routes = await routeModel.find(query).skip(skip).limit(limit);
+    const totalCount = await routeModel.countDocuments(query);
+    const totalPages = Math.ceil(totalCount / limit);
+    if (!routes) return next(custom_error_handler(404, "Stations not found"));
+    res.status(200).json({
+      currentPage: page,
+      totalPages: totalPages,
+      totalCount: totalCount,
+      routes,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const ViewRoute = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -153,6 +188,42 @@ export const addSchedule = async (req, res, next) => {
     const newSchedule = scheduleModel(sanitizedData);
     await newSchedule.save();
     res.status(200).json({ msg: "new schedule added" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSchedule = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+    const date = req.query.date ? new Date(get.query.date) : null;
+    const skip = (page - 1) * limit;
+    let query = {};
+    if (date) {
+      const startOfDay = new Date(date.setHours(0, 0, 0, 0));
+      const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+
+      query.createdAt = {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      };
+    }
+    if (search) {
+      query.route_name = { $regex: search, $options: "i" };
+    }
+    const schedules = await scheduleModel.find(query).skip(skip).limit(limit);
+    const totalCount = await scheduleModel.countDocuments(query);
+    const totalPages = Math.ceil(totalCount / limit);
+    if (!schedules)
+      return next(custom_error_handler(404, "Stations not found"));
+    res.status(200).json({
+      currentPage: page,
+      totalPages: totalPages,
+      totalCount: totalCount,
+      schedules,
+    });
   } catch (error) {
     next(error);
   }
