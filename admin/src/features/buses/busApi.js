@@ -29,6 +29,17 @@ export const getBusesFun = async ({
   }
 };
 
+export const getBusesListFun = async () => {
+  try {
+    const res = await axiosInstance.get(endpoints.get_bus_list, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const viewBusFun = async (id) => {
   try {
     const res = await axiosInstance.get(`${endpoints.get_bus}/${id}`, {

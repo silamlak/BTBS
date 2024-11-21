@@ -7,6 +7,20 @@ const BusSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    driver_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Driver",
+      required: true,
+    },
+    route_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Route",
+      required: false,
+    },
+    taken: {
+      type: Boolean,
+      default: false
+    },
     license_plate: {
       type: String,
       required: true,
@@ -35,11 +49,11 @@ const BusSchema = new mongoose.Schema(
     },
     last_service_date: {
       type: Date,
-    //   required: true,
+      //   required: true,
     },
     next_service_due: {
       type: Date,
-    //   required: true,
+      //   required: true,
     },
     maintenance_records: [
       {

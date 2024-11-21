@@ -119,7 +119,8 @@ export const addBus = async (req, res, next) => {
   try {
     const sanitizedData = mongoSanitize(req.body);
     const newBus = busModel(sanitizedData);
-    await newBus.save();
+    const bus = await newBus.save();
+    await driverModel.findByIdAndUpdate({_id: req.body.driver_id}, {$set: {taken: true, bus_id: bus._id}}, {new: true})
     res.status(200).json({ msg: "new bus added" });
   } catch (error) {
     next(error);
@@ -161,6 +162,16 @@ export const getBuses = async (req, res, next) => {
   }
 };
 
+export const getBusesList = async (req, res, next) => {
+  try {
+    const buses = await busModel.find({ taken: false });
+    if (!buses) return next(custom_error_handler(404, "buses not found"));
+    res.status(200).json(buses);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const ViewBus = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -176,11 +187,15 @@ export const UpdateBus = async (req, res, next) => {
   const { id } = req.params;
   try {
     const sanitizedData = mongoSanitize(req.body);
-    const Bus = await busModel.findByIdAndUpdate(id, {
-      $set: sanitizedData,
-    }, {new: true});
+    const Bus = await busModel.findByIdAndUpdate(
+      id,
+      {
+        $set: sanitizedData,
+      },
+      { new: true }
+    );
     if (!Bus) return next(custom_error_handler(404, "Bus not found"));
-    res.status(200).json({Bus,  msg: "Bus info updated" });
+    res.status(200).json({ Bus, msg: "Bus info updated" });
   } catch (error) {
     next(error);
   }
@@ -239,14 +254,24 @@ export const getDrivers = async (req, res, next) => {
     const drivers = await driverModel.find(query).skip(skip).limit(limit);
     const totalCount = await driverModel.countDocuments(query);
     const totalPages = Math.ceil(totalCount / limit);
-    if (!drivers)
-      return next(custom_error_handler(404, "Drivers not found"));
+    if (!drivers) return next(custom_error_handler(404, "Drivers not found"));
     res.status(200).json({
       currentPage: page,
       totalPages: totalPages,
       totalCount: totalCount,
       drivers,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getDriversList = async (req, res, next) => {
+  try {
+    const drivers = await driverModel.find({taken: false})
+    // console.log(object)
+    if (!drivers) return next(custom_error_handler(404, "Drivers not found"));
+    res.status(200).json(drivers);
   } catch (error) {
     next(error);
   }
@@ -267,11 +292,15 @@ export const UpdateDriver = async (req, res, next) => {
   const { id } = req.params;
   try {
     const sanitizedData = mongoSanitize(req.body);
-    const driver = await driverModel.findByIdAndUpdate(id, {
-      $set: sanitizedData,
-    }, {new: true});
+    const driver = await driverModel.findByIdAndUpdate(
+      id,
+      {
+        $set: sanitizedData,
+      },
+      { new: true }
+    );
     if (!driver) return next(custom_error_handler(404, "Driver not found"));
-    res.status(200).json({driver,  msg: "Driver info updated" });
+    res.status(200).json({ driver, msg: "Driver info updated" });
   } catch (error) {
     next(error);
   }
@@ -360,6 +389,16 @@ export const getTso = async (req, res, next) => {
   }
 };
 
+export const getTsoList = async (req, res, next) => {
+  try {
+    const tsos = await TicketSalesOfficerModel.find({ taken: false });
+    if (!tsos) return next(custom_error_handler(404, "Tsos not found"));
+    res.status(200).json(tsos);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const ViewTso = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -376,12 +415,16 @@ export const UpdateTso = async (req, res, next) => {
   const { id } = req.params;
   try {
     const sanitizedData = mongoSanitize(req.body);
-    const tso = await TicketSalesOfficerModel.findByIdAndUpdate(id, {
-      $set: sanitizedData,
-    }, {new: true});
+    const tso = await TicketSalesOfficerModel.findByIdAndUpdate(
+      id,
+      {
+        $set: sanitizedData,
+      },
+      { new: true }
+    );
     if (!tso)
       return next(custom_error_handler(404, "Ticket Sells Officer not found"));
-    res.status(200).json({tso, msg: "Ticket Sells Officer info updated" });
+    res.status(200).json({ tso, msg: "Ticket Sells Officer info updated" });
   } catch (error) {
     next(error);
   }

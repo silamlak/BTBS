@@ -9,9 +9,12 @@ import {
   deleteDriver,
   deleteTso,
   getBuses,
+  getBusesList,
   getDrivers,
+  getDriversList,
   getHBOfficer,
   getTso,
+  getTsoList,
   UpdateBOOfficer,
   UpdateBOOfficerPassword,
   UpdateBus,
@@ -39,6 +42,7 @@ router.delete("/bo/delete/:id", deleteBOOfficer);
 
 //ticket sells officer
 router.post("/adddtso", addTso);
+router.get("/tso/get_list", getTsoList);
 router.get("/tso/get", getTso);
 router.get("/tso/get/:id", ViewTso);
 router.post("/tso/update/:id", UpdateTso);
@@ -47,6 +51,7 @@ router.delete("/tso/delete/:id", deleteTso);
 
 //driver
 router.post("/adddriver", addDriver);
+router.get("/driver/get_list", getDriversList);
 router.get("/driver/get", getDrivers);
 router.get("/driver/get/:id", ViewDriver);
 router.post("/driver/update/:id", UpdateDriver);
@@ -56,6 +61,7 @@ router.delete("/driver/delete/:id", deleteDriver);
 //bus
 router.post("/addbus", addBus);
 router.get("/bus/get", getBuses);
+router.get("/bus/get_list", getBusesList);
 router.get("/bus/get/:id", ViewBus);
 router.post("/bus/update/:id", UpdateBus);
 router.delete("/bus/delete/:id", deleteBus);

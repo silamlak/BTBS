@@ -7,6 +7,13 @@ const RouteSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    bus_id: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Bus",
+        required: false,
+      },
+    ],
     route_name: {
       type: String,
       required: true,

@@ -6,7 +6,7 @@ export const getDriversFun = async ({
   currentPage,
   limit,
   searchQuery,
-//   dateValue,
+  //   dateValue,
 }) => {
   try {
     const res = await axiosInstance.get(
@@ -23,16 +23,39 @@ export const getDriversFun = async ({
         withCredentials: true,
       }
     );
-    return res.data
+    return res.data;
   } catch (error) {
     return handleError(error);
   }
 };
 
+export const getDriversListFun = async () => {
+  try {
+    const res = await axiosInstance.get(endpoints.get_driver_list, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+  
 export const viewDriversFun = async (id) => {
   try {
-    const res = await axiosInstance.get(
-      `${endpoints.get_driver}/${id}`,
+    const res = await axiosInstance.get(`${endpoints.get_driver}/${id}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const updateDriverFun = async ({ id, formData }) => {
+  try {
+    const res = await axiosInstance.post(
+      `${endpoints.update_driver}/${id}`,
+      formData,
       {
         withCredentials: true,
       }
@@ -42,21 +65,6 @@ export const viewDriversFun = async (id) => {
     return handleError(error);
   }
 };
-
-export const updateDriverFun = async ({id, formData}) => {
-     try {
-       const res = await axiosInstance.post(
-         `${endpoints.update_driver}/${id}`,
-         formData,
-         {
-           withCredentials: true,
-         }
-       );
-       return res.data;
-     } catch (error) {
-       return handleError(error);
-     }
-}
 
 export const addDriverFun = async (data) => {
   try {

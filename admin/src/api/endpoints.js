@@ -80,16 +80,19 @@ export const endpoints = {
   add_hr: `${api}/admin/addhr`,
   //tso
   get_tso: `${api}/hr/tso/get`,
+  get_tso_list: `${api}/hr/tso/get_list`,
   update_tso: `${api}/hr/tso/update`,
   add_tso: `${api}/hr/adddtso`,
 
   //drivers
+  get_driver_list: `${api}/hr/driver/get_list`,
   get_driver: `${api}/hr/driver/get`,
   update_driver: `${api}/hr/driver/update`,
   add_driver: `${api}/hr/adddriver`,
 
   //buses
   get_bus: `${api}/hr/bus/get`,
+  get_bus_list: `${api}/hr/bus/get_list`,
   update_bus: `${api}/hr/bus/update`,
   add_bus: `${api}/hr/addbus`,
 

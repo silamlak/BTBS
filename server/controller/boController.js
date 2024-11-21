@@ -3,6 +3,8 @@ import routeModel from "../models/routeModel.js";
 import stationPlaceModel from "../models/stationModel.js";
 import scheduleModel from "../models/scheduleModel.js";
 import { custom_error_handler } from "../errorHandler/errorHandler.js";
+import TicketSalesOfficer from "../models/TicketSalesOfficer.js";
+import busModel from "../models/busModel.js";
 
 function generateSixDigitNumber() {
   return Math.floor(100000 + Math.random() * 900000);
@@ -11,11 +13,24 @@ function generateSixDigitNumber() {
 //route controller
 export const addRoute = async (req, res, next) => {
   try {
+    console.log(req.body)
     const sanitizedData = mongoSanitize(req.body);
     const sixDigitNumber = generateSixDigitNumber();
     sanitizedData.route_id = sixDigitNumber;
     const newRoute = routeModel(sanitizedData);
-    await newRoute.save();
+    const route = await newRoute.save();
+    const busLists = req.body.bus_id
+       if (busLists && Array.isArray(busLists)) {
+         await Promise.all(
+           busLists.map((bus) =>
+             busModel.findByIdAndUpdate(
+               { _id: bus },
+               { $set: { taken: true, route_id: route._id } },
+               { new: true }
+             )
+           )
+         );
+       }
     res.status(200).json({ msg: "new Route added" });
   } catch (error) {
     next(error);
@@ -98,7 +113,12 @@ export const addPlace = async (req, res, next) => {
   try {
     const sanitizedData = mongoSanitize(req.body);
     const newPlace = stationPlaceModel(sanitizedData);
-    await newPlace.save();
+    const place = await newPlace.save();
+        await TicketSalesOfficer.findByIdAndUpdate(
+          { _id: req.body.tso_id },
+          { $set: { taken: true, StationPlace_id: place._id } },
+          { new: true }
+        );
     res.status(200).json({ msg: "new StationPlace added" });
   } catch (error) {
     next(error);

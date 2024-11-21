@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const DriverSchema = new mongoose.Schema(
   {
+    bus_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Bus",
+    },
     first_name: {
       type: String,
       required: true,
@@ -13,6 +17,10 @@ const DriverSchema = new mongoose.Schema(
     last_name: {
       type: String,
       required: true,
+    },
+    taken: {
+      type: Boolean,
+      default: false,
     },
     email: {
       type: String,

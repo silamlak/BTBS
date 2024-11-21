@@ -14,6 +14,15 @@ const TicketSalesOfficerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    taken: {
+      type: Boolean,
+      default: false,
+    },
+    StationPlace_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "StationPlaces",
+      required: false,
+    },
     password: {
       type: String,
       required: true,
@@ -58,34 +67,29 @@ const TicketSalesOfficerSchema = new mongoose.Schema(
       type: String,
       // required: true,
     },
-    assigned_station: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Station", // Reference to a Station schema (if applicable)
-      // required: true,
-    },
     ticket_sales: [
       {
         sale_date: {
           type: Date,
-        //   required: true,
+          //   required: true,
         },
         bus_id: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Bus",
-        //   required: true,
+          //   required: true,
         },
         route_id: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Route",
-        //   required: true,
+          //   required: true,
         },
         tickets_sold: {
           type: Number,
-        //   required: true,
+          //   required: true,
         },
         total_amount: {
           type: Number,
-        //   required: true,
+          //   required: true,
         },
       },
     ],

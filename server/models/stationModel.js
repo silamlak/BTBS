@@ -24,11 +24,11 @@ const StationPlaceSchema = new mongoose.Schema(
     //     required: true,
     //   },
     // },
+      tso_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "TicketSalesOfficer",
+      },
     // assigned_officers: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "TicketSalesOfficer",
-    //   },
     // ],
   },
   { timestamps: true }

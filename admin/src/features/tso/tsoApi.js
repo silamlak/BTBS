@@ -29,6 +29,17 @@ export const getTsoFun = async ({
   }
 };
 
+export const getTsoListFun = async () => {
+  try {
+    const res = await axiosInstance.get(endpoints.get_tso_list, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const viewTsoFun = async (id) => {
   try {
     const res = await axiosInstance.get(`${endpoints.get_tso}/${id}`, {
