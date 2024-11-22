@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Make sure this API function is correct
 import { addStationFun } from "../../features/station/stationApi";
-import { getRouteFun, getRoutesListFun } from "../../features/route/routeApi";
+import { getRoutesListFun } from "../../features/route/routeApi";
 
 const AddSchedule = () => {
   const navigate = useNavigate();
@@ -63,31 +63,6 @@ const AddSchedule = () => {
       <h2 className="text-2xl font-bold mb-4">Add Bus</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Input Fields */}
-        {[
-          "schedule_id",
-          "from",
-          "to",
-          "departure_time",
-          "arrival_time",
-          "ticket_price",
-          //  "license_plate",
-          //  "bus_id",
-        ].map((field) => (
-          <div key={field}>
-            <label className="block text-gray-700 capitalize">
-              {field.replace("_", " ")}
-            </label>
-            <input
-              name={field}
-              value={formData[field]}
-              onChange={handleChange}
-              type="text"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors[field] && <p className="text-red-500">{errors[field]}</p>}
-          </div>
-        ))}
-
         <div>
           <label className="block text-gray-700">Schedule Date</label>
           <input
@@ -122,6 +97,30 @@ const AddSchedule = () => {
           </select>
           {errors.route_id && <p className="text-red-500">{errors.route_id}</p>}
         </div>
+        {[
+          "schedule_id",
+          "from",
+          "to",
+          "departure_time",
+          "arrival_time",
+          "ticket_price",
+          //  "license_plate",
+          //  "bus_id",
+        ].map((field) => (
+          <div key={field}>
+            <label className="block text-gray-700 capitalize">
+              {field.replace("_", " ")}
+            </label>
+            <input
+              name={field}
+              value={formData[field]}
+              onChange={handleChange}
+              type="text"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {errors[field] && <p className="text-red-500">{errors[field]}</p>}
+          </div>
+        ))}
 
         {/* Submit Button */}
         <button
