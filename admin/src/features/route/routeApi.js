@@ -29,6 +29,17 @@ export const getRouteFun = async ({
   }
 };
 
+export const getRoutesListFun = async () => {
+  try {
+    const res = await axiosInstance.get(endpoints.get_route_list, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const viewRouteFun = async (id) => {
   try {
     const res = await axiosInstance.get(`${endpoints.get_route}/${id}`, {

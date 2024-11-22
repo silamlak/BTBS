@@ -48,7 +48,7 @@ const ScheduleSchema = new mongoose.Schema(
     },
     available_seats: {
       type: Number,
-      required: true,
+      // required: true,
     },
     status: {
       type: String,

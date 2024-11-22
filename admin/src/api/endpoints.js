@@ -108,6 +108,7 @@ export const endpoints = {
 
   //route
   get_route: `${api}/bo/route/get`,
+  get_route_list: `${api}/bo/route/get_list`,
   update_route: `${api}/bo/route/update`,
   add_route: `${api}/bo/addroute`,
 

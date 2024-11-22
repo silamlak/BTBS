@@ -72,6 +72,16 @@ export const getRoute = async (req, res, next) => {
   }
 };
 
+export const getRouteList = async (req, res, next) => {
+  try {
+    const routes = await routeModel.find();
+    if (!routes) return next(custom_error_handler(404, "Route not found"));
+    res.status(200).json(routes);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const ViewRoute = async (req, res, next) => {
   const { id } = req.params;
   try {

@@ -1,19 +1,20 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Make sure this API function is correct
 import { addStationFun } from "../../features/station/stationApi";
+import { getRouteFun, getRoutesListFun } from "../../features/route/routeApi";
 
 const AddSchedule = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: "",
-    location: "",
-    contact_number: "",
-    //  year_of_manufacture: "",
-    //  model: "",
-    //  make: "",
-    //  license_plate: "",
-    //  bus_id: "",
+    schedule_id: "",
+    schedule_date: "",
+    from: "",
+    to: "",
+    departure_time: "",
+    arrival_time: "",
+    ticket_price: "",
+    route_id: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -25,6 +26,12 @@ const AddSchedule = () => {
     },
   });
 
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["routes"],
+    queryFn: () => getRoutesListFun(),
+    keepPreviousData: true,
+  });
+  console.log(data);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -57,12 +64,12 @@ const AddSchedule = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Input Fields */}
         {[
-          "name",
-          "location",
-          "contact_number",
-          //  "year_of_manufacture",
-          //  "model",
-          //  "make",
+          "schedule_id",
+          "from",
+          "to",
+          "departure_time",
+          "arrival_time",
+          "ticket_price",
           //  "license_plate",
           //  "bus_id",
         ].map((field) => (
@@ -80,6 +87,41 @@ const AddSchedule = () => {
             {errors[field] && <p className="text-red-500">{errors[field]}</p>}
           </div>
         ))}
+
+        <div>
+          <label className="block text-gray-700">Schedule Date</label>
+          <input
+            name="schedule_date"
+            value={formData.schedule_date}
+            onChange={handleChange}
+            type="date"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.schedule_date && (
+            <p className="text-red-500">{errors.schedule_date}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-gray-700">Driver</label>
+          <select
+            name="route_id"
+            value={formData.route_id}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select a Route</option>
+            {!isLoading &&
+              !isError &&
+              data?.map((route) => (
+                <option key={route._id} value={route._id}>
+                  {route.route_id}{" "}
+                  {/* Replace "name" with the appropriate field */}
+                </option>
+              ))}
+          </select>
+          {errors.route_id && <p className="text-red-500">{errors.route_id}</p>}
+        </div>
 
         {/* Submit Button */}
         <button
