@@ -5,6 +5,7 @@ import { custom_error_handler } from "../errorHandler/errorHandler.js";
 import driverModel from "../models/driverModel.js";
 import busModel from "../models/busModel.js";
 import TicketSalesOfficerModel from "../models/TicketSalesOfficer.js";
+import scheduleModel from "../models/scheduleModel.js";
 
 //Hiring bus operator
 export const BOOfficer = async (req, res, next) => {
@@ -120,7 +121,11 @@ export const addBus = async (req, res, next) => {
     const sanitizedData = mongoSanitize(req.body);
     const newBus = busModel(sanitizedData);
     const bus = await newBus.save();
-    await driverModel.findByIdAndUpdate({_id: req.body.driver_id}, {$set: {taken: true, bus_id: bus._id}}, {new: true})
+    await driverModel.findByIdAndUpdate(
+      { _id: req.body.driver_id },
+      { $set: { taken: true, bus_id: bus._id } },
+      { new: true }
+    );
     res.status(200).json({ msg: "new bus added" });
   } catch (error) {
     next(error);
@@ -174,9 +179,9 @@ export const getBusesList = async (req, res, next) => {
 
 export const getRouteBusesList = async (req, res, next) => {
   try {
-    const {id} = req.params
-    const {date, from, to} = req.query
-    console.log(id, date, from , to)
+    const { id } = req.params;
+    const { date, from, to } = req.query;
+
     const givenDate = new Date(date);
 
     const dayBefore = new Date(givenDate);
@@ -184,9 +189,38 @@ export const getRouteBusesList = async (req, res, next) => {
 
     const dayAfter = new Date(givenDate);
     dayAfter.setDate(givenDate.getDate() + 1);
+    const todaySchedule = await scheduleModel.findOne({
+      route_id: id,
+      from: { $regex: new RegExp(`^${from}$`, "i") },
+      to: { $regex: new RegExp(`^${to}$`, "i") },
+      schedule_date: givenDate,
+    });
+    if (todaySchedule)
+      return next(custom_error_handler(403, "Schedule already added"));
     const buses = await busModel.find({ route_id: id });
     if (!buses) return next(custom_error_handler(404, "buses not found"));
-    res.status(200).json(buses);
+    const theDayBeforeschedule = await scheduleModel.findOne({
+      route_id: id,
+      to: { $regex: new RegExp(`^${from}$`, "i") },
+      schedule_date: dayBefore,
+    });
+    const theDayAfterschedule = await scheduleModel.findOne({
+      route_id: id,
+      to: { $regex: new RegExp(`^${to}$`, "i") },
+      schedule_date: dayAfter,
+    });
+    const dayBeforeBusIds = theDayBeforeschedule
+      ? theDayBeforeschedule.bus_id
+      : [];
+    const dayAfterBusIds = theDayAfterschedule
+      ? theDayAfterschedule.bus_id
+      : [];
+    const filteredBuses = buses.filter(
+      (bus) =>
+        dayBeforeBusIds.includes(bus._id) && !dayAfterBusIds.includes(bus._id)
+    );
+    console.log(filteredBuses);
+    res.status(200).json(filteredBuses);
   } catch (error) {
     next(error);
   }
@@ -288,7 +322,7 @@ export const getDrivers = async (req, res, next) => {
 
 export const getDriversList = async (req, res, next) => {
   try {
-    const drivers = await driverModel.find({taken: false})
+    const drivers = await driverModel.find({ taken: false });
     // console.log(object)
     if (!drivers) return next(custom_error_handler(404, "Drivers not found"));
     res.status(200).json(drivers);
