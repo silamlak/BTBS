@@ -172,6 +172,18 @@ export const getBusesList = async (req, res, next) => {
   }
 };
 
+export const getRouteBusesList = async (req, res, next) => {
+  try {
+    const {id} = req.params
+    console.log(id)
+    const buses = await busModel.find({ route_id: id });
+    if (!buses) return next(custom_error_handler(404, "buses not found"));
+    res.status(200).json(buses);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const ViewBus = async (req, res, next) => {
   const { id } = req.params;
   try {

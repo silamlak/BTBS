@@ -12,11 +12,13 @@ const ScheduleSchema = new mongoose.Schema(
       ref: "Route",
       required: true,
     },
-    bus_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Bus",
-      required: true,
-    },
+    bus_id: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Bus",
+        required: true,
+      },
+    ],
     schedule_date: {
       type: Date,
       required: true,

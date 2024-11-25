@@ -213,6 +213,7 @@ export const deletePlace = async (req, res, next) => {
 export const addSchedule = async (req, res, next) => {
   try {
     const sanitizedData = mongoSanitize(req.body);
+    console.log(sanitizedData);
     const sixDigitNumber = generateSixDigitNumber();
     sanitizedData.schedule_id = sixDigitNumber;
     const newSchedule = scheduleModel(sanitizedData);

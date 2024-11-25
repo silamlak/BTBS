@@ -39,6 +39,16 @@ export const getBusesListFun = async () => {
     return handleError(error);
   }
 };
+export const getRoutesBusesListFun = async (id) => {
+  try {
+    const res = await axiosInstance.get(`${endpoints.get_bus_list}/${id}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
 
 export const viewBusFun = async (id) => {
   try {

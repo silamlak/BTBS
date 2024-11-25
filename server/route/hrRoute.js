@@ -13,6 +13,7 @@ import {
   getDrivers,
   getDriversList,
   getHBOfficer,
+  getRouteBusesList,
   getTso,
   getTsoList,
   UpdateBOOfficer,
@@ -62,6 +63,7 @@ router.delete("/driver/delete/:id", deleteDriver);
 router.post("/addbus", addBus);
 router.get("/bus/get", getBuses);
 router.get("/bus/get_list", getBusesList);
+router.get("/bus/get_list/:id", getRouteBusesList);
 router.get("/bus/get/:id", ViewBus);
 router.post("/bus/update/:id", UpdateBus);
 router.delete("/bus/delete/:id", deleteBus);
