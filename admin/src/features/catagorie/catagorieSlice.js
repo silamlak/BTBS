@@ -21,6 +21,8 @@ const passengerSlice = createSlice({
   reducers: {
     setScheduleId: (state, action) => {
       state.scheduleId = action.payload.id;
+    },
+    setBusId: (state, action) => {
       state.busId = action.payload.bus_id;
     },
     setPassengerData: (state, action) => {
@@ -99,6 +101,7 @@ export const {
   setAdults,
   setSeats,
   setScheduleId,
+  setBusId,
   setChildren,
   setSelectedSeat,
   clearAll,

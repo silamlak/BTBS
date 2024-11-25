@@ -57,8 +57,6 @@ export const bookTicket = async (req, res, next) => {
 
 export const addSeat = async (req, res, next) => {
   try {
-    console.log(req.body);
-
     if (!Array.isArray(req.body)) {
       return res
         .status(400)
@@ -85,7 +83,8 @@ export const addSeat = async (req, res, next) => {
 export const getSeats = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const takenSeats = await seatModel.find({ scheduleId: id });
+    const {bus_id} = req.query
+    const takenSeats = await seatModel.find({ scheduleId: id, bus_id });
     res.status(201).json(takenSeats);
   } catch (error) {
     next(error);

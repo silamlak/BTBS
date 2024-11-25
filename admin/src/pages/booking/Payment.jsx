@@ -43,7 +43,12 @@ const Payment = () => {
         onSuccess: (data) => {
             console.log(data.booked);
             const updatedData = seatData.map((s,i) => {
-              return { ...s, bookId: data?.booked?._id, scheduleId, };
+              return {
+                ...s,
+                bookId: data?.booked?._id,
+                scheduleId,
+                bus_id: busId,
+              };
             })
             seatMutate(updatedData);
         }

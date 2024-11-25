@@ -12,6 +12,11 @@ const seatSchema = new mongoose.Schema(
       ref: "Booking",
       required: true,
     },
+    bus_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Bus",
+      required: true,
+    },
     seat_no: {
       type: Number,
       required: true,

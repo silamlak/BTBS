@@ -5,6 +5,7 @@ import scheduleModel from "../models/scheduleModel.js";
 import { custom_error_handler } from "../errorHandler/errorHandler.js";
 import TicketSalesOfficer from "../models/TicketSalesOfficer.js";
 import busModel from "../models/busModel.js";
+import seatModel from "../models/seatModel.js";
 
 function generateSixDigitNumber() {
   return Math.floor(100000 + Math.random() * 900000);
@@ -213,7 +214,6 @@ export const deletePlace = async (req, res, next) => {
 export const addSchedule = async (req, res, next) => {
   try {
     const sanitizedData = mongoSanitize(req.body);
-    console.log(sanitizedData);
     const sixDigitNumber = generateSixDigitNumber();
     sanitizedData.schedule_id = sixDigitNumber;
     const newSchedule = scheduleModel(sanitizedData);
@@ -223,6 +223,44 @@ export const addSchedule = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getSeats = async (req, res, next) => {
+  try {
+    const { scheduleId, totalPass } = req.body;
+
+    // Fetch the schedule
+    const Schedule = await scheduleModel.findById(scheduleId);
+    if (!Schedule) {
+      return res.status(404).json({ message: "Schedule not found" });
+    }
+
+    const busIds = Schedule.bus_id;
+
+    // Iterate over each bus ID
+    for (const busId of busIds) {
+      const bus = await busModel.findById(busId);
+      if (!bus) continue;
+
+      const { seating_capacity } = bus;
+
+      // Count occupied seats and find seat data
+      const occupiedSeats = await seatModel.countDocuments({ bus_id: busId });
+      const availableSeats = seating_capacity - occupiedSeats;
+
+      // Check if the bus is suitable
+      if (availableSeats >= totalPass) {
+        // Send response and stop further processing
+        return res.status(200).json(bus);
+      }
+    }
+
+    // If no suitable bus is found after the loop
+    return res.status(404).json({ message: "No suitable bus available" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 export const getSchedule = async (req, res, next) => {
   try {

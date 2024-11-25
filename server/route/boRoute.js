@@ -10,6 +10,7 @@ import {
   getRoute,
   getRouteList,
   getSchedule,
+  getSeats,
   getStations,
   UpdatePlace,
   UpdateRoute,
@@ -18,6 +19,7 @@ import {
   ViewRoute,
   ViewSchedule,
 } from "../controller/boController.js";
+import { get } from "mongoose";
 const router = express.Router();
 
 //route
@@ -34,6 +36,9 @@ router.get("/place/get", getStations);
 router.get("/place/get/:id", ViewPlace);
 router.post("/place/update/:id", UpdatePlace);
 router.delete("/place/delete/:id", deletePlace);
+
+//seat
+router.post("/total/seat", getSeats);
 
 //schedule
 router.post("/addschedule", addSchedule);

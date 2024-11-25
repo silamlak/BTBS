@@ -36,7 +36,7 @@ const SearchResult = () => {
     return <div>Error: {error.message}</div>;
   }
   const goToPassangerInfo = (id, bus_id) => {
-    dispatch(setScheduleId({id, bus_id}));
+    dispatch(setScheduleId({id}));
     navigate(
       `/passenger?from=${fromPlace}&to=${toPlace}&date=${travelDate}&adults=${adults}&children=${childs}`
     );

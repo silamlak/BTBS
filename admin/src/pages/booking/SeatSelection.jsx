@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -6,9 +6,10 @@ import {
   setSelectedSeat,
   setSelectedPassengerIndex,
   setSeats,
+  setBusId,
 } from "../../features/catagorie/catagorieSlice";
 import { useLocation, useNavigate, useNavigation } from "react-router-dom";
-import { getSeatFun } from "../../features/booking/bookingApi";
+import { getSeatFun, totalSeatFun } from "../../features/booking/bookingApi";
 
 // SeatSelection Component
 const SeatSelection = () => {
@@ -22,12 +23,9 @@ const SeatSelection = () => {
     selectedSeats,
     scheduleId,
   } = useSelector((state) => state.catagorie);
+  const [totalPass, setTotalPass] = useState();
 
   // Fetch taken seats
-  const { data: takenSeats = [] } = useQuery({
-    queryKey: ["seat"],
-    queryFn: () => getSeatFun(scheduleId),
-  });
 
   // Helper function to get query parameters
   const getQueryParams = (search) => {
@@ -40,10 +38,11 @@ const SeatSelection = () => {
       travelDate: params.get("date"),
     };
   };
-console.log(selectedSeats)
+
   useEffect(() => {
     const { adults, children } = getQueryParams(location.search);
     const passengers = adults + children;
+    setTotalPass(passengers);
     if (seats.length === 0) {
       const initialSeats = [];
       for (let i = 0; i < passengers; i++) {
@@ -57,7 +56,23 @@ console.log(selectedSeats)
     }
   }, [dispatch]);
 
-  // Handle seat selection
+  const { data: getTotalSeats = [] } = useQuery({
+    queryKey: ["get_total_seat"],
+    queryFn: () => totalSeatFun({ totalPass, scheduleId }),
+    enabled: !!totalPass,
+  });
+
+  useEffect(() => {
+    if (getTotalSeats) {
+      dispatch(setBusId({ bus_id: getTotalSeats._id }));
+    }
+  }, [getTotalSeats]);
+  
+  const { data: takenSeats = [] } = useQuery({
+    queryKey: ["seat"],
+    queryFn: () => getSeatFun({ scheduleId, bus_id: getTotalSeats._id }),
+    enabled: !!getTotalSeats.seating_capacity,
+  });
   const handleSeatClick = (seatNumber) => {
     if (!takenSeats.includes(seatNumber)) {
       dispatch(
@@ -105,9 +120,9 @@ console.log(selectedSeats)
   // Render seat map with passenger numbers
   const renderSeatMap = () => (
     <div className="grid grid-cols-5 gap-4 mb-4">
-      {Array.from({ length: 40 }, (_, index) => {
+      {Array.from({ length: getTotalSeats?.seating_capacity }, (_, index) => {
         const seatNumber = index + 1;
-        const isTaken = takenSeats.some((seat) => seat.seat_no === seatNumber); 
+        const isTaken = takenSeats.some((seat) => seat.seat_no === seatNumber);
         const occupiedByPassenger = selectedSeats[seatNumber];
 
         return (

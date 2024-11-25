@@ -13,6 +13,21 @@ export const bookingFun = async (data) => {
     return handleError(error);
   }
 };
+export const totalSeatFun = async ({ totalPass, scheduleId }) => {
+  console.log(totalPass, scheduleId);
+  try {
+    const res = await axiosInstance.post(
+      endpoints.get_total_seat,
+      { totalPass, scheduleId },
+      {
+        withCredentials: true,
+      }
+    );
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
 
 export const seatFun = async (data) => {
   try {
@@ -26,13 +41,16 @@ export const seatFun = async (data) => {
   }
 };
 
-export const getSeatFun = async (id) => {
+export const getSeatFun = async ({ scheduleId, bus_id }) => {
   try {
-    console.log(id)
-    const res = await axiosInstance.get(`${endpoints.seat}/${id}`, {
-      withCredentials: true,
-    });
-    return res.data
+    console.log(scheduleId, bus_id);
+    const res = await axiosInstance.get(
+      `${endpoints.seat}/${scheduleId}?bus_id=${bus_id}`,
+      {
+        withCredentials: true,
+      }
+    );
+    return res.data;
   } catch (error) {
     return handleError(error);
   }

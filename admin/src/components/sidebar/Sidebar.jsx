@@ -12,9 +12,9 @@ const Sidebar = ({ theme }) => {
   const menus = [
     { name: "dashboard", link: "/", icon: MdOutlineDashboard },
     { name: "Orders", link: "/orders", icon: AiOutlineUser },
-    { name: "Categorie", link: "/categorie", icon: FiMessageSquare },
+    { name: "Booking", link: "/categorie", icon: FiMessageSquare },
     {
-      name: "Product",
+      name: "Get Booking",
       link: "/search-booking",
       icon: TbReportAnalytics,
       margin: true,
