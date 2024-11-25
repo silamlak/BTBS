@@ -12,6 +12,9 @@ export default function HomeScreen() {
   const count = useSelector((state) => state.counter.value);
   const dispatch = useDispatch();
   const {t} = useTranslation()
+    const changeLanguage = (lang) => {
+      i18next.changeLanguage(lang);
+    };
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
@@ -23,7 +26,9 @@ export default function HomeScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">{t('change')}</ThemedText>
+        <ThemedText type="title" className="p-2">{t("change")}</ThemedText>
+        <Button title="English" onPress={() => changeLanguage("en")} />
+        <Button title="Amharic" onPress={() => changeLanguage("am")} />
         <HelloWave />
       </ThemedView>
       <Text>Count: {count}</Text>

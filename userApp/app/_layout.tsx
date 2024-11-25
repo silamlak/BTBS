@@ -10,15 +10,14 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
-
 import {persistor, store} from '../store/store'
 import { PersistGate } from "redux-persist/integration/react";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
+import "../global.css";
 SplashScreen.preventAutoHideAsync();
-
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
