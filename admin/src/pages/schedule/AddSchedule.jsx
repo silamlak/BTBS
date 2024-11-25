@@ -30,17 +30,35 @@ const AddSchedule = () => {
     },
   });
 
-  const { data: buseData, isLoading: isL, isError: isE } = useQuery({
-    queryKey: ["buses"],
-    queryFn: () => getRoutesBusesListFun(formData.route_id),
-    keepPreviousData: true,
-    enabled: !!formData.route_id,
-  });
-console.log(buseData)
-  const { data, isLoading, isError } = useQuery({
+  const {
+    data: routeData,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["routes"],
     queryFn: () => getRoutesListFun(),
     keepPreviousData: true,
+  });
+
+  const {
+    data: busData,
+    isLoading: isBusLoading,
+    isError: isBusError,
+  } = useQuery({
+    queryKey: ["buses", formData.route_id],
+    queryFn: () =>
+      getRoutesBusesListFun(
+        formData.route_id,
+        formData.schedule_date,
+        formData.from,
+        formData.to
+      ),
+    keepPreviousData: true,
+    enabled:
+      !!formData.route_id &&
+      !!formData.schedule_date &&
+      !!formData.from &&
+      !!formData.to,
   });
 
   const handleChange = (e) => {
@@ -67,7 +85,7 @@ console.log(buseData)
     if (validate()) {
       mutation.mutate({
         ...formData,
-        bus_id: formData.bus_id.map((bus) => bus.value), 
+        bus_id: formData.bus_id.map((bus) => bus.value),
       });
     }
   };
@@ -88,7 +106,7 @@ console.log(buseData)
             <option value="">Select a Route</option>
             {!isLoading &&
               !isError &&
-              data?.map((route) => (
+              routeData?.map((route) => (
                 <option key={route._id} value={route._id}>
                   {route.route_id}
                 </option>
@@ -97,81 +115,85 @@ console.log(buseData)
           {errors.route_id && <p className="text-red-500">{errors.route_id}</p>}
         </div>
 
-        {/* Multi-Select Dropdown for Buses */}
-        <div>
-          <label className="block text-gray-700">Buses</label>
-          <Select
-            isMulti
-            name="bus_id"
-            options={
-              !isL && !isE
-                ? buseData?.map((bus) => ({
-                    value: bus._id,
-                    label: bus.bus_id,
-                  }))
-                : []
-            }
-            value={formData.bus_id}
-            onChange={(selectedOptions) => {
-              if (selectedOptions.length <= 2) {
-                setFormData((prevData) => ({
-                  ...prevData,
-                  bus_id: selectedOptions,
-                }));
-              } else {
-                alert("You can select up to 2 buses only.");
-              }
-            }}
-            className="basic-multi-select"
-            classNamePrefix="select"
-          />
-          {errors.bus_id && <p className="text-red-500">{errors.bus_id}</p>}
-        </div>
-
-        {/* Step 2: Show Date, From, and To fields */}
+        {/* Step 2: Select Date */}
         {formData.route_id && (
-          <>
-            <div>
-              <label className="block text-gray-700">Schedule Date</label>
-              <input
-                name="schedule_date"
-                value={formData.schedule_date}
-                onChange={handleChange}
-                type="date"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              {errors.schedule_date && (
-                <p className="text-red-500">{errors.schedule_date}</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-gray-700">From</label>
-              <input
-                name="from"
-                value={formData.from}
-                onChange={handleChange}
-                type="text"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              {errors.from && <p className="text-red-500">{errors.from}</p>}
-            </div>
-            <div>
-              <label className="block text-gray-700">To</label>
-              <input
-                name="to"
-                value={formData.to}
-                onChange={handleChange}
-                type="text"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              {errors.to && <p className="text-red-500">{errors.to}</p>}
-            </div>
-          </>
+          <div>
+            <label className="block text-gray-700">Schedule Date</label>
+            <input
+              name="schedule_date"
+              value={formData.schedule_date}
+              onChange={handleChange}
+              type="date"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {errors.schedule_date && (
+              <p className="text-red-500">{errors.schedule_date}</p>
+            )}
+          </div>
         )}
 
-        {/* Step 3: Show remaining fields */}
-        {formData.schedule_date && formData.from && formData.to && (
+        {/* Step 3: From */}
+        {formData.schedule_date && (
+          <div>
+            <label className="block text-gray-700">From</label>
+            <input
+              name="from"
+              value={formData.from}
+              onChange={handleChange}
+              type="text"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {errors.from && <p className="text-red-500">{errors.from}</p>}
+          </div>
+        )}
+
+        {/* Step 4: To */}
+        {formData.from && (
+          <div>
+            <label className="block text-gray-700">To</label>
+            <input
+              name="to"
+              value={formData.to}
+              onChange={handleChange}
+              type="text"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {errors.to && <p className="text-red-500">{errors.to}</p>}
+          </div>
+        )}
+
+        {/* Step 5: Remaining Fields */}
+        {formData.to && (
           <>
+            <div>
+              <label className="block text-gray-700">Buses</label>
+              <Select
+                isMulti
+                name="bus_id"
+                options={
+                  !isBusLoading && !isBusError
+                    ? busData?.map((bus) => ({
+                        value: bus._id,
+                        label: bus.bus_id,
+                      }))
+                    : []
+                }
+                value={formData.bus_id}
+                onChange={(selectedOptions) => {
+                  if (selectedOptions.length <= 2) {
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      bus_id: selectedOptions,
+                    }));
+                  } else {
+                    alert("You can select up to 2 buses only.");
+                  }
+                }}
+                className="basic-multi-select"
+                classNamePrefix="select"
+              />
+              {errors.bus_id && <p className="text-red-500">{errors.bus_id}</p>}
+            </div>
             {[
               "schedule_id",
               "departure_time",

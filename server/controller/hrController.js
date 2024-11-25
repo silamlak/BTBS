@@ -175,7 +175,15 @@ export const getBusesList = async (req, res, next) => {
 export const getRouteBusesList = async (req, res, next) => {
   try {
     const {id} = req.params
-    console.log(id)
+    const {date, from, to} = req.query
+    console.log(id, date, from , to)
+    const givenDate = new Date(date);
+
+    const dayBefore = new Date(givenDate);
+    dayBefore.setDate(givenDate.getDate() - 1);
+
+    const dayAfter = new Date(givenDate);
+    dayAfter.setDate(givenDate.getDate() + 1);
     const buses = await busModel.find({ route_id: id });
     if (!buses) return next(custom_error_handler(404, "buses not found"));
     res.status(200).json(buses);
