@@ -5,7 +5,7 @@ import storage from "redux-persist/lib/storage";
 const themeSlice = createSlice({
   name: "theme",
   initialState: {
-    mode: "light", // Default theme
+    mode: "light",
   },
   reducers: {
     toggleTheme: (state) => {
@@ -17,7 +17,7 @@ const themeSlice = createSlice({
 export const { toggleTheme } = themeSlice.actions;
 
 const persistConfig = {
-  key: "ecoma",
+  key: "theme",
   storage,
 };
 

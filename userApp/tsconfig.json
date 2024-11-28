@@ -14,5 +14,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "nativewind-env.d.ts"
-  ]
+, "app/_layout.jsx", "app/+not-found.jsx", "app/(tabs)/_layout.jsx", "app/(tabs)/index.jsx", "app/(tabs)/explore.jsx", "constants/Colors.js", "hooks/useThemeColor.ts", "hooks/useColorScheme.web.js", "hooks/useColorScheme.js"  ]
 }

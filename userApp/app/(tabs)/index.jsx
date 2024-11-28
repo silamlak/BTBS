@@ -7,8 +7,9 @@ import { ThemedView } from '@/components/ThemedView';
 import { increment, decrement, reset } from "../../feature/countSlice";
 import {useTranslation} from 'react-i18next'
 import i18next from '../../services/i18next'
+import { Link } from "expo-router";
 
-export default function HomeScreen() {
+export default function Home() {
   const count = useSelector((state) => state.counter.value);
   const dispatch = useDispatch();
   const {t} = useTranslation()
@@ -31,6 +32,9 @@ export default function HomeScreen() {
         <Button title="Amharic" onPress={() => changeLanguage("am")} />
         <HelloWave />
       </ThemedView>
+      <View>
+        <Link href='/book'>Book Now</Link>
+      </View>
       <Text>Count: {count}</Text>
       <View>
         <Button title="Increment" onPress={() => dispatch(increment())} />
