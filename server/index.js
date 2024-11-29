@@ -27,7 +27,7 @@ app.use(
 app.use(bodyParser.json());
 dotenv.config();
 app.use("/files", express.static("files"));
-// app.use("/api/auth", authRoute);
+app.use("/api/auth", authRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/hr", hrRoute);
 app.use("/api/bo", boRoute);

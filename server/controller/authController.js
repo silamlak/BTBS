@@ -5,6 +5,10 @@ import { sendConfirmationEmail } from "../emailController.js";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
+import adminModel from "../models/adminModel.js";
+import boofficerModel from "../models/boofficerModel.js";
+import TicketSalesOfficerModel from "../models/TicketSalesOfficer.js";
+import hrofficerModel from "../models/hrofficerModel.js";
 
 export const createUser = async (req, res, next) => {
   await body("first_name")
@@ -51,7 +55,7 @@ export const createUser = async (req, res, next) => {
 
     await user.save();
 
-    await createOtp(email, 'Confirmation Code');
+    await createOtp(email, "Confirmation Code");
 
     res.status(201).json(user);
   } catch (error) {
@@ -145,7 +149,36 @@ export const signIn = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    let user = await adminModel.findOne({ email });
+    let role = null;
+
+    if (user) {
+      role = "admin";
+    }
+    if (!user) {
+      // Check for user in other models
+      const bo = await boofficerModel.findOne({ email });
+      if (bo) {
+        user = bo;
+        role = "bo"; // Role: Bus Operator Officer
+      }
+
+      if (!user) {
+        const tso = await TicketSalesOfficerModel.findOne({ email });
+        if (tso) {
+          user = tso;
+          role = "tso"; // Role: Ticket Sales Officer
+        }
+      }
+
+      if (!user) {
+        const hr = await hrofficerModel.findOne({ email });
+        if (hr) {
+          user = hr;
+          role = "hr"; // Role: HR Officer
+        }
+      }
+    }
     if (!user) {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
@@ -163,20 +196,17 @@ export const signIn = async (req, res, next) => {
         id: user._id,
         email: user.email,
         first_name: user.first_name,
-        father_name: user.father_name,
-        ethPhone: user.ethPhone,
+        middle_name: user.father_name,
       },
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1m",
+      expiresIn: "1h",
     });
 
-        const refreshToken = jwt.sign(
-          payload,
-          process.env.REFRESH_TOKEN_SECRET,
-          { expiresIn: "1h" }
-        );
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: "1h",
+    });
 
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
@@ -260,7 +290,7 @@ export const requestPasswordReset = async (req, res, next) => {
     .isEmail()
     .withMessage("Please include a valid email")
     .run(req);
-    console.log(req.body.email)
+  console.log(req.body.email);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -292,7 +322,7 @@ export const requestPasswordReset = async (req, res, next) => {
     await user.save();
 
     // Send the reset token to the user's email
-    await sendConfirmationEmail(email, resetToken, 'Reset Code');
+    await sendConfirmationEmail(email, resetToken, "Reset Code");
 
     res
       .status(200)

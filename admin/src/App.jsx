@@ -27,23 +27,23 @@ import AddBusOperator from "./pages/BO/AddBusOperator";
 
 //drivers
 import Drivers from "./pages/driver/Drivers";
-import SingleDriver from './pages/driver/SingleDriver'
-import AddDriver from './pages/driver/AddDriver'
+import SingleDriver from "./pages/driver/SingleDriver";
+import AddDriver from "./pages/driver/AddDriver";
 
 //buses
 import Buses from "./pages/bus/Buses";
-import SingleBus from './pages/bus/SingleBus'
-import AddBus from './pages/bus/AddBus'
+import SingleBus from "./pages/bus/SingleBus";
+import AddBus from "./pages/bus/AddBus";
 
 //TSO
-import Tso from "./pages/tso/Tso"
-import AddTso from "./pages/tso/AddTso"
-import SingleTso from "./pages/tso/SingleTso"
+import Tso from "./pages/tso/Tso";
+import AddTso from "./pages/tso/AddTso";
+import SingleTso from "./pages/tso/SingleTso";
 
 //HR
 import Hr from "./pages/hr/Hr";
-import AddHr from './pages/hr/AddHr'
-import SingleHr from './pages/hr/SingleHr'
+import AddHr from "./pages/hr/AddHr";
+import SingleHr from "./pages/hr/SingleHr";
 
 //station
 import Stations from "./pages/station/Stations";
@@ -53,12 +53,12 @@ import SingleStation from "./pages/station/SingleStation";
 //route
 import Routes from "./pages/route/Routes";
 import AddRoute from "./pages/route/AddRoute";
-import SingleRoute from "./pages/route/SingleRoute"
+import SingleRoute from "./pages/route/SingleRoute";
 
 //schedule
 import Schedules from "./pages/schedule/Schedules";
-import AddSchedule from "./pages/schedule/AddSchedule"
-import SingleSchedule from "./pages/schedule/SingleSchedule"
+import AddSchedule from "./pages/schedule/AddSchedule";
+import SingleSchedule from "./pages/schedule/SingleSchedule";
 
 import SeatSelection from "./pages/booking/SeatSelection";
 import Payment from "./pages/booking/Payment";
@@ -101,19 +101,25 @@ const App = () => {
         },
         {
           path: "/search",
-          element: <SearchResult />,
+          element: (
+            <ProtectedRoute element={SearchResult} allowedRoles={["tso"]} />
+          ),
         },
         {
           path: "/passenger",
-          element: <PassangerInfo />,
+          element: (
+            <ProtectedRoute element={PassangerInfo} allowedRoles={["tso"]} />
+          ),
         },
         {
           path: "/seat",
-          element: <SeatSelection />,
+          element: (
+            <ProtectedRoute element={SeatSelection} allowedRoles={["tso"]} />
+          ),
         },
         {
           path: "/payment",
-          element: <Payment />,
+          element: <ProtectedRoute element={Payment} allowedRoles={["tso"]} />,
         },
         {
           path: "/categorie/:id",
@@ -134,106 +140,127 @@ const App = () => {
         //bo
         {
           path: "/bus-operator",
-          element: <BusOperator />,
+          element: (
+            <ProtectedRoute element={BusOperator} allowedRoles={["hr"]} />
+          ),
         },
         {
           path: "/bus-operator/:id",
-          element: <SingleBusOperator />,
+          element: (
+            <ProtectedRoute element={SingleBusOperator} allowedRoles={["hr"]} />
+          ),
         },
         {
           path: "/add-bus-operator",
-          element: <AddBusOperator />,
+          element: (
+            <ProtectedRoute element={AddBusOperator} allowedRoles={["hr"]} />
+          ),
         },
         //driver
         {
           path: "/drivers",
-          element: <Drivers />,
+          element: <ProtectedRoute element={Drivers} allowedRoles={["hr"]} />,
         },
         {
           path: "/driver/:id",
           element: <SingleDriver />,
+          element: (
+            <ProtectedRoute element={SingleDriver} allowedRoles={["hr"]} />
+          ),
         },
         {
           path: "/add-driver",
-          element: <AddDriver />,
+          element: <ProtectedRoute element={AddDriver} allowedRoles={["hr"]} />,
         },
         //bus
         {
           path: "/buses",
-          element: <Buses />,
+          element: <ProtectedRoute element={Buses} allowedRoles={["hr"]} />,
         },
         {
           path: "/bus/:id",
-          element: <SingleBus />,
+          element: <ProtectedRoute element={SingleBus} allowedRoles={["hr"]} />,
         },
         {
           path: "/add-bus",
-          element: <AddBus />,
+          element: <ProtectedRoute element={AddBus} allowedRoles={["hr"]} />,
         },
         //tso
         {
           path: "/tso",
-          element: <Tso />,
+          element: <ProtectedRoute element={Tso} allowedRoles={["hr"]} />,
         },
         {
           path: "/tso/:id",
-          element: <SingleTso />,
+          element: <ProtectedRoute element={SingleTso} allowedRoles={["hr"]} />,
         },
         {
           path: "/add-tso",
-          element: <AddTso />,
+          element: <ProtectedRoute element={AddTso} allowedRoles={["hr"]} />,
         },
         //hr
         {
           path: "/hr",
-          element: <Hr />,
+          element: <ProtectedRoute element={Hr} allowedRoles={["admin"]} />,
         },
         {
           path: "/hr/:id",
-          element: <SingleHr />,
+          element: (
+            <ProtectedRoute element={SingleHr} allowedRoles={["admin"]} />
+          ),
         },
         {
           path: "/add-hr",
-          element: <AddHr />,
+          element: <ProtectedRoute element={AddHr} allowedRoles={["admin"]} />,
         },
         //station
         {
           path: "/station",
-          element: <Stations />,
+          element: <ProtectedRoute element={Stations} allowedRoles={["bo"]} />,
         },
         {
           path: "/station/:id",
-          element: <SingleStation />,
+          element: (
+            <ProtectedRoute element={SingleStation} allowedRoles={["bo"]} />
+          ),
         },
         {
           path: "/add-station",
-          element: <AddStation />,
+          element: (
+            <ProtectedRoute element={AddStation} allowedRoles={["bo"]} />
+          ),
         },
         //route
         {
           path: "/route",
-          element: <Routes />,
+          element: <ProtectedRoute element={Routes} allowedRoles={["bo"]} />,
         },
         {
           path: "/route/:id",
-          element: <SingleRoute />,
+          element: (
+            <ProtectedRoute element={SingleRoute} allowedRoles={["bo"]} />
+          ),
         },
         {
           path: "/add-route",
-          element: <AddRoute />,
+          element: <ProtectedRoute element={AddRoute} allowedRoles={["bo"]} />,
         },
         //schedule
         {
           path: "/schedule",
-          element: <Schedules />,
+          element: <ProtectedRoute element={Schedules} allowedRoles={["bo"]} />,
         },
         {
           path: "/schedule/:id",
-          element: <SingleSchedule />,
+          element: (
+            <ProtectedRoute element={SingleSchedule} allowedRoles={["bo"]} />
+          ),
         },
         {
           path: "/add-schedule",
-          element: <AddSchedule />,
+          element: (
+            <ProtectedRoute element={AddSchedule} allowedRoles={["bo"]} />
+          ),
         },
       ],
     },
