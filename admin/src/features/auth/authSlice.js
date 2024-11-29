@@ -3,7 +3,7 @@ import persistReducer from "redux-persist/es/persistReducer";
 import storage from "redux-persist/lib/storage";
 
 const initialState = {
-    user: null,
+    user: {},
     token: null
 }
 
@@ -12,19 +12,24 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         login: (state, action) => {
-            state.user = action.payload
             state.token = action.payload;
         },
+        loginData: (state, action) => {
+            state.user = action.payload
+        },
         logout: (state) => {
-            state.user = null
+            // state.user = null
+        },
+        logoutUser: (state) => {
+            // state.user = null
         }
     }
 })
 
-export const {login, logout} = authSlice.actions
+export const { login, logout, loginData, logoutUser } = authSlice.actions;
 
 const persistConfig = {
-  key: "ecoma",
+  key: "user",
   storage,
 };
 

@@ -6,10 +6,28 @@ import { TbReportAnalytics } from "react-icons/tb";
 import { AiOutlineUser, AiOutlineHeart } from "react-icons/ai";
 import { FiMessageSquare, FiFolder, FiShoppingCart } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
+import {useSelector} from 'react-redux'
 
 const Sidebar = ({ theme }) => {
+   const user = useSelector((state) => state.auth.user);
   const location = useLocation();
-  const menus = [
+  const hrs = [
+    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+    { name: "Orders", link: "/orders", icon: AiOutlineUser },
+    { name: "Create Product", link: "/product/create", icon: FiFolder },
+    { name: "BusOperator", link: "/bus-operator", icon: FiShoppingCart },
+    { name: "Drivers", link: "/drivers", icon: FiShoppingCart },
+    { name: "Buses", link: "/buses", icon: FiShoppingCart },
+    { name: "Tso", link: "/tso", icon: FiShoppingCart },
+  ];
+  const bos = [
+    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+    { name: "Orders", link: "/orders", icon: AiOutlineUser },
+    { name: "Station", link: "/station", icon: AiOutlineUser },
+    { name: "Route", link: "/route", icon: AiOutlineUser },
+    { name: "Schedule", link: "/schedule", icon: AiOutlineUser },
+  ];
+  const tsos = [
     { name: "dashboard", link: "/", icon: MdOutlineDashboard },
     { name: "Orders", link: "/orders", icon: AiOutlineUser },
     { name: "Booking", link: "/categorie", icon: FiMessageSquare },
@@ -19,16 +37,16 @@ const Sidebar = ({ theme }) => {
       icon: TbReportAnalytics,
       margin: true,
     },
-    { name: "Create Product", link: "/product/create", icon: FiFolder },
-    { name: "BusOperator", link: "/bus-operator", icon: FiShoppingCart },
-    { name: "Drivers", link: "/drivers", icon: FiShoppingCart },
-    { name: "Buses", link: "/buses", icon: FiShoppingCart },
-    { name: "Tso", link: "/tso", icon: FiShoppingCart },
-    { name: "HR", link: "/hr", icon: FiShoppingCart },
-    { name: "Station", link: "/station", icon: AiOutlineUser },
-    { name: "Route", link: "/route", icon: AiOutlineUser },
-    { name: "Schedule", link: "/schedule", icon: AiOutlineUser },
   ];
+
+   const menus =
+     user.role === "hr"
+       ? hrs
+       : user.role === "bo"
+       ? bos
+       : user.role === "tso"
+       ? tsos
+       : [];
 
   const [open, setOpen] = useState(true);
 

@@ -89,15 +89,19 @@ const App = () => {
         },
         {
           path: "/categorie",
-          element: <Booking />,
+          element: <ProtectedRoute element={Booking} allowedRoles={["tso"]} />,
         },
         {
           path: "/search-booking",
-          element: <SearchBooking />,
+          element: (
+            <ProtectedRoute element={SearchBooking} allowedRoles={["tso"]} />
+          ),
         },
         {
           path: "/my-booking",
-          element: <MyBooking />,
+          element: (
+            <ProtectedRoute element={MyBooking} allowedRoles={["tso"]} />
+          ),
         },
         {
           path: "/search",
@@ -227,7 +231,7 @@ const App = () => {
         {
           path: "/add-station",
           element: (
-            <ProtectedRoute element={AddStation} allowedRoles={["bo"]} />
+            <ProtectedRoute element={AddStation} allowedRoles={["hr"]} />
           ),
         },
         //route
@@ -267,9 +271,8 @@ const App = () => {
     {
       path: "/sign-in",
       element: (
-        <PublicRoute>
-          <Signin />
-        </PublicRoute>
+        // <PublicRoute>
+        <Signin />
       ),
     },
     {

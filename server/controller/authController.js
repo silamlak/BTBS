@@ -194,25 +194,26 @@ export const signIn = async (req, res, next) => {
     const payload = {
       user: {
         id: user._id,
+        role,
         email: user.email,
         first_name: user.first_name,
-        middle_name: user.father_name,
+        middle_name: user.middle_name,
       },
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "15m",
     });
 
     const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "1d",
     });
 
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Set to `true` in production
       sameSite: "Strict", // Optional, adds additional security
-      maxAge: 60 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.status(200).json({ token });

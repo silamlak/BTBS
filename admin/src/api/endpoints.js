@@ -1,6 +1,6 @@
 import axios from "axios";
 import { store } from "../app/store";
-import { login, logout } from "../features/auth/authSlice";
+import { login, logoutUser } from "../features/auth/authSlice";
 const api = import.meta.env.VITE_API;
 
 const axiosInstance = axios.create({
@@ -47,7 +47,7 @@ axiosInstance.interceptors.response.use(
         ] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        // store.dispatch(logout());
+        store.dispatch(logoutUser());
         console.error("Refresh token failed", refreshError);
       }
     }

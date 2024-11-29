@@ -5,11 +5,14 @@ import { signinSchema } from "../../utils/authentication";
 import {useMutation} from '@tanstack/react-query'
 import { signinApi } from "../../features/auth/authApi";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../features/auth/authSlice";
+import { login, loginData } from "../../features/auth/authSlice";
+import { jwtDecode } from "jwt-decode";
 
 const Signin = () => {
+  const isAuth = useSelector((state) => state.auth);
+// console.log(isAuth)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const {
@@ -23,10 +26,12 @@ const Signin = () => {
     mutationFn: signinApi,
     onSuccess: (data) => {
       toast.success('successfully loggedin')
+      const accessToken = jwtDecode(data.token);
       dispatch(login(data.token));
-      // navigate('/', {replace: true})
-      // reset()
-      console.log(data)
+      dispatch(loginData(accessToken?.user));
+      navigate("/", { replace: true });
+      reset()
+      console.log(accessToken.user);
     },
     onError: (err) => {
       toast.error(err.data.msg)
