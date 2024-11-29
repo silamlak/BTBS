@@ -19,7 +19,7 @@ import userModel from "./models/userModel.js";
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173", 
+    origin: "http://10.10.34.80:3000",
     credentials: true,
   })
 );

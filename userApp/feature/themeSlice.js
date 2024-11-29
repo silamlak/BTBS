@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import persistReducer from "redux-persist/es/persistReducer";
-import storage from "redux-persist/lib/storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const themeSlice = createSlice({
   name: "theme",
@@ -18,7 +18,7 @@ export const { toggleTheme } = themeSlice.actions;
 
 const persistConfig = {
   key: "theme",
-  storage,
+  storage: AsyncStorage,
 };
 
 export default persistReducer(persistConfig, themeSlice.reducer);

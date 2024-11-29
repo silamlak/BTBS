@@ -1,24 +1,26 @@
-import {configureStore, combineReducers} from '@reduxjs/toolkit'
-import { persistReducer, persistStore } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { persistReducer, persistStore } from "redux-persist";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import counterReducer from '../feature/countSlice'
+import counterReducer from "../feature/countSlice";
 import themeReducer from "../feature/themeSlice";
+import bookingReducer from '../feature/booking/bookingSlice'
 
 const persistConfig = {
-    key: 'app-root',
-    storage
-}
+  key: "app-root",
+  storage: AsyncStorage, // Use AsyncStorage for React Native
+};
 
 const rootReducer = combineReducers({
   counter: counterReducer,
   theme: themeReducer,
+  booking: bookingReducer,
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer)
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-    reducer: persistedReducer,
-})
+  reducer: persistedReducer,
+});
 
-export const persistor = persistStore(store)
+export const persistor = persistStore(store);

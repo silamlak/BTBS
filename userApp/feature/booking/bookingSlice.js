@@ -2,7 +2,7 @@
 
 import { createSlice } from "@reduxjs/toolkit";
 import persistReducer from "redux-persist/es/persistReducer";
-import storage from "redux-persist/lib/storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const initialState = {
   scheduleId: null,
@@ -109,7 +109,7 @@ export const {
 
 const persistConfig = {
   key: "passenger_info",
-  storage,
+   storage: AsyncStorage,
 };
 
 export default persistReducer(persistConfig, passengerSlice.reducer);

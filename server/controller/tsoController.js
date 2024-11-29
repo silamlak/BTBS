@@ -13,6 +13,7 @@ function generateSixDigitNumber() {
 export const searchSchedules = async (req, res, next) => {
   try {
     const { from, to, date } = req.query;
+    console.log(req.query);
     const query = {};
 
     if (from) {

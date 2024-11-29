@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import persistReducer from "redux-persist/es/persistReducer";
-import storage from "redux-persist/lib/storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const counterSlice = createSlice({
   name: "counter",
@@ -24,7 +24,7 @@ export const { increment, decrement, reset } = counterSlice.actions;
 
 const persistConfig = {
   key: "ecoma",
-  storage,
+   storage: AsyncStorage,
 };
 
 export default persistReducer(persistConfig, counterSlice.reducer);

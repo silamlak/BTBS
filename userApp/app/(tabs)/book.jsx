@@ -1,49 +1,81 @@
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
   ScrollView,
-  Platform,
   Keyboard,
   TouchableWithoutFeedback,
+  Modal,
   Alert,
+  TextInput,
+  Button,
 } from "react-native";
 import React, { useState } from "react";
-import { Picker } from "@react-native-picker/picker";
-import { useNavigation } from "@react-navigation/native";
-import { router, usePathname } from "expo-router";
+import { usePathname, router } from "expo-router";
+
 const Book = () => {
   const pathname = usePathname();
-  //  const [query, setQuery] = useState(initialQuery || "");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [date, setDate] = useState("");
-  const [passengerNo, setPassengerNo] = useState("1");
+  const [passengers, setPassengers] = useState({ adult: 1, child: 0 });
+  const [showPassengerModal, setShowPassengerModal] = useState(false);
 
-  const navigation = useNavigation();
+  const totalPassengers = passengers.adult + passengers.child;
+
+  const getMaxChildren = (adultCount) => {
+    if (adultCount === 6) return 0;
+    if (adultCount === 5) return 1;
+    if (adultCount > 3) return 2;
+    return 2;
+  };
+
+  const handlePassengerIncrement = (type) => {
+    if (type === "adult" && passengers.adult < 6) {
+      const maxChildren = getMaxChildren(passengers.adult + 1);
+      setPassengers((prev) => ({
+        adult: prev.adult + 1,
+        child: Math.min(prev.child, maxChildren),
+      }));
+    } else if (type === "child") {
+      const maxChildren = getMaxChildren(passengers.adult);
+      if (passengers.child < maxChildren && totalPassengers < 6) {
+        setPassengers((prev) => ({
+          ...prev,
+          child: prev.child + 1,
+        }));
+      }
+    }
+  };
+
+  const handlePassengerDecrement = (type) => {
+    if (type === "adult" && passengers.adult > 1) {
+      const maxChildren = getMaxChildren(passengers.adult - 1);
+      setPassengers((prev) => ({
+        adult: prev.adult - 1,
+        child: Math.min(prev.child, maxChildren),
+      }));
+    } else if (type === "child" && passengers.child > 0) {
+      setPassengers((prev) => ({
+        ...prev,
+        child: prev.child - 1,
+      }));
+    }
+  };
 
   const handleSubmit = () => {
-    // if (!from || !to || !date) {
-    //   Alert.alert("Error", "Please fill all fields before submitting.");
-    //   return;
-    // }
+    if (!from || !to || !date) {
+      Alert.alert("Error", "Please fill all fields before booking.");
+      return;
+    }
 
-    // Construct query parameters
-    const query = `from=${from}&to=${to}&date=${date}&passengers=${passengerNo}`;
-    if (pathname.startsWith("/search")) router.setParams({ query });
-    router.push(
-      `/search/from=${from}&to=${to}&date=${date}&passengers=${passengerNo}`
-    );
+    const query = `from=${from}&to=${to}&date=${date}&adults=${passengers.adult}&children=${passengers.child}`;
+    router.push(`/search/${query}`);
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      // behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={80}
-    >
+    <KeyboardAvoidingView style={{ flex: 1 }} keyboardVerticalOffset={80}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View className="p-4 bg-white h-full">
@@ -59,7 +91,7 @@ const Book = () => {
                 className="border border-gray-300 p-3 rounded-lg"
                 placeholder="Enter departure location"
                 value={from}
-                onChangeText={(text) => setFrom(text)}
+                onChangeText={setFrom}
               />
             </View>
 
@@ -70,7 +102,7 @@ const Book = () => {
                 className="border border-gray-300 p-3 rounded-lg"
                 placeholder="Enter destination location"
                 value={to}
-                onChangeText={(text) => setTo(text)}
+                onChangeText={setTo}
               />
             </View>
 
@@ -81,25 +113,80 @@ const Book = () => {
                 className="border border-gray-300 p-3 rounded-lg"
                 placeholder="Enter travel date (YYYY-MM-DD)"
                 value={date}
-                onChangeText={(text) => setDate(text)}
+                onChangeText={setDate}
               />
             </View>
 
-            {/* Passenger Picker */}
+            {/* Passengers Selector */}
             <View className="mb-4">
-              <Text className="text-gray-700 mb-2">Number of Passengers</Text>
-              <View className="border border-gray-300 rounded-lg">
-                <Picker
-                  selectedValue={passengerNo}
-                  onValueChange={(itemValue) => setPassengerNo(itemValue)}
-                >
-                  <Picker.Item label="1" value="1" />
-                  <Picker.Item label="2" value="2" />
-                  <Picker.Item label="3" value="3" />
-                  <Picker.Item label="4" value="4" />
-                </Picker>
-              </View>
+              <Text className="text-gray-700 mb-2">Passengers</Text>
+              <TouchableOpacity
+                className="border border-gray-300 p-3 rounded-lg"
+                onPress={() => setShowPassengerModal(true)}
+              >
+                <Text>{`Passengers: ${totalPassengers} (Adults: ${passengers.adult}, Children: ${passengers.child})`}</Text>
+              </TouchableOpacity>
             </View>
+
+            {/* Passenger Modal */}
+            <Modal
+              visible={showPassengerModal}
+              transparent={true}
+              animationType="slide"
+            >
+              <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
+                <View className="bg-white p-6 rounded-lg w-3/4">
+                  <Text className="text-lg font-bold mb-4">
+                    Select Passengers
+                  </Text>
+
+                  {/* Adult Picker */}
+                  <View className="flex-row justify-between items-center mb-4">
+                    <Text>Adults</Text>
+                    <View className="flex-row items-center">
+                      <TouchableOpacity
+                        className="bg-gray-300 p-2 rounded-lg"
+                        onPress={() => handlePassengerDecrement("adult")}
+                      >
+                        <Text>-</Text>
+                      </TouchableOpacity>
+                      <Text className="mx-3 text-lg">{passengers.adult}</Text>
+                      <TouchableOpacity
+                        className="bg-gray-300 p-2 rounded-lg"
+                        onPress={() => handlePassengerIncrement("adult")}
+                      >
+                        <Text>+</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  {/* Child Picker */}
+                  <View className="flex-row justify-between items-center mb-4">
+                    <Text>Children (Below 7)</Text>
+                    <View className="flex-row items-center">
+                      <TouchableOpacity
+                        className="bg-gray-300 p-2 rounded-lg"
+                        onPress={() => handlePassengerDecrement("child")}
+                      >
+                        <Text>-</Text>
+                      </TouchableOpacity>
+                      <Text className="mx-3 text-lg">{passengers.child}</Text>
+                      <TouchableOpacity
+                        className="bg-gray-300 p-2 rounded-lg"
+                        onPress={() => handlePassengerIncrement("child")}
+                      >
+                        <Text>+</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  <Button
+                    title="Confirm"
+                    onPress={() => setShowPassengerModal(false)}
+                  />
+                </View>
+              </View>
+            </Modal>
 
             {/* Submit Button */}
             <TouchableOpacity

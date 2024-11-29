@@ -3,6 +3,7 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { Provider } from "react-redux";
@@ -63,6 +64,7 @@ export default function RootLayout() {
               </Stack>
             </SafeAreaView>
             <StatusBar style="auto" />
+            <Toast />
           </ThemeProvider>
         </QueryClientProvider>
       </Provider>

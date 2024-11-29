@@ -4,8 +4,7 @@ import { handleError } from "../../api/handleError";
 
 export const bookingFun = async (data) => {
   try {
-    console.log("object");
-    const res = await axiosInstance.post(endpoints.booking, data, {
+    const res = await axios.post(endpoints.booking, data, {
       withCredentials: true,
     });
     return res.data;
@@ -16,7 +15,7 @@ export const bookingFun = async (data) => {
 export const totalSeatFun = async ({ totalPass, scheduleId }) => {
   console.log(totalPass, scheduleId);
   try {
-    const res = await axiosInstance.post(
+    const res = await axios.post(
       endpoints.get_total_seat,
       { totalPass, scheduleId },
       {
@@ -46,8 +45,7 @@ export const getBookingSearchFun = async (query) => {
 
 export const seatFun = async (data) => {
   try {
-    console.log(data);
-    const res = await axiosInstance.post(endpoints.seat, data, {
+    const res = await axios.post(endpoints.seat, data, {
       withCredentials: true,
     });
     return res.data;
@@ -59,7 +57,7 @@ export const seatFun = async (data) => {
 export const getSeatFun = async ({ scheduleId, bus_id }) => {
   try {
     console.log(scheduleId, bus_id);
-    const res = await axiosInstance.get(
+    const res = await axios.get(
       `${endpoints.seat}/${scheduleId}?bus_id=${bus_id}`,
       {
         withCredentials: true,

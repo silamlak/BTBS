@@ -1,10 +1,10 @@
 import axios from "axios";
 import { store } from "../store/store";
 import { login, logout } from "../feature/auth/authSlice";
-const api = "http://localhost:8000/api";
+const api = "http://10.10.34.80:8000/api";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: "http://10.10.34.80:8000/api",
 });
 
 // Request interceptor to add auth token to headers
