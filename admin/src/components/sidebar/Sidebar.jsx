@@ -25,6 +25,7 @@ const Sidebar = ({ theme }) => {
     { name: "Orders", link: "/orders", icon: AiOutlineUser },
     { name: "Station", link: "/station", icon: AiOutlineUser },
     { name: "Route", link: "/route", icon: AiOutlineUser },
+    { name: "Hr", link: "/hr", icon: FiShoppingCart },
     { name: "Schedule", link: "/schedule", icon: AiOutlineUser },
   ];
   const tsos = [
@@ -51,7 +52,7 @@ const Sidebar = ({ theme }) => {
   const [open, setOpen] = useState(true);
 
   return (
-    <div className=" z-50">
+    <div className="flex max-lg:hidden z-100">
       <div
         className={`min-h-screen z-50 ${
           open ? "w-56" : "w-[67px]"
@@ -67,7 +68,6 @@ const Sidebar = ({ theme }) => {
         <div className="mt-4 flex flex-col gap-4 z-50 relative">
           {menus.map((menu, i) => {
             const isActive = location.pathname === menu.link;
-
             return (
               <Link
                 to={menu.link}
@@ -82,7 +82,7 @@ const Sidebar = ({ theme }) => {
               >
                 <div>{React.createElement(menu.icon, { size: "20" })}</div>
                 <h2
-                  className={`whitespace-pre transition-[opacity] duration-700 ${
+                  className={`whitespace-pre transition-[opacity] duration-700 z-50 ${
                     !open && "opacity-0 overflow-hidden"
                   }`}
                 >

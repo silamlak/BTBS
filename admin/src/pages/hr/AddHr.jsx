@@ -1,73 +1,73 @@
-import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { addBusOperatorFun } from "../../features/busOperator/busOeratorApi";
-import { useNavigate } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useMutation } from "@tanstack/react-query";
 import { addHrFun } from "../../features/hr/hrApi";
+import { useNavigate } from "react-router-dom";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import app from "../../firebase/firebase";
+import Loader from "../../components/Loader";
+import toast from "react-hot-toast";
+import {schema} from '../../schemas/validationSchema'
+
 
 const AddHr = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    first_name: "",
-    middle_name: "",
-    last_name: "",
-    email: "",
-    phone: "",
-    password: "",
-    position: "",
-    department: "",
-    hire_date: "",
-    salary: "",
-    street: "",
-    city: "",
-    employment_status: "",
-    // profile_picture_url: '',
-    // id_url: '',
-    education: "",
-  });
+  const [uploading, setUploading] = useState(false);
 
-  const [errors, setErrors] = useState({});
   const mutation = useMutation({
     mutationFn: addHrFun,
-    onSuccess: (data) => {
+    onSuccess: () => {
       navigate("/hr");
     },
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-  const validate = () => {
-    const errors = {};
-    for (const [key, value] of Object.entries(formData)) {
-      if (
-        !value &&
-        key !== "profile_picture_url" &&
-        key !== "education" &&
-        key !== "hire_date"
-      ) {
-        errors[key] = `${key.replace("_", " ")} is required.`;
-      }
-    }
-    setErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validate()) {
-      console.log("object");
+  const watchImages = watch("images"); // Watch for images input
+
+  const onSubmit = async (data) => {
+    try {
+      setUploading(true);
+
+      // Upload images to Firebase
+      const storage = getStorage(app);
+      const uploadPromises = Array.from(data.images).map(async (file) => {
+        const storageRef = ref(storage, "images/" + file.name);
+        await uploadBytes(storageRef, file);
+        return await getDownloadURL(storageRef);
+      });
+
+      const imageUrls = await Promise.all(uploadPromises);
+
+      // Prepare formData with image URLs
+      const formData = {
+        ...data,
+        id_url: imageUrls,
+      };
+
       mutation.mutate(formData);
+      setUploading(false);
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while uploading images.");
+      setUploading(false);
     }
   };
 
   return (
     <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Add HR Officer</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Input Fields */}
         {[
           "first_name",
@@ -76,66 +76,77 @@ const AddHr = () => {
           "email",
           "phone",
           "password",
-          "position",
-          "department",
           "salary",
-          "employment_status",
         ].map((field) => (
           <div key={field}>
             <label className="block text-gray-700 capitalize">
               {field.replace("_", " ")}
             </label>
             <input
-              name={field}
-              value={formData[field]}
-              onChange={handleChange}
+              {...register(field)}
               type={field === "password" ? "password" : "text"}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {errors[field] && <p className="text-red-500">{errors[field]}</p>}
+            {errors[field] && (
+              <p className="text-red-500">{errors[field].message}</p>
+            )}
           </div>
         ))}
 
-        {/* Address Fields */}
-        <div>
-          <label className="block text-gray-700">Street</label>
+        {/* File Input for Images */}
+        <div className="border-b-2 flex flex-col w-fit border-slate-500 dark:border-slate-300">
+          <label htmlFor="images" className="text-[14px] flex m-1">
+            <p>Choose Images </p>
+            <span className="text-red-600 font-extrabold">*</span>
+            {uploading && (
+              <span className="ml-2">
+                <Loader s={10} />
+              </span>
+            )}
+          </label>
           <input
-            name="street"
-            value={formData.street}
-            onChange={handleChange}
-            type="text"
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            id="images"
+            type="file"
+            accept="image/*"
+            multiple
+            {...register("images")}
+            className="border p-2 rounded-t-lg overflow-hidden bg-slate-100 dark:bg-slate-700 focus:outline-none"
           />
-        </div>
-        <div>
-          <label className="block text-gray-700">City</label>
-          <input
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            type="text"
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          {errors.images && (
+            <p className="text-red-500">{errors.images.message}</p>
+          )}
         </div>
 
-        {/* Profile Picture URL */}
-        {/* <div>
-          <label className="block text-gray-700">Profile Picture URL</label>
-          <input
-            name="profile_picture_url"
-            value={formData.profile_picture_url}
-            onChange={handleChange}
-            type="text"
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div> */}
+        {/* Dropdown for Education */}
+        <div className="border-b-2 flex flex-col w-fit border-slate-500 dark:border-slate-300">
+          <label htmlFor="education" className="text-[14px] flex m-1">
+            Education Level
+          </label>
+          <select
+            id="education"
+            {...register("education")}
+            className="border p-2 rounded-t-lg bg-slate-100 dark:bg-slate-700 focus:outline-none"
+          >
+            <option value="" disabled>
+              Select your education level
+            </option>
+            <option value="bachelors">Bachelor's Degree</option>
+            <option value="masters">Master's Degree</option>
+            <option value="phd">Ph.D.</option>
+            <option value="other">Other</option>
+          </select>
+          {errors.education && (
+            <p className="text-red-500">{errors.education.message}</p>
+          )}
+        </div>
 
         {/* Submit Button */}
         <button
           type="submit"
           className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
+          disabled={uploading || mutation.isLoading}
         >
-          {mutation.isLoading ? "Submitting..." : "Submit"}
+          {mutation.isLoading || uploading ? "Submitting..." : "Submit"}
         </button>
 
         {/* Success Message */}

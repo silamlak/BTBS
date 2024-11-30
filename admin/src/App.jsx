@@ -78,7 +78,12 @@ const App = () => {
         {
           path: "/",
           // element: <Home />,
-         element: <ProtectedRoute element={Home} allowedRoles={["tso", "hr", "bo", "admin"]} />,
+          element: (
+            <ProtectedRoute
+              element={Home}
+              allowedRoles={["tso", "hr", "bo", "admin"]}
+            />
+          ),
         },
         {
           path: "/orders",
@@ -206,17 +211,17 @@ const App = () => {
         //hr
         {
           path: "/hr",
-          element: <ProtectedRoute element={Hr} allowedRoles={["admin"]} />,
+          element: <ProtectedRoute element={Hr} allowedRoles={["bo"]} />,
         },
         {
           path: "/hr/:id",
           element: (
-            <ProtectedRoute element={SingleHr} allowedRoles={["admin"]} />
+            <ProtectedRoute element={SingleHr} allowedRoles={["bo"]} />
           ),
         },
         {
           path: "/add-hr",
-          element: <ProtectedRoute element={AddHr} allowedRoles={["admin"]} />,
+          element: <ProtectedRoute element={AddHr} allowedRoles={["bo"]} />,
         },
         //station
         {

@@ -26,14 +26,14 @@ const HROfficerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    position: {
-      type: String,
-      required: true,
-    },
-    department: {
-      type: String,
-      required: true,
-    },
+    // position: {
+    //   type: String,
+    //   required: true,
+    // },
+    // department: {
+    //   type: String,
+    //   required: true,
+    // },
     hire_date: {
       type: Date,
       default: Date.now(),
@@ -42,21 +42,20 @@ const HROfficerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    address: {
-      street: String,
-      city: String,
-    },
     employment_status: {
       type: String,
-      required: true,
+      default: 'Active',
+      enum: ["Active","Inactive"]
     },
     profile_picture_url: {
-      type: String,
+      type: Array,
+      default: [],
       required: false,
     },
     id_url: {
       type: Array,
       // required: true,
+      default: [],
     },
     education: {
       type: String,

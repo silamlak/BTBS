@@ -15,33 +15,17 @@ import { addboDetail } from "../../features/busOperator/busOperatorSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { getSingleHrFun, updateHrFun } from "../../features/hr/hrApi";
 import { addHrDetail } from "../../features/hr/hrSlice";
+import { validationSchema } from "../../schemas/validationSchema";
 
 // Validation Schema
-const validationSchema = yup.object().shape({
-  first_name: yup.string().required("First Name is required"),
-  middle_name: yup.string().required("Middle Name is required"),
-  last_name: yup.string().required("Last Name is required"),
-  email: yup
-    .string()
-    .email("Must be a valid email")
-    .required("Email is required"),
-  phone: yup
-    .string()
-    .required("Phone number is required")
-    .matches(/^09\d{8}$/, "Phone number must be Ethiopian"),
-  employment_status: yup.string().required("Employment Status is required"),
-  education: yup.string().required("Education is required"),
-  department: yup.string().required("Department is required"),
-  position: yup.string().required("Position is required"),
-  city: yup.string().required("City is required"),
-  street: yup.string().required("Street is required"),
-});
+
 
 const SingleHr = () => {
   const currentData = useSelector((state) => state.hr.currentData);
   const dispatch = useDispatch();
   const { id } = useParams();
   const [password, setPassword] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["singleHr", id],
     queryFn: () => getSingleHrFun(id),
@@ -89,6 +73,13 @@ const SingleHr = () => {
     }
   }, [data, reset]);
 
+    const handleImageClick = (image) => {
+      setSelectedImage(image);
+    };
+
+    const closeFullView = () => {
+      setSelectedImage(null);
+    };
   const mutation = useMutation({
     mutationFn: updateHrFun,
     onSuccess: (data) => {
@@ -240,9 +231,9 @@ const SingleHr = () => {
                       {...register("employment_status")}
                       className="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
                     >
-                      <option value="">Select Status</option>
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
+                      <option value="" disabled>Select Status</option>
+                      <option value="Active">Active</option>
+                      <option value="Inactive">Inactive</option>
                     </select>
                     {errors.employment_status && (
                       <p className="text-red-500 text-sm">
@@ -252,82 +243,60 @@ const SingleHr = () => {
                   </div>
                   <div className="flex flex-col">
                     <label htmlFor="education" className="text-[13px]">
-                      Education
+                      Employment Status
                     </label>
-                    <input
+                    <select
                       id="education"
                       {...register("education")}
-                      type="text"
                       className="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
-                    />
+                    >
+                      <option value="" disabled>
+                        Select your education level
+                      </option>
+                      <option value="bachelors">Bachelor's Degree</option>
+                      <option value="masters">Master's Degree</option>
+                      <option value="phd">Ph.D.</option>
+                      <option value="other">Other</option>
+                    </select>
                     {errors.education && (
                       <p className="text-red-500 text-sm">
                         {errors.education.message}
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col">
-                    <label htmlFor="department" className="text-[13px]">
-                      Department
-                    </label>
-                    <input
-                      id="department"
-                      {...register("department")}
-                      type="text"
-                      className="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
-                    />
-                    {errors.department && (
-                      <p className="text-red-500 text-sm">
-                        {errors.department.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-col">
-                    <label htmlFor="position" className="text-[13px]">
-                      Position
-                    </label>
-                    <input
-                      id="position"
-                      {...register("position")}
-                      type="text"
-                      className="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
-                    />
-                    {errors.position && (
-                      <p className="text-red-500 text-sm">
-                        {errors.position.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-col">
-                    <label htmlFor="city" className="text-[13px]">
-                      City
-                    </label>
-                    <input
-                      id="city"
-                      {...register("city")}
-                      type="text"
-                      className="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
-                    />
-                    {errors.city && (
-                      <p className="text-red-500 text-sm">
-                        {errors.city.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-col">
-                    <label htmlFor="street" className="text-[13px]">
-                      Street
-                    </label>
-                    <input
-                      id="street"
-                      {...register("street")}
-                      type="text"
-                      className="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
-                    />
-                    {errors.street && (
-                      <p className="text-red-500 text-sm">
-                        {errors.street.message}
-                      </p>
+                  <div className="flex flex-col gap-2">
+                    {/* Display Thumbnails */}
+                    <div className="grid grid-cols-3 gap-4">
+                      {data?.id_url.map((image, index) => (
+                        <div
+                          key={index}
+                          className="cursor-pointer"
+                          onClick={() => handleImageClick(image)}
+                        >
+                          <img
+                            src={image}
+                            alt={`Image ${index + 1}`}
+                            className="w-full h-32 object-cover rounded shadow"
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Full-Size View */}
+                    {selectedImage && (
+                      <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 flex justify-center items-center z-50">
+                        <button
+                          className="absolute top-4 right-4 text-white text-3xl font-bold"
+                          onClick={closeFullView}
+                        >
+                          &times;
+                        </button>
+                        <img
+                          src={selectedImage}
+                          alt="Selected"
+                          className="max-w-full max-h-full rounded-lg"
+                        />
+                      </div>
                     )}
                   </div>
                 </div>
