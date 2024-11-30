@@ -40,11 +40,11 @@ const Sidebar = ({ theme }) => {
   ];
 
    const menus =
-     user.role === "hr"
+     user?.role === "hr"
        ? hrs
-       : user.role === "bo"
+       : user?.role === "bo"
        ? bos
-       : user.role === "tso"
+       : user?.role === "tso"
        ? tsos
        : [];
 

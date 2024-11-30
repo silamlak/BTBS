@@ -3,7 +3,7 @@ import persistReducer from "redux-persist/es/persistReducer";
 import storage from "redux-persist/lib/storage";
 
 const initialState = {
-    user: {},
+    user: null,
     token: null
 }
 

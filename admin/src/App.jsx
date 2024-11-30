@@ -77,7 +77,8 @@ const App = () => {
       children: [
         {
           path: "/",
-          element: <Home />,
+          // element: <Home />,
+         element: <ProtectedRoute element={Home} allowedRoles={["tso", "hr", "bo", "admin"]} />,
         },
         {
           path: "/orders",
