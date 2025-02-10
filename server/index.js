@@ -60,7 +60,7 @@ app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
   mongoose
     .connect(process.env.MONGODB)
-    .then(() => console.log("db connected"))
+    .then(() => console.log("db good"))
     .catch((err) => console.log(err));
 });
 
