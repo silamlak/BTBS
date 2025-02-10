@@ -19,10 +19,11 @@ import userModel from "./models/userModel.js";
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://10.10.34.80:3000", "http://localhost:5173"],
+    origin: ["http://10.10.34.224:3000", "http://localhost:5173"], // Use the correct frontend IP
     credentials: true,
   })
 );
+
 
 app.use(bodyParser.json());
 dotenv.config();
@@ -60,7 +61,7 @@ app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
   mongoose
     .connect(process.env.MONGODB)
-    .then(() => console.log("db good"))
+    .then(() => console.log("db"))
     .catch((err) => console.log(err));
 });
 
