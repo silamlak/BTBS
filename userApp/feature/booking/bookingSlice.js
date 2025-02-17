@@ -28,6 +28,9 @@ const passengerSlice = createSlice({
     setPassengerData: (state, action) => {
       state.passengerData = action.payload;
     },
+    deletePassengerData: (state, action) => {
+      state.passengerData = []
+    },
     setSeats: (state, action) => {
       state.seats = action.payload;
     },
@@ -105,6 +108,7 @@ export const {
   setChildren,
   setSelectedSeat,
   clearAll,
+  deletePassengerData,
 } = passengerSlice.actions;
 
 const persistConfig = {

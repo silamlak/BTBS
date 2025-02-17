@@ -29,6 +29,8 @@ const payment = () => {
       seats,
     };
 
+    console.log(bookingData);
+
     const { mutate: seatMutate } = useMutation({
       mutationFn: seatFun,
       onSuccess: (data) => {

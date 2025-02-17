@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, Button, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -8,7 +15,10 @@ import {
   updatePassenger,
   setAdults,
   setChildren,
+  deletePassengerData,
 } from "../../feature/booking/bookingSlice";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const PassengerInfo = () => {
   // Use `useLocalSearchParams` to get query parameters
@@ -57,8 +67,10 @@ const PassengerInfo = () => {
         const code = generateOTP();
         initialPassengerData.push({
           type: "adult",
-          name: "",
+          first_name: "",
+          last_name: "",
           age: "",
+          gender: "",
           seat: "",
           id: code,
         });
@@ -67,8 +79,10 @@ const PassengerInfo = () => {
         const code = generateOTP();
         initialPassengerData.push({
           type: "child",
-          name: "",
+          first_name: "",
+          last_name: "",
           age: "",
+          gender: "",
           seat: "",
           id: code,
         });
@@ -107,7 +121,8 @@ const PassengerInfo = () => {
   // Check if all passenger information is filled
   const allPassengerInfoFilled = () => {
     return (
-      passengerData?.length > 0 && passengerData.every((p) => p.name && p.age)
+      passengerData?.length > 0 &&
+      passengerData.every((p) => p.first_name && p.age && p.last_name && p.gender)
     );
   };
 
@@ -116,77 +131,115 @@ const PassengerInfo = () => {
   }
 
   return (
-    <ScrollView className="p-4 bg-white">
-      <Text className="text-lg font-semibold text-slate-800 mb-4">
-        Passenger Information
-      </Text>
-
-      {adults + children > 1 && (
-        <View className="flex flex-wrap gap-4">
-          {passengerData.map((passenger, index) => (
-            <Button
-              key={index}
-              title={`${passenger.type === "adult" ? "Adult" : "Child"} ${
-                index + 1
-              }`}
-              onPress={() => handlePassengerClick(index)}
-              color={selectedPassengerIndex === index ? "blue" : "gray"}
-            />
-          ))}
-        </View>
-      )}
-
-      {selectedPassengerIndex !== null &&
-        selectedPassengerIndex >= 0 &&
-        selectedPassengerIndex < passengerData.length && (
-          <View className="mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
-            <Text className="text-xl font-semibold mb-3">
-              {passengerData[selectedPassengerIndex].type === "adult"
-                ? `Adult ${selectedPassengerIndex + 1}`
-                : `Child ${selectedPassengerIndex + 1}`}
-            </Text>
-
-            <TextInput
-              style={{
-                borderColor: "#ccc",
-                borderWidth: 1,
-                padding: 10,
-                marginBottom: 12,
-                borderRadius: 6,
-              }}
-              placeholder="Name"
-              value={passengerData[selectedPassengerIndex].name}
-              onChangeText={(value) =>
-                handleInputChange(selectedPassengerIndex, "name", value)
-              }
-            />
-
-            <TextInput
-              style={{
-                borderColor: "#ccc",
-                borderWidth: 1,
-                padding: 10,
-                marginBottom: 12,
-                borderRadius: 6,
-              }}
-              placeholder="Age"
-              value={passengerData[selectedPassengerIndex].age}
-              onChangeText={(value) =>
-                handleInputChange(selectedPassengerIndex, "age", value)
-              }
-              keyboardType="numeric"
-            />
-
-            {allPassengerInfoFilled() && (
-              <Button
-                title={loading ? "Submitting..." : "Submit"}
-                onPress={handleSubmit}
-                disabled={loading}
-              />
-            )}
-          </View>
+    <View className="">
+      <View className="flex justify-center gap-4 p-4 items-end flex-row mb-4 bg-white shadow shadow-black">
+        <FontAwesome name="bus" size={24} color="lime" />
+        <Text className="text-xl font-semibold mt-2">Passenger Info</Text>
+      </View>
+      <View className="p-4">
+        {adults + children > 1 && (
+          <ScrollView horizontal className="flex-row flex-wrap gap-3 pb-2">
+            {passengerData.map((passenger, index) => (
+              <TouchableOpacity
+                key={index}
+                className={`px-4 py-2 rounded-lg ${
+                  selectedPassengerIndex === index
+                    ? "bg-blue-500"
+                    : "bg-gray-300"
+                }`}
+                onPress={() => handlePassengerClick(index)}
+              >
+                <Text className={`text-white font-semibold`}>
+                  {passenger.type === "adult"
+                    ? "Adult Passenger"
+                    : "Child Passenger"}{" "}
+                  {index + 1}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         )}
-    </ScrollView>
+
+        {selectedPassengerIndex !== null &&
+          selectedPassengerIndex >= 0 &&
+          selectedPassengerIndex < passengerData.length && (
+            <View className="mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
+              <Text className="text-xl font-semibold mb-3">
+                {passengerData[selectedPassengerIndex].type === "adult"
+                  ? `Adult Passenger ${selectedPassengerIndex + 1}`
+                  : `Child Passenger ${selectedPassengerIndex + 1}`}
+              </Text>
+              <Text className="text-lg font-semibold mb-2">First Name</Text>
+              <TextInput
+                className="border border-gray-300 p-2 mb-3 rounded"
+                placeholder="First Name"
+                value={passengerData[selectedPassengerIndex].first_name}
+                onChangeText={(value) =>
+                  handleInputChange(selectedPassengerIndex, "first_name", value)
+                }
+              />
+              <Text className="text-lg font-semibold mb-2">Last Name</Text>
+              <TextInput
+                className="border border-gray-300 p-2 mb-3 rounded"
+                placeholder="Last Name"
+                value={passengerData[selectedPassengerIndex].last_name}
+                onChangeText={(value) =>
+                  handleInputChange(selectedPassengerIndex, "last_name", value)
+                }
+              />
+              <Text className="text-lg font-semibold mb-2">Age</Text>
+              <TextInput
+                className="border border-gray-300 p-2 mb-3 rounded"
+                placeholder="Age"
+                keyboardType="numeric"
+                value={passengerData[selectedPassengerIndex].age}
+                onChangeText={(value) =>
+                  handleInputChange(selectedPassengerIndex, "age", value)
+                }
+              />
+
+              <Text className="text-lg font-semibold mb-2">Gender</Text>
+              <View className="flex flex-row gap-4 mb-3">
+                {["Male", "Female"].map((gender) => (
+                  <TouchableOpacity
+                    key={gender}
+                    className={`flex-row items-center px-4 py-2 border rounded-lg ${
+                      passengerData[selectedPassengerIndex].gender === gender
+                        ? "border-blue-500 bg-blue-100"
+                        : "border-gray-300"
+                    }`}
+                    onPress={() =>
+                      handleInputChange(
+                        selectedPassengerIndex,
+                        "gender",
+                        gender
+                      )
+                    }
+                  >
+                    <View
+                      className={`w-5 h-5 rounded-full border ${
+                        passengerData[selectedPassengerIndex].gender === gender
+                          ? "border-blue-500 bg-blue-500"
+                          : "border-gray-400"
+                      } mr-2`}
+                    />
+                    <Text className="text-gray-700">{gender}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {allPassengerInfoFilled() && (
+                <Button
+                  className="bg-lime-500"
+                  title={loading ? "Submitting..." : "Submit"}
+                  onPress={handleSubmit}
+                  disabled={loading}
+                />
+              )}
+            </View>
+          )}
+      </View>
+    </View>
   );
 };
 

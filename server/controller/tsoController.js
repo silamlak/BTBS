@@ -48,6 +48,7 @@ export const searchSchedules = async (req, res, next) => {
 //book
 export const bookTicket = async (req, res, next) => {
   try {
+    console.log(req.body)
     const booking = bookingModel(req.body);
     const booked = await booking.save();
     res.status(200).json({ booked, msg: "booked succ" });
