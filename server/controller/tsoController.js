@@ -4,6 +4,7 @@ import scheduleModel from "../models/scheduleModel.js";
 import { custom_error_handler } from "../errorHandler/errorHandler.js";
 import bookingModel from "../models/bookingModel.js";
 import seatModel from "../models/seatModel.js";
+import busModel from "../models/busModel.js";
 
 function generateSixDigitNumber() {
   return Math.floor(100000 + Math.random() * 900000);
@@ -48,7 +49,7 @@ export const searchSchedules = async (req, res, next) => {
 //book
 export const bookTicket = async (req, res, next) => {
   try {
-    console.log(req.body)
+    console.log(req.body);
     const booking = bookingModel(req.body);
     const booked = await booking.save();
     res.status(200).json({ booked, msg: "booked succ" });
@@ -85,7 +86,7 @@ export const addSeat = async (req, res, next) => {
 export const getSeats = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const {bus_id} = req.query
+    const { bus_id } = req.query;
     const takenSeats = await seatModel.find({ scheduleId: id, bus_id });
     res.status(201).json(takenSeats);
   } catch (error) {
@@ -119,6 +120,39 @@ export const cancelBooking = async (req, res, next) => {
       { new: true }
     );
     res.status(201).json({ CancelledBooking, CancelledSeats });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const myBooking = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const myBooking = await bookingModel.findById(id);
+    if (!myBooking) {
+      return res.status(404).json({ msg: "not found" });
+    }
+    const schedule = await scheduleModel.findById(myBooking?.scheduleId);
+
+    res.status(201).json({ myBooking, schedule });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const myBookingDetail = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const myBooking = await bookingModel.findById(id);
+    if (!myBooking) {
+      return res.status(404).json({ msg: "not found" });
+    }
+    const schedule = await scheduleModel.findById(myBooking?.scheduleId);
+    const bus = await busModel.findById(myBooking?.busId);
+
+    res.status(201).json({ myBooking, schedule, bus });
   } catch (error) {
     next(error);
   }

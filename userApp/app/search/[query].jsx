@@ -8,7 +8,7 @@ import { setScheduleId } from "../../feature/booking/bookingSlice";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 
 const SearchResults = () => {
-  const { query, to } = useLocalSearchParams();
+  const { query } = useLocalSearchParams();
   const router = useRouter();
   const dispatch = useDispatch();
 

@@ -92,3 +92,28 @@ export const cancelBookingFun = async (id) => {
     return handleError(error);
   }
 };
+
+export const GetMyBookingFun = async (id) => {
+  try {
+    console.log(id);
+    const res = await axios.get(`${endpoints.my_booking}/${id}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const GetMyBookingDetailFun = async (id) => {
+  try {
+    console.log(id);
+    const res = await axios.get(`${endpoints.my_booking_detail}/${id}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
