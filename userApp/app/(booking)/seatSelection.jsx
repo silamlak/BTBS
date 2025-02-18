@@ -16,6 +16,7 @@ const seatSelection = () => {
 
   const dispatch = useDispatch();
   const router = useRouter();
+
   const {
     passengerData,
     seats,
@@ -34,122 +35,165 @@ const seatSelection = () => {
     travelDate: params.date || "",
   };
 
-    useEffect(() => {
-      const passengers = query.adults + query.children;
-      setTotalPass(passengers);
-      if (seats.length === 0) {
-        const initialSeats = [];
-        for (let i = 0; i < passengers; i++) {
-          initialSeats.push({
-            name: passengerData[i].name,
-            seatId: passengerData[i].id,
-            seatNo: i === selectedSeats[i] ? selectedSeats[i] : "",
-          });
-        }
-        dispatch(setSeats(initialSeats));
+  useEffect(() => {
+    const passengers = query.adults + query.children;
+    setTotalPass(passengers);
+    if (seats.length === 0) {
+      const initialSeats = [];
+      for (let i = 0; i < passengers; i++) {
+        initialSeats.push({
+          name: passengerData[i].firs_name,
+          seatId: passengerData[i].id,
+          seatNo: i === selectedSeats[i] ? selectedSeats[i] : "",
+        });
       }
-    }, [dispatch]);
+      dispatch(setSeats(initialSeats));
+    }
+  }, [dispatch]);
 
-      const { data: getTotalSeats = [] } = useQuery({
-        queryKey: ["get_total_seat"],
-        queryFn: () => totalSeatFun({ totalPass, scheduleId }),
-        enabled: !!totalPass,
-      });
+  const { data: getTotalSeats = [] } = useQuery({
+    queryKey: ["get_total_seat"],
+    queryFn: () => totalSeatFun({ totalPass, scheduleId }),
+    enabled: !!totalPass,
+  });
+  console.log(getTotalSeats);
 
-      useEffect(() => {
-        if (getTotalSeats) {
-          dispatch(setBusId({ bus_id: getTotalSeats._id }));
-        }
-      }, [getTotalSeats]);
+  useEffect(() => {
+    if (getTotalSeats) {
+      dispatch(setBusId({ bus_id: getTotalSeats._id }));
+    }
+  }, [getTotalSeats]);
 
-      const { data: takenSeats = [] } = useQuery({
-        queryKey: ["seat"],
-        queryFn: () => getSeatFun({ scheduleId, bus_id: getTotalSeats._id }),
-        enabled: !!getTotalSeats.seating_capacity,
-      });
+  const { data: takenSeats = [] } = useQuery({
+    queryKey: ["seat"],
+    queryFn: () => getSeatFun({ scheduleId, bus_id: getTotalSeats._id }),
+    enabled: !!getTotalSeats.seating_capacity,
+  });
 
-      const handleSeatClick = (seatNumber) => {
-        if (!takenSeats.includes(seatNumber)) {
-          dispatch(
-            setSelectedSeat({
-              passengerIndex: selectedPassengerIndex,
-              seatNumber,
-            })
-          );
-        }
-      };
+  const handleSeatClick = (seatNumber) => {
+    if (!takenSeats.includes(seatNumber)) {
+      dispatch(
+        setSelectedSeat({
+          passengerIndex: selectedPassengerIndex,
+          seatNumber,
+        })
+      );
+    }
+  };
 
-      const handlePassengerClick = (index) => {
-        dispatch(setSelectedPassengerIndex(index));
-      };
+  const handlePassengerClick = (index) => {
+    dispatch(setSelectedPassengerIndex(index));
+  };
 
-        const handleSeatSubmit = () => {
+  const handleSeatSubmit = () => {
+    router.push(
+      `/payment?from=${query.fromPlace}&to=${query.toPlace}&date=${query.travelDate}&adults=${query.adults}&children=${query.children}`
+    );
+  };
 
-          router.push(
-            `/payment?from=${query.fromPlace}&to=${query.toPlace}&date=${query.travelDate}&adults=${query.adults}&children=${query.children}`
-          );
-        };
+  const seatsPerRow = 4;
+  const lastRowSeats = 5;
+  const totalSeats = getTotalSeats?.seating_capacity || 60;
+  const rows = Math.ceil((totalSeats - lastRowSeats) / seatsPerRow) + 1;
 
-          const renderPassengerButtons = () => (
-            <View className="flex flex-row flex-wrap gap-4 mb-4">
-              {passengerData.map((passenger, index) => (
+  const renderPassengerButtons = () => (
+    <View className="flex flex-row flex-wrap gap-4 mb-4">
+      {passengerData.map((passenger, index) => (
+        <TouchableOpacity
+          key={index}
+          className={`p-2 border rounded-md ${
+            selectedPassengerIndex === index
+              ? "bg-blue-500 text-white"
+              : "bg-gray-300"
+          }`}
+          onPress={() => handlePassengerClick(index)}
+        >
+          <Text className="text-base">
+            {passenger.type === "adult"
+              ? `Adult ${index + 1}`
+              : `Child ${index + 1}`}
+            {selectedPassengerIndex === index && ` (Selected)`}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+const renderSeatMap = () => {
+  // Generate the array of custom seat numbers: 2, 6, 10, 14, ...
+  const seatNumbers = [];
+  for (let i = 2; i <= totalSeats; i += 4) {
+    seatNumbers.push(i);
+  }
+
+  return (
+    <View className="flex flex-col gap-4 mb-4">
+      {Array.from({ length: rows }).map((_, rowIndex) => {
+        const isLastRow = rowIndex === rows - 1;
+        const seatCount = isLastRow ? lastRowSeats : seatsPerRow;
+        const startSeat = isLastRow
+          ? totalSeats - lastRowSeats + 1
+          : rowIndex * seatsPerRow + 1;
+
+        return (
+          <View key={rowIndex} className="flex flex-row justify-center gap-4">
+            {[...Array(seatCount)].map((_, seatIndex) => {
+              const seatNumber = startSeat + seatIndex;
+              if (seatNumber > totalSeats) return null;
+
+              const isTaken = takenSeats.some(
+                (seat) => seat.seat_no === seatNumber
+              );
+              const occupiedByPassenger = selectedSeats[seatNumber];
+
+              // Determine if the seat number is one of the special numbers (2, 6, 10, ...)
+              const isSpecialSeat = seatNumbers.includes(seatNumber);
+
+              return (
                 <TouchableOpacity
-                  key={index}
-                  className={`p-2 border rounded-md ${
-                    selectedPassengerIndex === index
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-300"
+                  key={seatNumber}
+                  className={`${
+                    isSpecialSeat ? "mr-10" : ""
+                  } w-12 h-12 relative rounded-md flex items-center justify-center cursor-pointer
+                  ${
+                    isTaken
+                      ? "bg-red-500 text-white cursor-not-allowed"
+                      : occupiedByPassenger !== undefined
+                      ? "bg-lime-500 text-white"
+                      : "hover:bg-gray-300 bg-gray-300"
                   }`}
-                  onPress={() => handlePassengerClick(index)}
+                  onPress={() => !isTaken && handleSeatClick(seatNumber)}
+                  disabled={isTaken}
                 >
-                  <Text className="text-base">
-                    {passenger.type === "adult"
-                      ? `Adult ${index + 1}`
-                      : `Child ${index + 1}`}
-                    {selectedPassengerIndex === index && ` (Selected)`}
+                  {!isTaken && occupiedByPassenger == undefined && (
+                    <View className="absolute -right-1 bottom-[6px] h-1/2 w-2 rounded-2xl bg-white border"></View>
+                  )}
+                  {!isTaken && occupiedByPassenger == undefined && (
+                    <View className="absolute -left-1 bottom-[6px] h-1/2 w-2 rounded-2xl bg-white border"></View>
+                  )}
+                  {!isTaken && occupiedByPassenger == undefined && (
+                    <View className="absolute bottom-0 h-2 w-full rounded-2xl bg-white border"></View>
+                  )}
+
+                  <Text className="text-center">
+                    {isTaken
+                      ? "Taken"
+                      : occupiedByPassenger !== undefined
+                      ? `P${occupiedByPassenger + 1}`
+                      : isSpecialSeat
+                      ? `${seatNumber} `
+                      : `${seatNumber}`}
                   </Text>
                 </TouchableOpacity>
-              ))}
-            </View>
-          );
-            const renderSeatMap = () => (
-              <View className="grid grid-cols-5 gap-4 mb-4">
-                {Array.from(
-                  { length: getTotalSeats?.seating_capacity },
-                  (_, index) => {
-                    const seatNumber = index + 1;
-                    const isTaken = takenSeats.some(
-                      (seat) => seat.seat_no === seatNumber
-                    );
-                    const occupiedByPassenger = selectedSeats[seatNumber];
+              );
+            })}
+          </View>
+        );
+      })}
+    </View>
+  );
+};
 
-                    return (
-                      <TouchableOpacity
-                        key={index}
-                        className={`p-4 border rounded-md flex items-center justify-center cursor-pointer
-              ${
-                isTaken
-                  ? "bg-red-500 text-white cursor-not-allowed"
-                  : occupiedByPassenger !== undefined
-                  ? "bg-green-500 text-white"
-                  : "hover:bg-gray-200"
-              }`}
-                        onPress={() => !isTaken && handleSeatClick(seatNumber)}
-                        disabled={isTaken}
-                      >
-                        <Text className="text-center">
-                          {isTaken
-                            ? "Taken"
-                            : occupiedByPassenger !== undefined
-                            ? `P${occupiedByPassenger + 1}`
-                            : `Seat ${seatNumber}`}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  }
-                )}
-              </View>
-            );
+
   return (
     <ScrollView className="p-4">
       <Text className="text-lg font-semibold text-slate-800 mb-4">
@@ -163,5 +207,3 @@ const seatSelection = () => {
 };
 
 export default seatSelection;
-
-

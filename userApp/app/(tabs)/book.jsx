@@ -15,6 +15,8 @@ import {
 import React, { useState } from "react";
 import { usePathname, router } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
+import {useDispatch} from 'react-redux'
+import {clearAll, deletePassengerData} from '../../feature/booking/bookingSlice'
 const places = [
   "Addis Ababa",
   "Dire Dawa",
@@ -36,12 +38,14 @@ const places = [
 const Book = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentPlaceType, setCurrentPlaceType] = useState(null);
+
   const pathname = usePathname();
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [date, setDate] = useState("");
   const [passengers, setPassengers] = useState({ adult: 1, child: 0 });
   const [showPassengerModal, setShowPassengerModal] = useState(false);
+  const dispatch = useDispatch()
 
   const totalPassengers = passengers.adult + passengers.child;
 
@@ -101,6 +105,7 @@ const Book = () => {
   };
 
   const handleSubmit = () => {
+    dispatch(clearAll());
     if (!from || !to || !date) {
       Alert.alert("Error", "Please fill all fields before booking.");
       return;

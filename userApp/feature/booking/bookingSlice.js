@@ -9,8 +9,8 @@ const initialState = {
   busId: null,
   adults: 0,
   children: 0,
-  passengerData: [], // Stores data for all passengers
-  selectedPassengerIndex: 0, // Index of the currently selected passenger
+  passengerData: [], 
+  selectedPassengerIndex: 0,
   selectedSeats: {},
   seats: [],
 };
@@ -89,8 +89,8 @@ const passengerSlice = createSlice({
       state.busId = null;
       state.adults = 0;
       state.children = 0;
-      state.passengerData = []; // Stores data for all passengers
-      state.selectedPassengerIndex = 0; // Index of the currently selected passenger
+      state.passengerData = [];
+      state.selectedPassengerIndex = 0; 
       state.selectedSeats = {};
       state.seats = [];
     },
