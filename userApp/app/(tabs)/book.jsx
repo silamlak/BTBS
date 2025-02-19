@@ -17,6 +17,7 @@ import { usePathname, router } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 import {useDispatch} from 'react-redux'
 import {clearAll, deletePassengerData} from '../../feature/booking/bookingSlice'
+import { useColorScheme } from "nativewind";
 const places = [
   "Addis Ababa",
   "Dire Dawa",
@@ -38,7 +39,8 @@ const places = [
 const Book = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentPlaceType, setCurrentPlaceType] = useState(null);
-
+const { colorScheme } = useColorScheme();
+const iconColor = colorScheme === "dark" ? "#e4e4e4" : "#111418";
   const pathname = usePathname();
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -121,12 +123,19 @@ const Book = () => {
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View className="bg-gray-100 h-full">
             {/* Title */}
-            <View className="flex justify-center gap-4 p-4 items-end flex-row mb-6 bg-white shadow shadow-black">
-              <FontAwesome name="bus" size={24} color="lime" />
-              <Text className="text-xl font-semibold mt-2">
-                Journey Details
-              </Text>
-            </View>
+            <View className="flex-row bg-white dark:bg-slate-900 items-center justify-between p-4 shadow-slate-900 dark:shadow-slate-100 shadow-xl pb-2">
+        <View className="flex-shrink-0 flex items-center text-[#0e141b] dark:text-[#e4e4e4]">
+          <FontAwesome name="info-circle" size={20} color={iconColor} />
+        </View>
+        <Text className="text-[#0e141b] dark:text-[#e4e4e4] text-xl font-bold text-center flex-1">
+          Habesha Bus
+        </Text>
+        <View className="w-12 flex items-center justify-end">
+          <TouchableOpacity className="flex items-center justify-center w-12 h-12 rounded-full bg-transparent text-[#0e141b] dark:text-[#e4e4e4] p-0">
+            <FontAwesome name="cogs" size={20} color={iconColor} />
+          </TouchableOpacity>
+        </View>
+      </View>
 
             <View className="p-4">
               {/* modal inputs  */}

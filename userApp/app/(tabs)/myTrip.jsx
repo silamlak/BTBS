@@ -12,12 +12,16 @@ import { useMutation } from "@tanstack/react-query";
 import { GetMyBookingFun } from "../../feature/booking/bookingApi";
 import { usePathname, router } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
+import { useColorScheme } from "nativewind";
+
 const MyTrip = () => {
   const navigation = useNavigation()
   const [modalVisible, setModalVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [myBooking, setMyBooking] = useState();
+  const { colorScheme } = useColorScheme();
 
+  const iconColor = colorScheme === "dark" ? "#e4e4e4" : "#111418";
   const mutation = useMutation({
     mutationFn: GetMyBookingFun,
     onSuccess: (data) => {
@@ -36,10 +40,19 @@ const MyTrip = () => {
   }
 
   return (
-    <View className="flex-1">
-      <View className="flex justify-center gap-4 p-4 items-end flex-row mb-6 bg-white shadow shadow-black">
-        <FontAwesome name="bus" size={24} color="lime" />
-        <Text className="text-xl font-semibold mt-2">My Booking</Text>
+    <View className="flex-1 bg-white dark:bg-slate-800">
+      <View className="flex-row bg-white dark:bg-slate-900 items-center justify-between p-4 shadow-slate-900 dark:shadow-slate-100 shadow-xl pb-2">
+        <View className="flex-shrink-0 flex items-center text-[#0e141b] dark:text-[#e4e4e4]">
+          <FontAwesome name="info-circle" size={20} color={iconColor} />
+        </View>
+        <Text className="text-[#0e141b] dark:text-[#e4e4e4] text-xl font-bold text-center flex-1">
+          Habesha Bus
+        </Text>
+        <View className="w-12 flex items-center justify-end">
+          <TouchableOpacity className="flex items-center justify-center w-12 h-12 rounded-full bg-transparent text-[#0e141b] dark:text-[#e4e4e4] p-0">
+            <FontAwesome name="cogs" size={20} color={iconColor} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {myBooking && (
@@ -49,7 +62,7 @@ const MyTrip = () => {
         >
           <View className="flex flex-row justify-between gap-2 items-center">
             <View className="flex flex-row justify-between gap-2 items-center">
-              <FontAwesome name="bus" size={34} color="lime" />
+              <FontAwesome name="bus" size={30} color={iconColor} />
               <View className="flex flex-row justify-between gap-2 items-center">
                 <Text className="text-xl font-semibold mb-2">
                   {myBooking?.schedule?.from}
@@ -77,10 +90,13 @@ const MyTrip = () => {
 
       {/* Floating Icon Button */}
       <TouchableOpacity
-        className="absolute bottom-6 right-6 bg-lime-500 p-4 rounded-full shadow"
         onPress={() => setModalVisible(true)}
+        className="absolute bottom-6 right-6 p-4 rounded-full bg-lime-500"
       >
-        <FontAwesome name="plus" size={20} color="white" />
+        <View className="flex justify-center items-center w-6 h-6">
+          <View className="absolute w-6 h-1 bg-white rounded-xl" />
+          <View className="absolute h-6 w-1 bg-white rounded-xl" />
+        </View>
       </TouchableOpacity>
 
       {/* Modal */}
