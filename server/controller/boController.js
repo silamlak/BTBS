@@ -227,12 +227,13 @@ export const addSchedule = async (req, res, next) => {
 export const getSeats = async (req, res, next) => {
   try {
     const { scheduleId, totalPass } = req.body;
-
-    // Fetch the schedule
+console.log(scheduleId);
     const Schedule = await scheduleModel.findById(scheduleId);
     if (!Schedule) {
       return res.status(404).json({ message: "Schedule not found" });
     }
+console.log(Schedule);
+
 
     const busIds = Schedule.bus_id;
 

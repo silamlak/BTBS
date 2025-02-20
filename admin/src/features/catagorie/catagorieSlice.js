@@ -13,6 +13,7 @@ const initialState = {
   selectedPassengerIndex: 0, // Index of the currently selected passenger
   selectedSeats: {},
   seats: [],
+  schedulePrice: null
 };
 
 const passengerSlice = createSlice({
@@ -21,6 +22,9 @@ const passengerSlice = createSlice({
   reducers: {
     setScheduleId: (state, action) => {
       state.scheduleId = action.payload.id;
+    },
+    setSchedulePrice: (state, action) => {
+      state.schedulePrice = action.payload;
     },
     setBusId: (state, action) => {
       state.busId = action.payload.bus_id;
@@ -90,11 +94,13 @@ const passengerSlice = createSlice({
       state.selectedPassengerIndex = 0; // Index of the currently selected passenger
       state.selectedSeats = {};
       state.seats = [];
+      state.schedulePrice = null
     },
   },
 });
 
 export const {
+  setSchedulePrice,
   setPassengerData,
   setSelectedPassengerIndex,
   updatePassenger,

@@ -64,6 +64,7 @@ import SeatSelection from "./pages/booking/SeatSelection";
 import Payment from "./pages/booking/Payment";
 import SearchBooking from "./pages/manageBooking/SearchBooking";
 import MyBooking from "./pages/manageBooking/MyBooking";
+import BookingSuccess from "./pages/booking/BookingSuccess";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -282,11 +283,18 @@ const App = () => {
       ),
     },
     {
+      path: "/booking/success",
+      element: (
+        // <PublicRoute>
+        <BookingSuccess />
+      ),
+    },
+    {
       path: "/sign-up",
       element: (
-        <PublicRoute>
+        // <PublicRoute>
           <Signup />
-        </PublicRoute>
+        // </PublicRoute>
       ),
     },
     {

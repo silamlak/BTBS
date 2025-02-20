@@ -1,7 +1,32 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useDispatch } from "react-redux";
+import { clearAll } from "../../features/catagorie/catagorieSlice";
+import { ChevronDown, ChevronUp, RefreshCw } from "lucide-react";
 
 const Booking = () => {
+  const dispatch = useDispatch();
+  const [showFromDropdown, setShowFromDropdown] = useState(false);
+  const [showToDropdown, setShowToDropdown] = useState(false);
+  const locations = [
+    "Addis Ababa",
+    "Dire Dawa",
+    "Mekelle",
+    "Bahir Dar",
+    "Hawassa",
+    "Adama",
+    "Gondar",
+    "Jimma",
+    "Harar",
+    "Dessie",
+    "Shashamane",
+    "Arba Minch",
+    "Debre Markos",
+    "Sodo",
+    "Nekemte",
+    "Hosaena",
+  ];
   const navigate = useNavigate();
   const [fromPlace, setFromPlace] = useState("");
   const [toPlace, setToPlace] = useState("");
@@ -17,10 +42,10 @@ const Booking = () => {
 
   // Maximum number of children allowed based on adult count
   const getMaxChildren = (adultCount) => {
-    if (adultCount === 6) return 0; // 6 adults, no children allowed
-    if (adultCount === 5) return 1; // 5 adults, 1 child allowed
-    if (adultCount > 3) return 2; // Above 3 adults, max 2 children
-    return 2; // Otherwise, max 3 children
+    if (adultCount === 6) return 1; // 6 adults, no children allowed
+    if (adultCount === 5) return 2; // 5 adults, 1 child allowed
+    // if (adultCount > 4) return 3; 
+    return 3; // Otherwise, max 3 children
   };
 
   const handlePassengerChange = (type, value) => {
@@ -47,6 +72,7 @@ const Booking = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    dispatch(clearAll());
     if (fromPlace && toPlace && travelDate && totalPassengers > 0) {
       // Redirect to the search page with the combined search inputs and date as query parameters
       navigate(
@@ -54,55 +80,120 @@ const Booking = () => {
       );
     }
   };
-
+  const swapPlaces = () => {
+    setFromPlace(toPlace);
+    setToPlace(fromPlace);
+  };
   return (
-    <div className="p-4">
-      <div className="flex w-full items-center justify-between p-2">
-        <h2 className="text-slate-800 dark:text-slate-100 text-lg max-sm:text-sm font-semibold">
-          Booking
-        </h2>
-      </div>
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4 mt-4">
+    <div className="p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-lg mx-auto mt-10">
+      <h2 className="text-gray-900 dark:text-white text-xl font-semibold mb-4 text-center">
+        Book Your Trip
+      </h2>
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
         {/* From input */}
-        <input
-          type="text"
-          placeholder="From"
-          value={fromPlace}
-          onChange={(e) => setFromPlace(e.target.value)}
-          className="p-2 border border-gray-300 dark:bg-slate-800 dark:text-white rounded-md"
-          required
-        />
+        <div className="relative">
+          <div className="flex items-center space-x-2">
+            <button
+              type="button"
+              className="p-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-lg w-full flex justify-between items-center"
+              onClick={() => setShowFromDropdown(!showFromDropdown)}
+            >
+              {fromPlace || "From"}
+              {showFromDropdown ? <ChevronUp /> : <ChevronDown />}
+            </button>
+            <button
+              type="button"
+              onClick={swapPlaces}
+              className="p-2 bg-gray-300 dark:bg-gray-700 rounded-lg"
+            >
+              <RefreshCw size={20} />
+            </button>
+          </div>
+          {showFromDropdown && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute z-10 bg-white dark:bg-gray-800 p-4 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg mt-2 w-full"
+            >
+              {locations.map((location) => (
+                <div
+                  key={location}
+                  className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer rounded-md"
+                  onClick={() => {
+                    if (location !== toPlace) {
+                      setFromPlace(location);
+                      setShowFromDropdown(false);
+                    }
+                  }}
+                >
+                  {location}
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </div>
         {/* To input */}
-        <input
-          type="text"
-          placeholder="To"
-          value={toPlace}
-          onChange={(e) => setToPlace(e.target.value)}
-          className="p-2 border border-gray-300 dark:bg-slate-800 dark:text-white rounded-md"
-          required
-        />
+        <div className="relative">
+          <button
+            type="button"
+            className="p-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-lg w-full flex justify-between items-center"
+            onClick={() => setShowToDropdown(!showToDropdown)}
+          >
+            {toPlace || "To"}
+            {showToDropdown ? <ChevronUp /> : <ChevronDown />}
+          </button>
+          {showToDropdown && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute z-10 bg-white dark:bg-gray-800 p-4 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg mt-2 w-full"
+            >
+              {locations.map((location) => (
+                <div
+                  key={location}
+                  className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer rounded-md"
+                  onClick={() => {
+                    if (location !== fromPlace) {
+                      setToPlace(location);
+                      setShowToDropdown(false);
+                    }
+                  }}
+                >
+                  {location}
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </div>
         {/* Date input */}
         <input
           type="date"
           value={travelDate}
           onChange={(e) => setTravelDate(e.target.value)}
-          className="p-2 border border-gray-300 dark:bg-slate-800 dark:text-white rounded-md"
+          className="p-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
-        {/* Number of Passengers input */}
+        {/* Passengers dropdown */}
         <div className="relative">
           <button
             type="button"
-            className="p-2 border border-gray-300 dark:bg-slate-800 dark:text-white rounded-md w-full text-left"
+            className="p-3 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-lg w-full flex justify-between items-center"
             onClick={() => setShowPassengerDropdown(!showPassengerDropdown)}
           >
-            {`Passengers: ${totalPassengers} (Adults: ${passengers.adult}, Children <7: ${passengers.child})`}
+            {`Passengers: ${totalPassengers} (Adults: ${passengers.adult}, Children: ${passengers.child})`}
+            {showPassengerDropdown ? <ChevronUp /> : <ChevronDown />}
           </button>
-
           {showPassengerDropdown && (
-            <div className="absolute bg-white dark:bg-slate-800 p-4 border border-gray-300 dark:border-gray-700 rounded-md shadow-md mt-2 w-full">
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute z-10 bg-white dark:bg-gray-800 p-4 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg mt-2 w-full"
+            >
               <div className="flex justify-between items-center mb-2">
-                <label className="text-sm">Adults</label>
+                <label className="text-sm dark:text-white">Adults</label>
                 <input
                   type="number"
                   value={passengers.adult}
@@ -111,38 +202,38 @@ const Booking = () => {
                   onChange={(e) =>
                     handlePassengerChange("adult", e.target.value)
                   }
-                  className="p-2 border border-gray-300 dark:bg-slate-800 dark:text-white rounded-md w-16"
+                  className="p-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-lg w-16"
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
-                <label className="text-sm">Children (below 7)</label>
+                <label className="text-sm dark:text-white">Children</label>
                 <input
                   type="number"
                   value={passengers.child}
                   min="0"
-                  max={getMaxChildren(passengers.adult)}
+                  max="4"
                   onChange={(e) =>
                     handlePassengerChange("child", e.target.value)
                   }
-                  className="p-2 border border-gray-300 dark:bg-slate-800 dark:text-white rounded-md w-16"
+                  className="p-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-lg w-16"
                 />
               </div>
               <button
                 type="button"
-                className="mt-4 bg-blue-500 text-white p-2 rounded-md w-full"
+                className="mt-4 bg-blue-600 text-white p-2 rounded-lg w-full hover:bg-blue-700"
                 onClick={() => setShowPassengerDropdown(false)}
               >
                 Confirm
               </button>
-            </div>
+            </motion.div>
           )}
         </div>
         {/* Submit button */}
         <button
           type="submit"
-          className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+          className="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition"
         >
-          Search
+          Search Buses
         </button>
       </form>
     </div>

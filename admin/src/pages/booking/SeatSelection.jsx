@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { Armchair, X, CheckCircle } from "lucide-react";
 
 import {
   setSelectedSeat,
@@ -8,10 +10,10 @@ import {
   setSeats,
   setBusId,
 } from "../../features/catagorie/catagorieSlice";
-import { useLocation, useNavigate, useNavigation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getSeatFun, totalSeatFun } from "../../features/booking/bookingApi";
 
-// SeatSelection Component
+
 const SeatSelection = () => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -25,9 +27,12 @@ const SeatSelection = () => {
   } = useSelector((state) => state.catagorie);
   const [totalPass, setTotalPass] = useState();
 
-  // Fetch taken seats
+  useEffect(() => {
+    if (passengerData?.length === 0 || !scheduleId) {
+      navigate("/categorie");
+    }
+  }, [navigate, passengerData?.length, scheduleId]);
 
-  // Helper function to get query parameters
   const getQueryParams = (search) => {
     const params = new URLSearchParams(search);
     return {
@@ -54,7 +59,7 @@ const SeatSelection = () => {
       }
       dispatch(setSeats(initialSeats));
     }
-  }, [dispatch]);
+  }, [dispatch, location.search, passengerData, seats.length, selectedSeats]);
 
   const { data: getTotalSeats = [] } = useQuery({
     queryKey: ["get_total_seat"],
@@ -66,8 +71,8 @@ const SeatSelection = () => {
     if (getTotalSeats) {
       dispatch(setBusId({ bus_id: getTotalSeats._id }));
     }
-  }, [getTotalSeats]);
-  
+  }, [getTotalSeats, dispatch]);
+
   const { data: takenSeats = [] } = useQuery({
     queryKey: ["seat"],
     queryFn: () => getSeatFun({ scheduleId, bus_id: getTotalSeats._id }),
@@ -95,10 +100,20 @@ const SeatSelection = () => {
     );
   };
 
+  const allPassengerInfoFilled = () => {
+    return (
+      seats?.length > 0 &&
+      seats.every(
+        (s) =>
+          s.seatNo
+      )
+    );
+  };
+
   // Render passengers as buttons
   const renderPassengerButtons = () => (
     <div className="flex flex-wrap gap-4 mb-4">
-      {passengerData.map((passenger, index) => (
+      {passengerData?.map((passenger, index) => (
         <button
           key={index}
           className={`p-2 border rounded-md ${
@@ -108,7 +123,7 @@ const SeatSelection = () => {
           }`}
           onClick={() => handlePassengerClick(index)}
         >
-          {passenger.type === "adult"
+          {passenger?.type === "adult"
             ? `Adult ${index + 1}`
             : `Child ${index + 1}`}
           {selectedPassengerIndex === index && ` (Selected)`}
@@ -118,41 +133,72 @@ const SeatSelection = () => {
   );
 
   // Render seat map with passenger numbers
-  const renderSeatMap = () => (
-    <div className="grid grid-cols-5 gap-4 mb-4">
-      {Array.from({ length: getTotalSeats?.seating_capacity }, (_, index) => {
-        const seatNumber = index + 1;
-        const isTaken = takenSeats.some((seat) => seat.seat_no === seatNumber);
-        const occupiedByPassenger = selectedSeats[seatNumber];
+  const renderSeatMap = () => {
+    const seatsPerRow = 4;
+    const totalSeats = getTotalSeats?.seating_capacity || 0;
+    const totalRows = Math.ceil(totalSeats / seatsPerRow);
 
-        return (
-          <div
-            key={index}
-            className={`p-4 border rounded-md flex items-center justify-center cursor-pointer 
-              ${
-                isTaken
-                  ? "bg-red-500 text-white cursor-not-allowed" // Taken seat style
-                  : occupiedByPassenger !== undefined
-                  ? "bg-green-500 text-white" // Occupied by current passengers
-                  : "hover:bg-gray-200 dark:hover:bg-gray-800"
-              } 
-              ${
-                occupiedByPassenger === selectedPassengerIndex
-                  ? "ring-2 ring-blue-500"
-                  : ""
-              }`}
-            onClick={() => !isTaken && handleSeatClick(seatNumber)}
-          >
-            {isTaken
-              ? "Taken"
-              : occupiedByPassenger !== undefined
-              ? `P${occupiedByPassenger + 1}`
-              : `Seat ${seatNumber}`}
-          </div>
-        );
-      })}
-    </div>
-  );
+    return (
+      <div className="flex justify-center">
+        <div className="grid grid-cols-4 gap-2 md:gap-4 mb-4">
+          {Array.from({ length: totalSeats }, (_, index) => {
+            const seatNumber = index + 1;
+            const isTaken = takenSeats.some(
+              (seat) => seat.seat_no === seatNumber
+            );
+            const occupiedByPassenger = selectedSeats[seatNumber];
+
+            // Determine if the seat is in the last row
+            const isLastRow = Math.ceil(seatNumber / seatsPerRow) === totalRows;
+
+            return (
+              <motion.div
+                key={index}
+                className={`relative flex items-center justify-center p-4 border rounded-lg cursor-pointer transition-all
+                ${
+                  isTaken
+                    ? "bg-red-500 text-white cursor-not-allowed dark:bg-red-600"
+                    : occupiedByPassenger !== undefined
+                    ? "bg-green-500 text-white dark:bg-green-600"
+                    : "bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700"
+                }
+                ${
+                  occupiedByPassenger === selectedPassengerIndex
+                    ? "ring-2 ring-blue-500"
+                    : ""
+                }
+                ${seatNumber % 4 === 2 && !isLastRow ? "mr-6" : ""} 
+              `}
+                whileHover={{ scale: isTaken ? 1 : 1.1 }}
+                onClick={() => !isTaken && handleSeatClick(seatNumber)}
+              >
+                {isTaken ? (
+                  <X size={24} className="text-white dark:text-gray-200" />
+                ) : occupiedByPassenger !== undefined ? (
+                  <CheckCircle
+                    size={24}
+                    className="text-white dark:text-gray-200"
+                  />
+                ) : (
+                  <Armchair
+                    size={24}
+                    className="text-gray-700 dark:text-gray-300"
+                  />
+                )}
+                <span className="absolute bottom-1 text-xs text-gray-700 dark:text-gray-300">
+                  {isTaken
+                    ? "Taken"
+                    : occupiedByPassenger !== undefined
+                    ? `P${occupiedByPassenger + 1}`
+                    : `S${seatNumber}`}
+                </span>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="p-4">
@@ -161,7 +207,14 @@ const SeatSelection = () => {
       </h2>
       {renderPassengerButtons()}
       {renderSeatMap()}
-      <button onClick={handleSeatSubmit}>Submit</button>
+      {allPassengerInfoFilled() && (
+        <button
+          className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition-all"
+          onClick={handleSeatSubmit}
+        >
+          Submit
+        </button>
+      )}
     </div>
   );
 };

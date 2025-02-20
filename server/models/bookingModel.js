@@ -53,10 +53,10 @@ const bookingSchema = new mongoose.Schema(
           type: String,
           required: true,
         },
-        age: {
-          type: Number,
-          required: true,
-        },
+        // age: {
+        //   type: Number,
+        //   required: true,
+        // },
         id: {
           type: String,
           required: true,
@@ -66,14 +66,14 @@ const bookingSchema = new mongoose.Schema(
         //   required: true,
         // },
         // contactInfo: {
-        //   email: {
-        //     type: String,
-        //     required: true,
-        //   },
-        //   phone: {
-        //     type: String,
-        //     required: true,
-        //   },
+          email: {
+            type: String,
+            // required: true,
+          },
+          phone: {
+            type: String,
+            // required: true,
+          },
         // },
       },
     ],
