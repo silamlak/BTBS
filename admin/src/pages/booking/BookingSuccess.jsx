@@ -1,11 +1,24 @@
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { clearAll } from "../../features/catagorie/catagorieSlice";
 
 const BookingSuccess = () => {
-  // Get the 'id' parameter from the URL
+    const dispatch = useDispatch();
+     const navigate = useNavigate();
   const { id } = useParams();
 
+  useEffect(() => {
+    if(!id) {
+      navigate("/categorie");
+    }
+    dispatch(clearAll());
+  }, [dispatch, id, navigate])
+const handleToDashboard = () => {
+ navigate("/categorie");
+}
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <motion.div
@@ -16,7 +29,7 @@ const BookingSuccess = () => {
         transition={{ duration: 0.5 }}
       >
         <motion.div
-          className="text-green-500 mb-4"
+          className="text-green-500 mb-4 flex justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.5 }}
@@ -33,6 +46,7 @@ const BookingSuccess = () => {
           Booking ID: <span className="font-bold">{id}</span>
         </p>
         <motion.button
+        onClick={handleToDashboard}
           className="mt-6 px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

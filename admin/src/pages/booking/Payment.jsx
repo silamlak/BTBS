@@ -10,8 +10,8 @@ import { useEffect, useState } from "react";
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
  const [totalPrice, setTotalPrice] = useState(0);
+ const [cCode, setCCode] = useState(0);
   const { passengerData, seats, busId, scheduleId, schedulePrice } =
     useSelector((state) => state.catagorie);
   const getSearchParams = (query) => {
@@ -46,14 +46,14 @@ const Payment = () => {
     mutationFn: seatFun,
     onSuccess: (data) => {
       console.log(data.msg);
-      navigate(`/booking/success/${data?.booked?.confirmationCode}`);
-      dispatch(clearAll());
+      navigate(`/booking/success/${cCode}`);
     },
   });
   const { mutate: bookMutate } = useMutation({
     mutationFn: bookingFun,
     onSuccess: (data) => {
       console.log(data.booked);
+      setCCode(data?.booked?.confirmationCode);
       const updatedData = seatData.map((s, i) => {
         return {
           ...s,
