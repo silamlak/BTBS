@@ -283,7 +283,7 @@ const App = () => {
       ),
     },
     {
-      path: "/booking/success",
+      path: "/booking/success/:id",
       element: (
         // <PublicRoute>
         <BookingSuccess />

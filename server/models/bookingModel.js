@@ -32,7 +32,7 @@ const bookingSchema = new mongoose.Schema(
         },
         seatNo: {
           type: Number,
-        }
+        },
       },
     ],
     passengers: [
@@ -66,14 +66,14 @@ const bookingSchema = new mongoose.Schema(
         //   required: true,
         // },
         // contactInfo: {
-          email: {
-            type: String,
-            // required: true,
-          },
-          phone: {
-            type: String,
-            // required: true,
-          },
+        email: {
+          type: String,
+          // required: true,
+        },
+        phone: {
+          type: String,
+          // required: true,
+        },
         // },
       },
     ],
@@ -102,6 +102,14 @@ const bookingSchema = new mongoose.Schema(
       enum: ["Pending", "Confirmed", "Cancelled"],
       default: "Pending",
     },
+    total_price: {
+      type: String,
+      required: true,
+    },
+    confirmationCode: {
+      type: String,
+      required: true,
+    }
   },
   { timestamps: true }
 );

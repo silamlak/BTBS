@@ -1,7 +1,11 @@
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
+import { useParams } from "react-router-dom";
 
 const BookingSuccess = () => {
+  // Get the 'id' parameter from the URL
+  const { id } = useParams();
+
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <motion.div
@@ -24,6 +28,9 @@ const BookingSuccess = () => {
         </h1>
         <p className="mt-2 text-gray-600">
           Your booking has been confirmed. Enjoy your trip!
+        </p>
+        <p className="mt-2 text-gray-600">
+          Booking ID: <span className="font-bold">{id}</span>
         </p>
         <motion.button
           className="mt-6 px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"

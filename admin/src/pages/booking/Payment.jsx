@@ -1,23 +1,17 @@
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import {
-  CheckCircle,
-  User,
-  MapPin,
-  CreditCard,
-  Clock,
-} from "lucide-react";
+import { CheckCircle, User, MapPin, CreditCard, Clock } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { bookingFun, seatFun } from "../../features/booking/bookingApi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { clearAll } from "../../features/catagorie/catagorieSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+ const [totalPrice, setTotalPrice] = useState(0);
   const { passengerData, seats, busId, scheduleId, schedulePrice } =
     useSelector((state) => state.catagorie);
   const getSearchParams = (query) => {
@@ -46,13 +40,14 @@ const Payment = () => {
     scheduleId,
     passengers: passengerData,
     seats,
+    total_price: totalPrice,
   };
   const { mutate: seatMutate } = useMutation({
     mutationFn: seatFun,
     onSuccess: (data) => {
       console.log(data.msg);
+      navigate(`/booking/success/${data?.booked?.confirmationCode}`);
       dispatch(clearAll());
-      navigate("/categorie");
     },
   });
   const { mutate: bookMutate } = useMutation({
@@ -73,6 +68,7 @@ const Payment = () => {
   const handleBooking = () => {
     bookMutate(bookingData);
   };
+
   const calculatePayment = () => {
     console.log(schedulePrice);
     let totalPayment = schedulePrice;
@@ -127,9 +123,16 @@ const Payment = () => {
     } else {
       totalPayment = adults * totalPayment;
     }
-    return totalPayment;
+    return totalPayment
   };
 
+  useEffect(() => {
+    const newTotal = calculatePayment();
+    if (newTotal !== totalPrice) {
+      setTotalPrice(newTotal); // Updates state only if value has changed
+    }
+  }, [passengerData, schedulePrice]); 
+console.log(totalPrice)
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

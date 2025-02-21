@@ -5,6 +5,8 @@ import { custom_error_handler } from "../errorHandler/errorHandler.js";
 import bookingModel from "../models/bookingModel.js";
 import seatModel from "../models/seatModel.js";
 import busModel from "../models/busModel.js";
+import { sendBookingConfirmationEmail } from "../emailController.js";
+import crypto from "crypto";
 
 function generateSixDigitNumber() {
   return Math.floor(100000 + Math.random() * 900000);
@@ -49,9 +51,34 @@ export const searchSchedules = async (req, res, next) => {
 //book
 export const bookTicket = async (req, res, next) => {
   try {
+    const confirmationCode = crypto
+      .randomBytes(4)
+      .toString("hex")
+      .toUpperCase();
     console.log(req.body);
-    const booking = bookingModel(req.body);
+    const booking = bookingModel({
+      ...req.body,
+      confirmationCode,
+    });
+
     const booked = await booking.save();
+    if (!booked) {
+      res.status(400).json({ msg: "Not Booked" });
+    }
+    const busDetail = await busModel.findById(booked?.busId);
+    const scheduleDetail = await scheduleModel.findById(booked?.scheduleId);
+    for (let i = 0; i < booked.passengers.length; i++) {
+      let passenger = booked.passengers[i];
+      if (passenger?.type === "adult") {
+        await sendBookingConfirmationEmail(passenger.email, {
+          passenger,
+          booked,
+          seat: booked.seats[i],
+          busDetail,
+          scheduleDetail,
+        });
+      }
+    };
     res.status(200).json({ booked, msg: "booked succ" });
   } catch (error) {
     next(error);
