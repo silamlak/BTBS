@@ -124,8 +124,9 @@ export const getSeats = async (req, res, next) => {
 export const getBooking = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const booking = await bookingModel.findById(id);
-    res.status(201).json(booking);
+    const booking = await bookingModel.findOne({ confirmationCode: id });
+    const schedule = await scheduleModel.findById(booking?.scheduleId);
+    res.status(201).json({booking, schedule});
   } catch (error) {
     next(error);
   }

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Armchair, X, CheckCircle } from "lucide-react";
-
+import Loader from "../../components/Loader";
 import {
   setSelectedSeat,
   setSelectedPassengerIndex,
@@ -12,7 +12,7 @@ import {
 } from "../../features/catagorie/catagorieSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getSeatFun, totalSeatFun } from "../../features/booking/bookingApi";
-
+import ErrorMessage from "../../components/ErrorMessage";
 
 const SeatSelection = () => {
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ const SeatSelection = () => {
     }
   }, [dispatch, location.search, passengerData, seats.length, selectedSeats]);
 
-  const { data: getTotalSeats = [] } = useQuery({
+  const { data: getTotalSeats = [], isLoading: totalSeatLoading } = useQuery({
     queryKey: ["get_total_seat"],
     queryFn: () => totalSeatFun({ totalPass, scheduleId }),
     enabled: !!totalPass,
@@ -73,7 +73,12 @@ const SeatSelection = () => {
     }
   }, [getTotalSeats, dispatch]);
 
-  const { data: takenSeats = [] } = useQuery({
+  const {
+    data: takenSeats = [],
+    isLoading: takenSeatLoading,
+    isError: takenSeatError,
+    error,
+  } = useQuery({
     queryKey: ["seat"],
     queryFn: () => getSeatFun({ scheduleId, bus_id: getTotalSeats._id }),
     enabled: !!getTotalSeats.seating_capacity,
@@ -101,16 +106,20 @@ const SeatSelection = () => {
   };
 
   const allPassengerInfoFilled = () => {
-    return (
-      seats?.length > 0 &&
-      seats.every(
-        (s) =>
-          s.seatNo
-      )
-    );
+    return seats?.length > 0 && seats.every((s) => s.seatNo);
   };
 
-  // Render passengers as buttons
+  if (totalSeatLoading || takenSeatLoading)
+    return (
+      <div className="w-full flex justify-center p-6">
+        {" "}
+        <Loader />{" "}
+      </div>
+    );
+  if (takenSeatError) {
+    return <ErrorMessage error={error} />;
+  }
+
   const renderPassengerButtons = () => (
     <div className="flex flex-wrap gap-4 mb-4">
       {passengerData?.map((passenger, index) => (
@@ -118,7 +127,7 @@ const SeatSelection = () => {
           key={index}
           className={`p-2 border rounded-md ${
             selectedPassengerIndex === index
-              ? "bg-blue-500 text-white"
+              ? "bg-lime-500 text-white"
               : "bg-gray-300 dark:bg-slate-800"
           }`}
           onClick={() => handlePassengerClick(index)}
@@ -132,7 +141,6 @@ const SeatSelection = () => {
     </div>
   );
 
-  // Render seat map with passenger numbers
   const renderSeatMap = () => {
     const seatsPerRow = 4;
     const totalSeats = getTotalSeats?.seating_capacity || 0;
@@ -148,7 +156,6 @@ const SeatSelection = () => {
             );
             const occupiedByPassenger = selectedSeats[seatNumber];
 
-            // Determine if the seat is in the last row
             const isLastRow = Math.ceil(seatNumber / seatsPerRow) === totalRows;
 
             return (
@@ -199,7 +206,6 @@ const SeatSelection = () => {
       </div>
     );
   };
-
   return (
     <div className="p-4">
       <h2 className="text-slate-800 dark:text-slate-100 text-lg font-semibold mb-4">
@@ -209,7 +215,7 @@ const SeatSelection = () => {
       {renderSeatMap()}
       {allPassengerInfoFilled() && (
         <button
-          className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition-all"
+          className="bg-lime-500 hover:bg-lime-600 text-white p-2 rounded-md transition-all"
           onClick={handleSeatSubmit}
         >
           Submit

@@ -4,12 +4,18 @@ import { getBookingSearchFun } from "../../features/catagorie/catagorieApi";
 import { useDispatch } from "react-redux";
 import { setScheduleId, setSchedulePrice } from "../../features/catagorie/catagorieSlice";
 import { motion } from "framer-motion";
-import { Bus, MapPin, Calendar, AlertCircle } from "lucide-react";
-
+import {
+  Bus,
+  MapPin,
+  Calendar,
+  AlertCircle,
+} from "lucide-react";
+import Loader from '../../components/Loader'
+import ErrorMessage from "../../components/ErrorMessage";
 const SearchResult = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const getSearchParams = (query) => {
     return new URLSearchParams(query);
@@ -24,18 +30,10 @@ const SearchResult = () => {
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["searchResults", fromPlace, toPlace, travelDate],
-    queryFn: () => getBookingSearchFun( fromPlace, toPlace, travelDate ),
+    queryFn: () => getBookingSearchFun(fromPlace, toPlace, travelDate),
     enabled: !!fromPlace && !!toPlace && !!travelDate,
   });
 
-  console.log(data)
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error: {error.message}</div>;
-  }
   const goToPassangerInfo = (id, ticket_price) => {
     dispatch(setScheduleId({ id }));
     dispatch(setSchedulePrice(ticket_price));
@@ -44,7 +42,18 @@ const SearchResult = () => {
     );
   };
 
-  console.log(data)
+  if (isLoading && !data)
+    return (
+      <div className="w-full flex justify-center p-6">
+        {" "}
+        <Loader />{" "}
+      </div>
+    );
+  // Usage
+  if (isError) {
+    console.log(error);
+    return <ErrorMessage error={error} />;
+  }
 
   return (
     <div className="p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-2xl mx-auto mt-10">

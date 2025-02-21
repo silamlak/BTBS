@@ -1,17 +1,16 @@
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { CheckCircle, User, MapPin, CreditCard, Clock } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { bookingFun, seatFun } from "../../features/booking/bookingApi";
 import { useLocation, useNavigate } from "react-router-dom";
-import { clearAll } from "../../features/catagorie/catagorieSlice";
 import { useEffect, useState } from "react";
-
+import Loader from "../../components/Loader";
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
- const [totalPrice, setTotalPrice] = useState(0);
- const [cCode, setCCode] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [cCode, setCCode] = useState(0);
   const { passengerData, seats, busId, scheduleId, schedulePrice } =
     useSelector((state) => state.catagorie);
   const getSearchParams = (query) => {
@@ -42,14 +41,17 @@ const Payment = () => {
     seats,
     total_price: totalPrice,
   };
-  const { mutate: seatMutate } = useMutation({
+  const { mutate: seatMutate, isPending: seatIsLoading } = useMutation({
     mutationFn: seatFun,
     onSuccess: (data) => {
       console.log(data.msg);
       navigate(`/booking/success/${cCode}`);
     },
+    onError: (err) => {
+      console.log(err);
+    },
   });
-  const { mutate: bookMutate } = useMutation({
+  const { mutate: bookMutate, isPending: bookIsLoading } = useMutation({
     mutationFn: bookingFun,
     onSuccess: (data) => {
       console.log(data.booked);
@@ -63,6 +65,9 @@ const Payment = () => {
         };
       });
       seatMutate(updatedData);
+    },
+    onError: (err) => {
+      console.log(err);
     },
   });
   const handleBooking = () => {
@@ -123,7 +128,7 @@ const Payment = () => {
     } else {
       totalPayment = adults * totalPayment;
     }
-    return totalPayment
+    return totalPayment;
   };
 
   useEffect(() => {
@@ -131,8 +136,8 @@ const Payment = () => {
     if (newTotal !== totalPrice) {
       setTotalPrice(newTotal); // Updates state only if value has changed
     }
-  }, [passengerData, schedulePrice]); 
-console.log(totalPrice)
+  }, [passengerData, schedulePrice]);
+  console.log(totalPrice);
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -201,10 +206,11 @@ console.log(totalPrice)
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="w-full mt-6 p-3 bg-blue-500 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+        className="w-full mt-6 p-3 bg-lime-500 text-white font-semibold rounded-lg shadow-lg hover:bg-lime-600 dark:bg-lime-600 dark:hover:bg-lime-700"
         onClick={handleBooking}
+        disabled={bookIsLoading || seatIsLoading}
       >
-        Confirm Booking
+        {bookIsLoading || seatIsLoading ? <Loader /> : "Confirm Booking"}
       </motion.button>
     </motion.div>
   );

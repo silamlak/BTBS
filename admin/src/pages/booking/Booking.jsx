@@ -231,7 +231,7 @@ const Booking = () => {
         {/* Submit button */}
         <button
           type="submit"
-          className="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition"
+          className="bg-lime-500 hover:bg-lime-600 transition text-white p-3 rounded-lg"
         >
           Search Buses
         </button>

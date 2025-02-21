@@ -149,7 +149,7 @@ const PassengerInfo = () => {
               key={index}
               className={`p-2 border rounded-md transition-colors ${
                 selectedPassengerIndex === index
-                  ? "bg-blue-500 text-white"
+                  ? "bg-lime-500 text-white"
                   : "bg-gray-300 dark:bg-gray-700 dark:text-white"
               }`}
               onClick={() => handlePassengerClick(index)}
@@ -307,7 +307,7 @@ const PassengerInfo = () => {
             {allPassengerInfoFilled() && (
               <button
                 type="submit"
-                className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition-all"
+                className="bg-lime-500 hover:bg-lime-600 text-white p-2 rounded-md transition-all"
                 disabled={loading}
               >
                 {loading ? "Submitting..." : "Submit"}
