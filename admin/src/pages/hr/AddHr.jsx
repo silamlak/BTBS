@@ -21,6 +21,9 @@ const AddHr = () => {
     onSuccess: () => {
       navigate("/hr");
     },
+    onError: (err) => {
+      console.log(err)
+    }
   });
 
   const {
