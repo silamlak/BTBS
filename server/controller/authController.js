@@ -10,6 +10,69 @@ import boofficerModel from "../models/boofficerModel.js";
 import TicketSalesOfficerModel from "../models/TicketSalesOfficer.js";
 import hrofficerModel from "../models/hrofficerModel.js";
 
+
+
+// Signup Controller
+export const signup = async (req, res, next) => {
+  // Validate request body
+  await body("first_name")
+    .not()
+    .isEmpty()
+    .withMessage("First name is required")
+    .run(req);
+
+  await body("father_name")
+    .not()
+    .isEmpty()
+    .withMessage("Father name is required")
+    .run(req);
+
+  await body("ethPhone")
+    .not()
+    .isEmpty()
+    .withMessage("Phone is required")
+    .run(req);
+
+  await body("email")
+    .isEmail()
+    .withMessage("Please include a valid email")
+    .run(req);
+
+  await body("password")
+    .isLength({ min: 8 })
+    .withMessage("Please enter a password with 8 or more characters")
+    .run(req);
+
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { first_name, father_name, ethPhone, email, password } = req.body;
+
+  try {
+     let admin = await adminModel.findOne({ email });
+     if (admin) {
+       return res.status(400).json({ msg: "Admin already exists" });
+     }
+      admin = new adminModel({ first_name, father_name, ethPhone, email, password });
+
+        const salt = await bcrypt.genSalt(10);
+        admin.password = await bcrypt.hash(password, salt);
+
+        await admin.save();
+
+    return res.status(201).json({
+      message: "Admin registered successfully",
+      admin
+    });
+  } catch (error) {
+    next(error)
+  }
+};
+
+
 export const createUser = async (req, res, next) => {
   await body("first_name")
     .not()

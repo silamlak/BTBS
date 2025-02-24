@@ -65,6 +65,7 @@ import Payment from "./pages/booking/Payment";
 import SearchBooking from "./pages/manageBooking/SearchBooking";
 import MyBooking from "./pages/manageBooking/MyBooking";
 import BookingSuccess from "./pages/booking/BookingSuccess";
+import SignInAdmin from "./pages/auth/SignInAdmin";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -174,7 +175,7 @@ const App = () => {
         },
         {
           path: "/driver/:id",
-          element: <SingleDriver />,
+          // element: <SingleDriver />,
           element: (
             <ProtectedRoute element={SingleDriver} allowedRoles={["hr"]} />
           ),
@@ -212,17 +213,17 @@ const App = () => {
         //hr
         {
           path: "/hr",
-          element: <ProtectedRoute element={Hr} allowedRoles={["bo"]} />,
+          element: <ProtectedRoute element={Hr} allowedRoles={["admin"]} />,
         },
         {
           path: "/hr/:id",
           element: (
-            <ProtectedRoute element={SingleHr} allowedRoles={["bo"]} />
+            <ProtectedRoute element={SingleHr} allowedRoles={["admin"]} />
           ),
         },
         {
           path: "/add-hr",
-          element: <ProtectedRoute element={AddHr} allowedRoles={["bo"]} />,
+          element: <ProtectedRoute element={AddHr} allowedRoles={["admin"]} />,
         },
         //station
         {
@@ -283,6 +284,13 @@ const App = () => {
       ),
     },
     {
+      path: "/sign-in-admin",
+      element: (
+        // <PublicRoute>
+        <SignInAdmin />
+      ),
+    },
+    {
       path: "/booking/success/:id",
       element: (
         // <PublicRoute>
@@ -293,32 +301,32 @@ const App = () => {
       path: "/sign-up",
       element: (
         // <PublicRoute>
-          <Signup />
+        <Signup />
         // </PublicRoute>
       ),
     },
     {
       path: "/reset/password",
       element: (
-        <PublicRoute>
+        // <PublicRoute>
           <ResetPasswordPage />
-        </PublicRoute>
+        // </PublicRoute>
       ),
     },
     {
       path: "/request/reset",
       element: (
-        <PublicRoute>
+        // <PublicRoute>
           <ForgotPasswordPage />
-        </PublicRoute>
+        // </PublicRoute>
       ),
     },
     {
       path: "/confirmation",
       element: (
-        <PublicRoute>
+        // <PublicRoute>
           <ConfirmationPage />
-        </PublicRoute>
+        // </PublicRoute>
       ),
     },
     {

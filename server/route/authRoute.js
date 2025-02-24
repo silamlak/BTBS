@@ -6,9 +6,11 @@ import {
   requestPasswordReset,
   resetPassword,
   signIn,
+  signup,
 } from "../controller/authController.js";
 const router = express.Router();
 
+router.post("/admin/sign-up", signup);
 router.post("/signup", createUser);
 router.post("/confirm-otp", confirmOtp);
 router.post("/signin", signIn);

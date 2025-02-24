@@ -6,15 +6,14 @@ import { TbReportAnalytics } from "react-icons/tb";
 import { AiOutlineUser, AiOutlineHeart } from "react-icons/ai";
 import { FiMessageSquare, FiFolder, FiShoppingCart } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
-import {useSelector} from 'react-redux'
+import { useSelector } from "react-redux";
 
 const Sidebar = ({ theme }) => {
-   const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
   const location = useLocation();
   const hrs = [
     { name: "dashboard", link: "/", icon: MdOutlineDashboard },
-    { name: "Orders", link: "/orders", icon: AiOutlineUser },
-    { name: "Create Product", link: "/product/create", icon: FiFolder },
+
     { name: "BusOperator", link: "/bus-operator", icon: FiShoppingCart },
     { name: "Drivers", link: "/drivers", icon: FiShoppingCart },
     { name: "Buses", link: "/buses", icon: FiShoppingCart },
@@ -22,10 +21,8 @@ const Sidebar = ({ theme }) => {
   ];
   const bos = [
     { name: "dashboard", link: "/", icon: MdOutlineDashboard },
-    { name: "Orders", link: "/orders", icon: AiOutlineUser },
     { name: "Station", link: "/station", icon: AiOutlineUser },
     { name: "Route", link: "/route", icon: AiOutlineUser },
-    { name: "Hr", link: "/hr", icon: FiShoppingCart },
     { name: "Schedule", link: "/schedule", icon: AiOutlineUser },
   ];
   const tsos = [
@@ -39,15 +36,21 @@ const Sidebar = ({ theme }) => {
       margin: true,
     },
   ];
+  const admin = [
+    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+    { name: "Hr", link: "/hr", icon: FiShoppingCart },
+  ];
 
-   const menus =
-     user?.role === "hr"
-       ? hrs
-       : user?.role === "bo"
-       ? bos
-       : user?.role === "tso"
-       ? tsos
-       : [];
+  const menus =
+    user?.role === "hr"
+      ? hrs
+      : user?.role === "bo"
+      ? bos
+      : user?.role === "tso"
+      ? tsos
+      : user?.role === "admin"
+      ? admin
+      : [];
 
   const [open, setOpen] = useState(true);
 

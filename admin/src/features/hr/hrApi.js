@@ -55,10 +55,12 @@ export const updateHrFun = async ({ id, formData }) => {
   }
 };
 
-export const updateHrPasswordFun = async (id) => {
+export const updateHrPasswordFun = async ({ id, password }) => {
+  console.log(id, password);
   try {
-    const res = await axiosInstance.put(
+    const res = await axiosInstance.post(
       `${endpoints.update_hr_password}/${id}`,
+      { password },
       {
         withCredentials: true,
       }

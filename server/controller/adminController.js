@@ -68,13 +68,18 @@ export const ViewHROfficer = async (req, res, next) => {
 
 export const UpdateHROfficer = async (req, res, next) => {
   const { id } = req.params;
+  console.log(id);
   try {
     const sanitizedData = mongoSanitize(req.body);
-    const Hr = await hrofficerModel.findByIdAndUpdate(id, {
-      $set: sanitizedData,
-    }, {new: true});
+    const Hr = await hrofficerModel.findByIdAndUpdate(
+      id,
+      {
+        $set: sanitizedData,
+      },
+      { new: true }
+    );
     if (!Hr) return next(custom_error_handler(404, "HR not found"));
-    res.status(200).json({hr, msg: "HR info updated" });
+    res.status(200).json({ Hr, msg: "HR info updated" });
   } catch (error) {
     next(error);
   }
@@ -82,6 +87,7 @@ export const UpdateHROfficer = async (req, res, next) => {
 
 export const UpdateHROfficerPassword = async (req, res, next) => {
   const { id } = req.params;
+  console.log(req.body);
   try {
     const sanitizedData = mongoSanitize(req.body);
     const salt = await bcrypt.genSalt(10);
@@ -99,8 +105,9 @@ export const UpdateHROfficerPassword = async (req, res, next) => {
 export const deleteHROfficer = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const Hr = await hrofficerModel.findByIdAndDelete(id);
+    const Hr = await hrofficerModel.findById(id);
     if (!Hr) return next(custom_error_handler(404, "HR not found"));
+    await hrofficerModel.findByIdAndDelete(id);
     res.status(200).json({ msg: "HR Removed" });
   } catch (error) {
     next(error);

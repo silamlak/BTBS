@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FaRegSave } from "react-icons/fa";
@@ -13,14 +13,18 @@ import {
 } from "../../features/busOperator/busOeratorApi";
 import { addboDetail } from "../../features/busOperator/busOperatorSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { getSingleHrFun, updateHrFun } from "../../features/hr/hrApi";
+import {
+  deleteHrFun,
+  getSingleHrFun,
+  updateHrFun,
+  updateHrPasswordFun,
+} from "../../features/hr/hrApi";
 import { addHrDetail } from "../../features/hr/hrSlice";
 import { validationSchema } from "../../schemas/validationSchema";
-
 // Validation Schema
 
-
 const SingleHr = () => {
+  const navigate = useNavigate();
   const currentData = useSelector((state) => state.hr.currentData);
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -73,19 +77,41 @@ const SingleHr = () => {
     }
   }, [data, reset]);
 
-    const handleImageClick = (image) => {
-      setSelectedImage(image);
-    };
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+  };
 
-    const closeFullView = () => {
-      setSelectedImage(null);
-    };
+  const closeFullView = () => {
+    setSelectedImage(null);
+  };
   const mutation = useMutation({
     mutationFn: updateHrFun,
     onSuccess: (data) => {
-      dispatch(addHrDetail(data?.hr));
+      dispatch(addHrDetail(data?.Hr));
       console.log(data.Bo);
       // reset()
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const mutations = useMutation({
+    mutationFn: updateHrPasswordFun,
+    onSuccess: (data) => {
+      console.log(data);
+      setPassword("");
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const mutationd = useMutation({
+    mutationFn: deleteHrFun,
+    onSuccess: (data) => {
+      console.log(data);
+      navigate("/hr", { replace: true });
     },
     onError: (err) => {
       console.log(err);
@@ -97,10 +123,10 @@ const SingleHr = () => {
     mutation.mutate({ id, formData });
   };
   const onPasswordSubmit = () => {
-    // Logic for saving the updated data
+    mutations.mutate({ id, password });
   };
   const onDelete = () => {
-    // Logic for delete
+    mutationd.mutate(id);
   };
   return (
     <div>
@@ -231,7 +257,9 @@ const SingleHr = () => {
                       {...register("employment_status")}
                       className="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
                     >
-                      <option value="" disabled>Select Status</option>
+                      <option value="" disabled>
+                        Select Status
+                      </option>
                       <option value="Active">Active</option>
                       <option value="Inactive">Inactive</option>
                     </select>
