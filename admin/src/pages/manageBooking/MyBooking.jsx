@@ -10,7 +10,11 @@ import ErrorMessage from "../../components/ErrorMessage";
 import Loader from "../../components/Loader";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setPassengerData, setScheduleId, setSeats } from "../../features/book/bookSlice";
+import {
+  setPassengerData,
+  setScheduleId,
+  setSeats,
+} from "../../features/book/bookSlice";
 
 const formatDate = (dateString) => {
   return new Intl.DateTimeFormat("en-US", {
@@ -61,16 +65,17 @@ const MyBooking = () => {
     }
     navigate(`/my-booking/edit/seat?search=${data?.booking?._id}`);
   };
-    if (isLoading)
-      return (
-        <div className="w-full flex justify-center p-6">
-          {" "}
-          <Loader />{" "}
-        </div>
-      );
-    if (isError) {
-      return <ErrorMessage error={error} />;
-    }
+  if (isLoading)
+    return (
+      <div className="w-full flex justify-center p-6">
+        {" "}
+        <Loader />{" "}
+      </div>
+    );
+  if (isError) {
+    return <ErrorMessage error={error} />;
+  }
+
   return (
     <div>
       <motion.div

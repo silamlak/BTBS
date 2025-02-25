@@ -206,7 +206,7 @@ export const editBookingPassengerDetail = async (req, res, next) => {
     next(error);
   }
 };
- 
+          
 //route controller
 export const addRoute = async (req, res, next) => {
   try {
