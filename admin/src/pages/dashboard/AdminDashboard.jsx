@@ -6,7 +6,7 @@ import Radar from "../../components/homeComponent/graphs/Radar";
 import Customer from "../../components/homeComponent/tables/Customer";
 import Pending from "../../components/homeComponent/tables/Pending";
 
-const Home = () => {
+const AdminDashboard = () => {
   return (
     <div>
       <section className="flex items-center justify-between w-full p-4 rounded-xl bg-gradient-to-r from-blue-800 via-blue-600 to-blue-800 dark:bg-gradient-to-r dark:from-orange-200 dark:to-gray-500">
@@ -19,14 +19,25 @@ const Home = () => {
             complete overview of your ongoing bus operations.
           </h2>
         </div>
-        <div>
-        </div>
+        <div></div>
       </section>
       <div>
         <Description />
+        <div className="grid w-full gap-4 grid-cols-2 max-lg:grid-cols-1 mt-4">
+          <div className="">
+            <Charts />
+          </div>
+          <div className="">
+            <Radar />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 max-xl:grid-cols-1 gap-4">
+          <Customer />
+          <Pending />
+        </div>
       </div>
     </div>
   );
 };
 
-export default Home;
+export default AdminDashboard;

@@ -135,19 +135,10 @@ export const getBooking = async (req, res, next) => {
 export const cancelBooking = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const CancelledBooking = await bookingModel.findByIdAndUpdate(
-      id,
-      {
-        $set: { status: "Cancelled" },
-      },
-      { new: true }
-    );
-    const CancelledSeats = await seatModel.updateMany(
-      { bookId: id },
-      { $set: { status: "Cancelled" } },
-      { new: true }
-    );
-    res.status(201).json({ CancelledBooking, CancelledSeats });
+    console.log(id)
+    const CancelledBooking = await bookingModel.findByIdAndDelete(id);
+    const CancelledSeats = await seatModel.deleteMany({ bookId: id });
+    res.status(201).json({ msg: "Booking Cancelled" });
   } catch (error) {
     next(error);
   }
@@ -206,7 +197,58 @@ export const editBookingPassengerDetail = async (req, res, next) => {
     next(error);
   }
 };
-          
+
+export const editBookingSeatDetail = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!Array.isArray(req.body.data)) {
+      return res
+        .status(400)
+        .json({ msg: "Invalid data format. Expected an array." });
+    }
+    const newSeats = req.body.data.map(({ _id, ...rest }) => rest);
+
+    const myBooking = await bookingModel.findById(id);
+    if (!myBooking) {
+      return res.status(404).json({ msg: "not found" });
+    }
+
+    await Promise.all(
+      myBooking.seats.map(async (s) => {
+        return await seatModel.findOneAndDelete({
+          seat_no: s.seatNo,
+          bookId: myBooking?._id,
+          scheduleId: myBooking?.scheduleId,
+        });
+      })
+    );
+
+    const savedSeats = await Promise.all(
+      newSeats?.map(async (seatData) => {
+        const seatInfo = new seatModel(seatData);
+        return seatInfo.save();
+      })
+    );
+
+    const updatedSeats = req.body.seats.map((seat, i) => ({
+      ...seat,
+      seat_id: savedSeats[i]._id,
+    }));
+
+    const newSeatsUpdate = updatedSeats.map(({ _id, ...rest }) => rest);
+
+    await bookingModel.findByIdAndUpdate(id, {
+      $set: {
+        seats: newSeatsUpdate,
+      },
+    });
+
+    res.status(201).json({ msg: "passenger info updated" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 //route controller
 export const addRoute = async (req, res, next) => {
   try {

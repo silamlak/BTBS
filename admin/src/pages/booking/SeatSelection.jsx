@@ -128,7 +128,7 @@ const SeatSelection = () => {
           className={`p-2 border rounded-md ${
             selectedPassengerIndex === index
               ? "bg-lime-500 text-white"
-              : "bg-gray-300 dark:bg-slate-800"
+              : "bg-gray-300 dark:bg-slate-800 dark:text-slate-100"
           }`}
           onClick={() => handlePassengerClick(index)}
         >

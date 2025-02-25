@@ -45,11 +45,11 @@ const Description = () => {
   ];
 
   if (isLoading && !isError && !error) {
-    return <TotalSkeleton />
+    return <TotalSkeleton />;
   }
 
   if (isError && error) {
-    return <TotalError error={error}/>
+    return <TotalError error={error} />;
   }
 
   return (

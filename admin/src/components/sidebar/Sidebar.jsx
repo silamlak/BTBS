@@ -25,13 +25,12 @@ const Sidebar = ({ theme }) => {
     { name: "Schedule", link: "/schedule", icon: AiOutlineUser },
   ];
   const tsos = [
-    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
     { name: "Booking", link: "/booking", icon: FiMessageSquare },
     {
       name: "Get Booking",
       link: "/search-booking",
       icon: TbReportAnalytics,
-      margin: true,
+      // margin: true,
     },
   ];
   const admin = [

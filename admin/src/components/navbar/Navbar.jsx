@@ -6,6 +6,7 @@ import { MdClose, MdLogout, MdMenu, MdOutlineDashboard } from "react-icons/md";
 import { AiOutlineUser } from "react-icons/ai";
 import { FiFolder, FiMessageSquare, FiShoppingCart } from "react-icons/fi";
 import { TbReportAnalytics } from "react-icons/tb";
+import { FaBus } from 'react-icons/fa'
 import { Link } from "react-router-dom";
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -29,13 +30,12 @@ const Navbar = () => {
     { name: "Schedule", link: "/schedule", icon: AiOutlineUser },
   ];
   const tsos = [
-    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
     { name: "Booking", link: "/booking", icon: FiMessageSquare },
     {
       name: "Get Booking",
       link: "/search-booking",
       icon: TbReportAnalytics,
-      margin: true,
+      // margin: true,
     },
   ];
 
@@ -57,7 +57,11 @@ const Navbar = () => {
   return (
     <div className="sticky top-0 right-0 z-50">
       <div className="border-b-2 border-blue-500 dark:border-orange-500">
-        <div className="flex max-lg:justify-between items-center justify-end w-full p-2 py-4 bg-slate-50 dark:bg-slate-950">
+        <div className="flex justify-between items-center w-full p-2 py-4 bg-slate-50 dark:bg-slate-950">
+          <div className="flex items-center space-x-2">
+            <FaBus size={24} className="text-blue-500" />
+            <p className="text-2xl font-bold text-green-600">Habesha Bus</p>
+          </div>
           <button
             className="text-slate-800 dark:text-slate-100 lg:hidden"
             onClick={toggleSidebar}

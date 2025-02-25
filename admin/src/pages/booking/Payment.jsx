@@ -1,12 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { CheckCircle, User, MapPin, CreditCard, Clock } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { bookingFun, seatFun } from "../../features/booking/bookingApi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Loader from "../../components/Loader";
+import { setConfirmation } from "../../features/book/bookSlice";
 const Payment = () => {
+  const dispatch = useDispatch()
   const location = useLocation();
   const navigate = useNavigate();
   const [totalPrice, setTotalPrice] = useState(0);
@@ -41,6 +43,7 @@ const Payment = () => {
     seats,
     total_price: totalPrice,
   };
+
   const { mutate: seatMutate, isPending: seatIsLoading } = useMutation({
     mutationFn: seatFun,
     onSuccess: (data) => {
@@ -55,6 +58,7 @@ const Payment = () => {
     mutationFn: bookingFun,
     onSuccess: (data) => {
       console.log(data.booked);
+      dispatch(setConfirmation(data?.booked?.confirmationCode));
       setCCode(data?.booked?.confirmationCode);
       const updatedData = seatData.map((s, i) => {
         return {
@@ -134,10 +138,10 @@ const Payment = () => {
   useEffect(() => {
     const newTotal = calculatePayment();
     if (newTotal !== totalPrice) {
-      setTotalPrice(newTotal); // Updates state only if value has changed
+      setTotalPrice(newTotal);
     }
   }, [passengerData, schedulePrice]);
-  console.log(totalPrice);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -148,7 +152,7 @@ const Payment = () => {
       <motion.div
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="cursor-pointer mb-6 flex justify-between items-center p-4 border rounded-md bg-gray-100 dark:bg-gray-800 hover:shadow-md transition"
+        className="cursor-pointer dark:text-slate-100 mb-6 flex justify-between items-center p-4 border rounded-md bg-gray-100 dark:bg-gray-800 hover:shadow-md transition"
       >
         <div className="flex items-center gap-2">
           <MapPin size={20} className="text-blue-500" />

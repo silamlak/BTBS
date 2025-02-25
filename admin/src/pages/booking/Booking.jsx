@@ -119,7 +119,7 @@ const Booking = () => {
               {locations.map((location) => (
                 <div
                   key={location}
-                  className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer rounded-md"
+                  className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 dark:text-slate-100 cursor-pointer rounded-md"
                   onClick={() => {
                     if (location !== toPlace) {
                       setFromPlace(location);
@@ -153,7 +153,7 @@ const Booking = () => {
               {locations.map((location) => (
                 <div
                   key={location}
-                  className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer rounded-md"
+                  className="p-2 hover:bg-gray-200 dark:text-slate-100 dark:hover:bg-gray-700 cursor-pointer rounded-md"
                   onClick={() => {
                     if (location !== fromPlace) {
                       setToPlace(location);

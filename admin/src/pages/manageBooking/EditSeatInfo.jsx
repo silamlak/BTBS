@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Armchair, X, CheckCircle } from "lucide-react";
 import Loader from "../../components/Loader";
@@ -11,33 +11,39 @@ import {
   setBusId,
 } from "../../features/book/bookSlice";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getSeatFun, totalSeatFun } from "../../features/booking/bookingApi";
+import {
+  getSeatFun,
+  totalSeatFun,
+  updateBookingSeatFun,
+} from "../../features/booking/bookingApi";
 import ErrorMessage from "../../components/ErrorMessage";
 
 const EditSeatInfo = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+  const params = new URLSearchParams(location.search);
+  const search = params.get("search");
+  const [alreadyUsedSeat, setAlreadyUsedSeat] = useState([]);
   const {
     passengerData,
     seats,
     selectedPassengerIndex,
     selectedSeats,
     scheduleId,
+    busId,
   } = useSelector((state) => state.book);
-  let totalPass = 0;
+  let totalPass = 1;
 
-  useEffect(() => {
-    if (passengerData?.length === 0 || !scheduleId) {
-      navigate("/booking");
-    }
-  }, [navigate, passengerData?.length, scheduleId]);
+  console.log(scheduleId, seats);
 
   const { data: getTotalSeats = [], isLoading: totalSeatLoading } = useQuery({
     queryKey: ["get_total_seat"],
     queryFn: () => totalSeatFun({ totalPass, scheduleId }),
     enabled: !!totalPass,
   });
+
+  console.log(getTotalSeats);
 
   useEffect(() => {
     if (getTotalSeats) {
@@ -64,16 +70,53 @@ const EditSeatInfo = () => {
     }
   };
 
-  // Handle passenger selection
+
   const handlePassengerClick = (index) => {
     dispatch(setSelectedPassengerIndex(index));
   };
 
-  const handleSeatSubmit = () => {};
+  const mutation = useMutation({
+    mutationFn: updateBookingSeatFun,
+    onSuccess: (data) => {
+      console.log(data);
+      navigate(-1, {replace: true})
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const handleSeatSubmit = () => {
+    const seatData = [];
+    for (let i = 0; i < seats.length; i++) {
+      seatData.push({
+        seat_no: seats[i].seatNo,
+        _id: seats[i]._id,
+      });
+    }
+
+    const updatedData = seatData.map((s) => {
+      return {
+        ...s,
+        bookId: search,
+        scheduleId,
+        bus_id: busId,
+      };
+    });
+    mutation.mutate({ id: search, data: updatedData, seats });
+  };
 
   const allPassengerInfoFilled = () => {
     return seats?.length > 0 && seats.every((s) => s.seatNo);
   };
+
+  useEffect(() => {
+    const commonSeats = takenSeats
+      .map((seat1) => seat1.seat_no) // Extract seat_no from takenSeats
+      .filter((seatNo) => seats.map((seat2) => seat2.seatNo).includes(seatNo)); // Check if it exists in seats
+
+    setAlreadyUsedSeat(commonSeats);
+  }, [takenSeats]);
 
   if (totalSeatLoading || takenSeatLoading)
     return (
@@ -94,13 +137,13 @@ const EditSeatInfo = () => {
           className={`p-2 border rounded-md ${
             selectedPassengerIndex === index
               ? "bg-lime-500 text-white"
-              : "bg-gray-300 dark:bg-slate-800"
+              : "bg-gray-300 dark:bg-slate-800 dark:text-slate-100"
           }`}
           onClick={() => handlePassengerClick(index)}
         >
           {passenger?.type === "adult"
-            ? `Adult ${index + 1}`
-            : `Child ${index + 1}`}
+            ? `${passenger?.first_name} ${index + 1}`
+            : `${passenger?.first_name} ${index + 1}`}
           {selectedPassengerIndex === index && ` (Selected)`}
         </button>
       ))}
@@ -120,6 +163,8 @@ const EditSeatInfo = () => {
             const isTaken = takenSeats.some(
               (seat) => seat.seat_no === seatNumber
             );
+            const isMine = alreadyUsedSeat.includes(seatNumber);
+
             const occupiedByPassenger = selectedSeats[seatNumber];
 
             const isLastRow = Math.ceil(seatNumber / seatsPerRow) === totalRows;
@@ -128,13 +173,16 @@ const EditSeatInfo = () => {
               <motion.div
                 key={index}
                 className={`relative flex items-center justify-center p-4 border rounded-lg cursor-pointer transition-all
-                  ${
-                    isTaken
-                      ? "bg-red-500 text-white cursor-not-allowed dark:bg-red-600"
-                      : occupiedByPassenger !== undefined
-                      ? "bg-green-500 text-white dark:bg-green-600"
-                      : "bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700"
-                  }
+                 ${
+                   isTaken && !isMine
+                     ? "bg-red-500 text-white cursor-not-allowed dark:bg-red-600"
+                     : occupiedByPassenger !== undefined
+                     ? "bg-green-500 text-white dark:bg-green-600"
+                     : isMine
+                     ? "bg-lime-500 text-white dark:bg-lime-600"
+                     : "bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700"
+                 }
+
                   ${
                     occupiedByPassenger === selectedPassengerIndex
                       ? "ring-2 ring-blue-500"
@@ -145,7 +193,7 @@ const EditSeatInfo = () => {
                 whileHover={{ scale: isTaken ? 1 : 1.1 }}
                 onClick={() => !isTaken && handleSeatClick(seatNumber)}
               >
-                {isTaken ? (
+                {isTaken && !isMine ? (
                   <X size={24} className="text-white dark:text-gray-200" />
                 ) : occupiedByPassenger !== undefined ? (
                   <CheckCircle

@@ -71,7 +71,7 @@ export const getBookingFun = async (id) => {
 export const cancelBookingFun = async (id) => {
   try {
     console.log(id);
-    const res = await axiosInstance.get(`${endpoints.cancel_booking}/${id}`, {
+    const res = await axiosInstance.delete(`${endpoints.cancel_booking}/${id}`, {
       withCredentials: true,
     });
     return res.data;
@@ -86,6 +86,22 @@ export const updateBookingPassengerFun = async ({id, data}) => {
     const res = await axiosInstance.post(
       `${endpoints.update_booking_pass}/${id}`,
       data,
+      {
+        withCredentials: true,
+      }
+    );
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const updateBookingSeatFun = async ({ id, data, seats }) => {
+  try {
+    console.log(id);
+    const res = await axiosInstance.post(
+      `${endpoints.update_booking_seat}/${id}`,
+      { data, seats },
       {
         withCredentials: true,
       }

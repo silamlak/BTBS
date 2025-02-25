@@ -29,6 +29,7 @@ const bookingSchema = new mongoose.Schema(
         },
         name: {
           type: String,
+          required: false
         },
         seatNo: {
           type: Number,

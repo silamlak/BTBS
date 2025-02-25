@@ -71,7 +71,7 @@ const SearchResult = () => {
               whileTap={{ scale: 0.95 }}
               onClick={() => goToPassangerInfo(result._id, result.ticket_price)}
               key={index}
-              className="cursor-pointer flex justify-between items-center p-4 border rounded-md bg-gray-100 dark:bg-gray-800 hover:shadow-md transition"
+              className="cursor-pointer dark:text-slate-100 flex justify-between items-center p-4 border rounded-md bg-gray-100 dark:bg-gray-800 hover:shadow-md transition"
             >
               <div className="flex items-center gap-2">
                 <MapPin size={20} className="text-blue-500" />
