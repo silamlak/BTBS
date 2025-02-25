@@ -78,7 +78,7 @@ export const bookTicket = async (req, res, next) => {
           scheduleDetail,
         });
       }
-    };
+    }
     res.status(200).json({ booked, msg: "booked succ" });
   } catch (error) {
     next(error);
@@ -126,7 +126,7 @@ export const getBooking = async (req, res, next) => {
     const { id } = req.params;
     const booking = await bookingModel.findOne({ confirmationCode: id });
     const schedule = await scheduleModel.findById(booking?.scheduleId);
-    res.status(201).json({booking, schedule});
+    res.status(201).json({ booking, schedule });
   } catch (error) {
     next(error);
   }
@@ -186,6 +186,27 @@ export const myBookingDetail = async (req, res, next) => {
   }
 };
 
+export const editBookingPassengerDetail = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    console.log(req.body);
+    const myBooking = await bookingModel.findById(id);
+    if (!myBooking) {
+      return res.status(404).json({ msg: "not found" });
+    }
+
+    await bookingModel.findByIdAndUpdate(id, {
+      $set: {
+        passengers: req.body,
+      },
+    });
+
+    res.status(201).json({ msg: "passenger info updated" });
+  } catch (error) {
+    next(error);
+  }
+};
+ 
 //route controller
 export const addRoute = async (req, res, next) => {
   try {

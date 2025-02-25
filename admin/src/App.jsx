@@ -66,6 +66,8 @@ import SearchBooking from "./pages/manageBooking/SearchBooking";
 import MyBooking from "./pages/manageBooking/MyBooking";
 import BookingSuccess from "./pages/booking/BookingSuccess";
 import SignInAdmin from "./pages/auth/SignInAdmin";
+import EditSeatInfo from "./pages/manageBooking/EditSeatInfo";
+import EditPassengerInfo from "./pages/manageBooking/EditPassengerInfo";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -87,14 +89,14 @@ const App = () => {
             />
           ),
         },
-        {
-          path: "/orders",
-          element: <Order />,
-        },
-        {
-          path: "/order/:id",
-          element: <SingleOrder />,
-        },
+        // {
+        //   path: "/orders",
+        //   element: <Order />,
+        // },
+        // {
+        //   path: "/order/:id",
+        //   element: <SingleOrder />,
+        // },
         {
           path: "/booking",
           element: <ProtectedRoute element={Booking} allowedRoles={["tso"]} />,
@@ -109,6 +111,21 @@ const App = () => {
           path: "/my-booking",
           element: (
             <ProtectedRoute element={MyBooking} allowedRoles={["tso"]} />
+          ),
+        },
+        {
+          path: "/my-booking/edit/seat",
+          element: (
+            <ProtectedRoute element={EditSeatInfo} allowedRoles={["tso"]} />
+          ),
+        },
+        {
+          path: "/my-booking/edit/passenger",
+          element: (
+            <ProtectedRoute
+              element={EditPassengerInfo}
+              allowedRoles={["tso"]}
+            />
           ),
         },
         {
@@ -133,22 +150,22 @@ const App = () => {
           path: "/payment",
           element: <ProtectedRoute element={Payment} allowedRoles={["tso"]} />,
         },
-        {
-          path: "/categorie/:id",
-          element: <SingleCatagorie />,
-        },
-        {
-          path: "/product",
-          element: <Product />,
-        },
-        {
-          path: "/product/create",
-          element: <CreateProduct />,
-        },
-        {
-          path: "/product/:id",
-          element: <SingleProduct />,
-        },
+        // {
+        //   path: "/categorie/:id",
+        //   element: <SingleCatagorie />,
+        // },
+        // {
+        //   path: "/product",
+        //   element: <Product />,
+        // },
+        // {
+        //   path: "/product/create",
+        //   element: <CreateProduct />,
+        // },
+        // {
+        //   path: "/product/:id",
+        //   element: <SingleProduct />,
+        // },
         //bo
         {
           path: "/bus-operator",
@@ -309,7 +326,7 @@ const App = () => {
       path: "/reset/password",
       element: (
         // <PublicRoute>
-          <ResetPasswordPage />
+        <ResetPasswordPage />
         // </PublicRoute>
       ),
     },
@@ -317,7 +334,7 @@ const App = () => {
       path: "/request/reset",
       element: (
         // <PublicRoute>
-          <ForgotPasswordPage />
+        <ForgotPasswordPage />
         // </PublicRoute>
       ),
     },
@@ -325,7 +342,7 @@ const App = () => {
       path: "/confirmation",
       element: (
         // <PublicRoute>
-          <ConfirmationPage />
+        <ConfirmationPage />
         // </PublicRoute>
       ),
     },

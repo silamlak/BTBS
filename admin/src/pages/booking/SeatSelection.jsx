@@ -29,7 +29,7 @@ const SeatSelection = () => {
 
   useEffect(() => {
     if (passengerData?.length === 0 || !scheduleId) {
-      navigate("/categorie");
+      navigate("/booking");
     }
   }, [navigate, passengerData?.length, scheduleId]);
 

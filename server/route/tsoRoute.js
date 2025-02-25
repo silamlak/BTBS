@@ -4,6 +4,7 @@ import {
   addSeat,
   bookTicket,
   cancelBooking,
+  editBookingPassengerDetail,
   getBooking,
   getSeats,
   myBooking,
@@ -21,5 +22,9 @@ router.get("/booking/:id", getBooking);
 router.get("/booking/cancel/:id", cancelBooking);
 router.get("/booking/my/:id", myBooking);
 router.get("/booking/my-booking-detail/:id", myBookingDetail);
+router.post(
+  "/booking/my-booking/edit/passenger/:id",
+  editBookingPassengerDetail
+);
 
 export default router;

@@ -1,10 +1,16 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { CheckCircle, User, MapPin, CreditCard, Clock } from "lucide-react";
-import { cancelBookingFun, getBookingFun } from "../../features/booking/bookingApi";
-import { useLocation } from "react-router-dom";
+import {
+  cancelBookingFun,
+  getBookingFun,
+} from "../../features/booking/bookingApi";
+import { useLocation, useNavigate } from "react-router-dom";
 import ErrorMessage from "../../components/ErrorMessage";
 import Loader from "../../components/Loader";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setPassengerData, setScheduleId, setSeats } from "../../features/book/bookSlice";
 
 const formatDate = (dateString) => {
   return new Intl.DateTimeFormat("en-US", {
@@ -15,7 +21,9 @@ const formatDate = (dateString) => {
 };
 
 const MyBooking = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
   const search = params.get("search");
   const { data, isLoading, isError, error } = useQuery({
@@ -25,27 +33,44 @@ const MyBooking = () => {
   });
 
   console.log(data);
-const mutation = useMutation({
-  mutationFn: cancelBookingFun,
-  onSuccess: (data) => {
-    console.log(data);
-    console.log(data);
-  }
-});
+  const mutation = useMutation({
+    mutationFn: cancelBookingFun,
+    onSuccess: (data) => {
+      console.log(data);
+      console.log(data);
+    },
+  });
+
   const handleCancel = () => {
     console.log("Cancel clicked");
     mutation.mutate(data?._id);
   };
-   if (isLoading)
-     return (
-       <div className="w-full flex justify-center p-6">
-         {" "}
-         <Loader />{" "}
-       </div>
-     );
-   if (isError) {
-     return <ErrorMessage error={error} />;
-   }
+
+  const handlePassengerEdit = () => {
+    if (data) {
+      dispatch(setPassengerData(data?.booking?.passengers));
+    }
+    navigate(`/my-booking/edit/passenger?search=${data?.booking?._id}`);
+  };
+
+  const handleSeatEdit = () => {
+    if (data) {
+      dispatch(setPassengerData(data?.booking?.passengers));
+      dispatch(setSeats(data?.booking?.seats));
+      dispatch(setScheduleId(data?.booking?.scheduleId));
+    }
+    navigate(`/my-booking/edit/seat?search=${data?.booking?._id}`);
+  };
+    if (isLoading)
+      return (
+        <div className="w-full flex justify-center p-6">
+          {" "}
+          <Loader />{" "}
+        </div>
+      );
+    if (isError) {
+      return <ErrorMessage error={error} />;
+    }
   return (
     <div>
       <motion.div
@@ -86,8 +111,13 @@ const mutation = useMutation({
               <div className="flex items-center gap-3">
                 <User className="text-gray-700 dark:text-gray-300" size={24} />
                 <span className="text-gray-800 dark:text-gray-100 font-medium">
-                  {passenger.first_name} ({passenger.type})
+                  {passenger.first_name}
                 </span>
+                <div className="flex items-center gap-3">
+                  <span className="text-gray-800 dark:text-gray-100 font-medium">
+                    {passenger.last_name}
+                  </span>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle
@@ -128,6 +158,12 @@ const mutation = useMutation({
         </motion.button> */}
       </motion.div>
       <button onClick={handleCancel}>Cancel</button>
+      <button className="p-4" onClick={handlePassengerEdit}>
+        Edit Passenger
+      </button>
+      <button className="p-4" onClick={handleSeatEdit}>
+        Edit Seat
+      </button>
     </div>
   );
 };

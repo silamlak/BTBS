@@ -24,7 +24,7 @@ const Payment = () => {
 
   useEffect(() => {
     if (passengerData?.length === 0 || seats?.length === 0 || !scheduleId) {
-      navigate("/categorie");
+      navigate("/booking");
     }
   }, [navigate, passengerData?.length, seats?.length, scheduleId]);
 

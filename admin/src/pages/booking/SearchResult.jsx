@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Bus, MapPin, Calendar, AlertCircle } from "lucide-react";
 import Loader from "../../components/Loader";
 import ErrorMessage from "../../components/ErrorMessage";
+import { useEffect } from "react";
 const SearchResult = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,6 +23,12 @@ const SearchResult = () => {
   const travelDate = searchParams.get("date");
   const adults = searchParams.get("adults");
   const childs = searchParams.get("children");
+
+  useEffect(() => {
+    if (!fromPlace || !toPlace) {
+      navigate("/booking");
+    }
+  }, [fromPlace, toPlace, navigate]);
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["searchResults", fromPlace, toPlace, travelDate],

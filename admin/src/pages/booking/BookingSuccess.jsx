@@ -12,12 +12,12 @@ const BookingSuccess = () => {
 
   useEffect(() => {
     if (!id) {
-      navigate("/categorie");
+      navigate("/booking", {replace: true});
     }
     dispatch(clearAll());
   }, [dispatch, id, navigate]);
   const handleToDashboard = () => {
-    navigate("/categorie");
+    navigate("/booking");
   };
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">

@@ -24,7 +24,7 @@ const PassengerInfo = () => {
 
   useEffect(() => {
     if (!scheduleId) {
-      navigate("/categorie");
+      navigate("/booking");
     }
   }, [navigate, scheduleId]);
 

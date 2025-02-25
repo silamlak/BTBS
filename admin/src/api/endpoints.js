@@ -121,6 +121,7 @@ export const endpoints = {
   seat: `${api}/tso/seat`,
   get_total_seat: `${api}/bo/total/seat`,
   get_booking: `${api}/tso/booking`,
+  update_booking_pass: `${api}/tso/booking/my-booking/edit/passenger`,
   cancel_booking: `${api}/tso/booking/cancel`,
   get_bo_schedule: `${api}/tso/schedule/get`,
 
