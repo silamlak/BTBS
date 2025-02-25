@@ -3,22 +3,22 @@ import { CheckCircle } from "lucide-react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { clearAll } from "../../features/catagorie/catagorieSlice";
+import { clearAll } from "../../features/book/bookSlice";
 
 const BookingSuccess = () => {
-    const dispatch = useDispatch();
-     const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { id } = useParams();
 
   useEffect(() => {
-    if(!id) {
+    if (!id) {
       navigate("/categorie");
     }
     dispatch(clearAll());
-  }, [dispatch, id, navigate])
-const handleToDashboard = () => {
- navigate("/categorie");
-}
+  }, [dispatch, id, navigate]);
+  const handleToDashboard = () => {
+    navigate("/categorie");
+  };
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <motion.div
@@ -46,7 +46,7 @@ const handleToDashboard = () => {
           Booking ID: <span className="font-bold">{id}</span>
         </p>
         <motion.button
-        onClick={handleToDashboard}
+          onClick={handleToDashboard}
           className="mt-6 px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

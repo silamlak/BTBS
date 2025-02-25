@@ -107,8 +107,9 @@ export const UpdateBOOfficerPassword = async (req, res, next) => {
 export const deleteBOOfficer = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const Bo = await boofficerModel.findByIdAndDelete(id);
+    const Bo = await boofficerModel.findById(id);
     if (!Bo) return next(custom_error_handler(404, "Bus Operator not found"));
+    await boofficerModel.findByIdAndDelete(id);
     res.status(200).json({ msg: "Bus Operator Removed" });
   } catch (error) {
     next(error);
@@ -379,8 +380,9 @@ export const UpdateDriverPassword = async (req, res, next) => {
 export const deleteDriver = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const driver = await driverModel.findByIdAndDelete(id);
+    const driver = await driverModel.findById(id);
     if (!driver) return next(custom_error_handler(404, "Driver not found"));
+    await driverModel.findByIdAndDelete(id);
     res.status(200).json({ msg: "Driver Removed" });
   } catch (error) {
     next(error);
@@ -504,9 +506,10 @@ export const UpdateTsoPassword = async (req, res, next) => {
 export const deleteTso = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const tso = await TicketSalesOfficerModel.findByIdAndDelete(id);
+    const tso = await TicketSalesOfficerModel.findById(id);
     if (!tso)
       return next(custom_error_handler(404, "Ticket Sells Officer not found"));
+    await TicketSalesOfficerModel.findByIdAndDelete(id);
     res.status(200).json({ msg: "Ticket Sells Officer Removed" });
   } catch (error) {
     next(error);

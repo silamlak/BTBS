@@ -7,7 +7,7 @@ import {
   updatePassenger,
   setAdults,
   setChildren,
-} from "../../features/catagorie/catagorieSlice";
+} from "../../features/book/bookSlice";
 import { motion } from "framer-motion";
 import { User, Mail, Phone, Venus } from "lucide-react";
 const PassengerInfo = () => {
@@ -20,13 +20,13 @@ const PassengerInfo = () => {
     passengerData,
     selectedPassengerIndex,
     scheduleId,
-  } = useSelector((state) => state.catagorie);
-  
-    useEffect(() => {
-      if (!scheduleId) {
-        navigate("/categorie");
-      }
-    }, [navigate, scheduleId]);
+  } = useSelector((state) => state.book);
+
+  useEffect(() => {
+    if (!scheduleId) {
+      navigate("/categorie");
+    }
+  }, [navigate, scheduleId]);
 
   const generateOTP = () => {
     const otpLength = 6;

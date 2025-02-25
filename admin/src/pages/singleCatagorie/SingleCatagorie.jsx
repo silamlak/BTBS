@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getSingleCatagorieFun } from "../../features/catagorie/catagorieApi";
+import { getSingleCatagorieFun } from "../../features/book/bookApi";
 import DataTable, { createTheme } from "react-data-table-component";
 import { useSelector } from "react-redux";
 
@@ -46,11 +46,7 @@ const columns = [
   {
     name: "Image",
     selector: (row) => (
-      <img
-        src={row?.s_img}
-        alt={row?.name}
-        style={{ width: 50, height: 50 }}
-      />
+      <img src={row?.s_img} alt={row?.name} style={{ width: 50, height: 50 }} />
     ),
     sortable: false,
   },
@@ -110,8 +106,8 @@ const SingleCatagorie = () => {
             onChange={(e) => setInp(e.value)}
           />
         </div>
-        </div>
-        <div className="mt-10">
+      </div>
+      <div className="mt-10">
         <input
           type="text"
           name="search"

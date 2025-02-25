@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FaRegSave } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../../components/Loader";
-import { getSingleBusOperatorFun, updateBusOperatorFun } from "../../features/busOperator/busOeratorApi";
+import {
+  deleteBusOperatorFun,
+  getSingleBusOperatorFun,
+  updateBusOperatorFun,
+  updateBusOperatorPasswordFun,
+} from "../../features/busOperator/busOeratorApi";
 import { addboDetail } from "../../features/busOperator/busOperatorSlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -23,10 +28,7 @@ const validationSchema = yup.object().shape({
   phone: yup
     .string()
     .required("Phone number is required")
-    .matches(
-      /^09\d{8}$/,
-      "Phone number must be Ethiopian"
-    ),
+    .matches(/^09\d{8}$/, "Phone number must be Ethiopian"),
   employment_status: yup.string().required("Employment Status is required"),
   education: yup.string().required("Education is required"),
   department: yup.string().required("Department is required"),
@@ -38,8 +40,9 @@ const validationSchema = yup.object().shape({
 const SingleCustomer = () => {
   const currentData = useSelector((state) => state.bo.currentData);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const { id } = useParams();
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState("");
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["singleOrder", id],
     queryFn: () => getSingleBusOperatorFun(id),
@@ -72,7 +75,7 @@ const SingleCustomer = () => {
     if (data) {
       dispatch(addboDetail(data));
       reset({
-        first_name: currentData?.first_name || "",
+        first_name: data?.first_name || "",
         middle_name: data.middle_name || "",
         last_name: data.last_name || "",
         email: data.email || "",
@@ -85,29 +88,51 @@ const SingleCustomer = () => {
         street: data.address?.street || "",
       });
     }
-  }, [data, reset]);
-  
+  }, [data, dispatch]);
+
   const mutation = useMutation({
     mutationFn: updateBusOperatorFun,
-    onSuccess:(data) => {
+    onSuccess: (data) => {
       dispatch(addboDetail(data?.Bo));
       console.log(data.Bo);
       // reset()
-    }, 
+    },
     onError: (err) => {
-      console.log(err)
-    }
-  })
+      console.log(err);
+    },
+  });
+
+  const mutationp = useMutation({
+    mutationFn: updateBusOperatorPasswordFun,
+    onSuccess: (data) => {
+      console.log(data);
+      setPassword('')
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const mutationd = useMutation({
+    mutationFn: deleteBusOperatorFun,
+    onSuccess: (data) => {
+      console.log(data);
+      navigate("/bus-operator");
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
 
   const onSubmit = (formData) => {
     console.log("Saving updated data:", formData);
-    mutation.mutate({id,formData})
+    mutation.mutate({ id, formData });
   };
   const onPasswordSubmit = () => {
-    // Logic for saving the updated data
-  }
+    mutationp.mutate({id, password})
+  };
   const onDelete = () => {
-    // Logic for delete
+    mutationd.mutate(id)
   };
   return (
     <div>

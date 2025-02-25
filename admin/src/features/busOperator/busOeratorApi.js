@@ -55,10 +55,11 @@ export const updateBusOperatorFun = async ({ id, formData }) => {
   }
 };
 
-export const updateBusOperatorPasswordFun = async (id) => {
+export const updateBusOperatorPasswordFun = async ({ id, password }) => {
   try {
-    const res = await axiosInstance.put(
+    const res = await axiosInstance.post(
       `${endpoints.update_bo_password}/${id}`,
+      { password },
       {
         withCredentials: true,
       }

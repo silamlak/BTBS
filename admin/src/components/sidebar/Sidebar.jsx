@@ -13,7 +13,6 @@ const Sidebar = ({ theme }) => {
   const location = useLocation();
   const hrs = [
     { name: "dashboard", link: "/", icon: MdOutlineDashboard },
-
     { name: "BusOperator", link: "/bus-operator", icon: FiShoppingCart },
     { name: "Drivers", link: "/drivers", icon: FiShoppingCart },
     { name: "Buses", link: "/buses", icon: FiShoppingCart },
@@ -27,8 +26,7 @@ const Sidebar = ({ theme }) => {
   ];
   const tsos = [
     { name: "dashboard", link: "/", icon: MdOutlineDashboard },
-    { name: "Orders", link: "/orders", icon: AiOutlineUser },
-    { name: "Booking", link: "/categorie", icon: FiMessageSquare },
+    { name: "Booking", link: "/booking", icon: FiMessageSquare },
     {
       name: "Get Booking",
       link: "/search-booking",

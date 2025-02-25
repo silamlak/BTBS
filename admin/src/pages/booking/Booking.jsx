@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useDispatch } from "react-redux";
-import { clearAll } from "../../features/catagorie/catagorieSlice";
+import { clearAll } from "../../features/book/bookSlice";
 import { ChevronDown, ChevronUp, RefreshCw } from "lucide-react";
 
 const Booking = () => {
@@ -37,14 +37,14 @@ const Booking = () => {
   });
   const [showPassengerDropdown, setShowPassengerDropdown] = useState(false);
 
-  // Calculate the total number of passengers
+
   const totalPassengers = passengers.adult + passengers.child;
 
   // Maximum number of children allowed based on adult count
   const getMaxChildren = (adultCount) => {
     if (adultCount === 6) return 1; // 6 adults, no children allowed
     if (adultCount === 5) return 2; // 5 adults, 1 child allowed
-    // if (adultCount > 4) return 3; 
+    // if (adultCount > 4) return 3;
     return 3; // Otherwise, max 3 children
   };
 

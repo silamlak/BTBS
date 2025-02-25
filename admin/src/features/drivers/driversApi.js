@@ -66,11 +66,23 @@ export const updateDriverFun = async ({ id, formData }) => {
   }
 };
 
+export const deleteDriverFun = async (id) => {
+  try {
+    const res = await axiosInstance.delete(`${endpoints.delete_driver}/${id}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const addDriverFun = async (data) => {
   try {
     const res = await axiosInstance.post(endpoints.add_driver, data, {
       withCredentials: true,
     });
+    return res.data
   } catch (error) {
     return handleError(error);
   }

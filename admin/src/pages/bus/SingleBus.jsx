@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deleteBusFun,
   updateBusFun,
   viewBusFun,
 } from "../../features/buses/busApi";
@@ -86,16 +87,27 @@ const SingleBus = () => {
     },
   });
 
+  const mutationd = useMutation({
+    mutationFn: deleteBusFun,
+    onSuccess: (data) => {
+      console.log(data);
+      // reset()
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   const onSubmit = (formData) => {
     console.log("object");
     console.log("Saving updated data:", formData);
     mutation.mutate({ id, formData });
   };
   const onPasswordSubmit = () => {
-    // Logic for saving the updated data
+
   };
   const onDelete = () => {
-    // Logic for delete
+        mutationd.mutate(id);
   };
   return (
     <div>

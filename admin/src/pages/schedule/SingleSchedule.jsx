@@ -14,6 +14,16 @@ import {
 } from "../../features/schedule/scheduleApi";
 import { addScheduleDetail } from "../../features/schedule/scheduleSlice";
 
+function formatDate(dateString) {
+  const date = new Date(dateString); // Convert the date string to a Date object
+
+  const year = date.getFullYear(); // Get the year
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Get the month (0-indexed, so add 1) and pad it with zero if necessary
+  const day = String(date.getDate()).padStart(2, "0"); // Get the day of the month and pad it with zero if necessary
+
+  // Return the formatted date as 'YYYY-MM-DD'
+  return `${year}-${month}-${day}`;
+}
 // Validation Schema
 const validationSchema = yup.object().shape({
   schedule_id: yup.string().required("schedule_id is required"),
@@ -63,9 +73,9 @@ const SingleSchedule = () => {
       dispatch(addScheduleDetail(data));
       reset({
         schedule_id: data?.schedule_id || "",
-        schedule_date: data.schedule_date || "",
-        departure_time: data.departure_time || "",
-        arrival_time: data.arrival_time || "",
+        schedule_date: formatDate(data?.schedule_date) || "",
+        departure_time: formatDate(data.departure_time) || "",
+        arrival_time: formatDate(data.arrival_time) || "",
         from: data.from || "",
         to: data.to || "",
         ticket_price: data.ticket_price || "",

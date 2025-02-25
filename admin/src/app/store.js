@@ -15,7 +15,7 @@ import stationSlice from "../features/station/stationSlice";
 import routeSlice from "../features/route/routeSlice";
 import scheduleSlice from "../features/schedule/scheduleSlice";
 
-import catagorieSlice from "../features/catagorie/catagorieSlice";
+import bookSlice from "../features/book/bookSlice";
 
 const persistConfig = {
   key: "root_btbs",
@@ -35,7 +35,7 @@ const rootReducer = combineReducers({
   station: stationSlice,
   route: routeSlice,
   schedule: scheduleSlice,
-  catagorie: catagorieSlice,
+  book: bookSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

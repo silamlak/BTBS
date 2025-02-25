@@ -8,7 +8,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { updateDriverFun, viewDriversFun } from "../../features/drivers/driversApi";
+import { deleteDriverFun, updateDriverFun, viewDriversFun } from "../../features/drivers/driversApi";
 import { addDriverDetail } from "../../features/drivers/driverSlice";
 
 // Validation Schema
@@ -63,7 +63,7 @@ const SingleDriver = () => {
     if (data) {
       dispatch(addDriverDetail(data));
       reset({
-        first_name: currentData?.first_name || "",
+        first_name: data?.first_name || "",
         middle_name: data.middle_name || "",
         last_name: data.last_name || "",
         email: data.email || "",
@@ -87,16 +87,24 @@ const SingleDriver = () => {
     },
   });
 
+  const mutationd = useMutation({
+    mutationFn: deleteDriverFun,
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   const onSubmit = (formData) => {
-    console.log('object')
-    console.log("Saving updated data:", formData);
     mutation.mutate({ id, formData });
   };
-  const onPasswordSubmit = () => {
-    // Logic for saving the updated data
-  };
+  // const onPasswordSubmit = () => {
+  //   // Logic for saving the updated data
+  // };
   const onDelete = () => {
-    // Logic for delete
+    mutationd.mutate(id)
   };
   return (
     <div>
@@ -271,26 +279,7 @@ const SingleDriver = () => {
                   </div>
                 </div>
               </div>
-              <div className="w-full flex justify-center items-center max-sm:flex-col gap-6 mb-4">
-                <div className="flex flex-col">
-                  <label htmlFor="password" className="text-[13px]">
-                    New Password
-                  </label>
-                  <input
-                    id="password"
-                    type="text"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
-                  />
-                </div>
-                <button
-                  onClick={onPasswordSubmit}
-                  className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded"
-                >
-                  New Password
-                </button>
-              </div>
+
               <div className="w-full flex justify-center gap-6">
                 <button
                   type="submit"

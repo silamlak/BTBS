@@ -96,7 +96,7 @@ const App = () => {
           element: <SingleOrder />,
         },
         {
-          path: "/categorie",
+          path: "/booking",
           element: <ProtectedRoute element={Booking} allowedRoles={["tso"]} />,
         },
         {

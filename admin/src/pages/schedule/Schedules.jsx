@@ -44,6 +44,17 @@ const customStyles = {
   },
 };
 
+function formatDate(dateString) {
+  const date = new Date(dateString); // Convert the date string to a Date object
+
+  const year = date.getFullYear(); // Get the year
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Get the month (0-indexed, so add 1) and pad it with zero if necessary
+  const day = String(date.getDate()).padStart(2, "0"); // Get the day of the month and pad it with zero if necessary
+
+  // Return the formatted date as 'YYYY-MM-DD'
+  return `${year}-${month}-${day}`;
+}
+
 const columns = [
   {
     name: "schedule_id",
@@ -52,7 +63,7 @@ const columns = [
   },
   {
     name: "schedule_date",
-    selector: (row) => row?.schedule_date,
+    selector: (row) => formatDate(row?.schedule_date),
     sortable: true,
     hide: "md",
   },

@@ -1,16 +1,11 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getBookingSearchFun } from "../../features/catagorie/catagorieApi";
+import { getBookingSearchFun } from "../../features/book/bookApi";
 import { useDispatch } from "react-redux";
-import { setScheduleId, setSchedulePrice } from "../../features/catagorie/catagorieSlice";
+import { setScheduleId, setSchedulePrice } from "../../features/book/bookSlice";
 import { motion } from "framer-motion";
-import {
-  Bus,
-  MapPin,
-  Calendar,
-  AlertCircle,
-} from "lucide-react";
-import Loader from '../../components/Loader'
+import { Bus, MapPin, Calendar, AlertCircle } from "lucide-react";
+import Loader from "../../components/Loader";
 import ErrorMessage from "../../components/ErrorMessage";
 const SearchResult = () => {
   const location = useLocation();

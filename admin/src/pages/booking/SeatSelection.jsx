@@ -9,7 +9,7 @@ import {
   setSelectedPassengerIndex,
   setSeats,
   setBusId,
-} from "../../features/catagorie/catagorieSlice";
+} from "../../features/book/bookSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getSeatFun, totalSeatFun } from "../../features/booking/bookingApi";
 import ErrorMessage from "../../components/ErrorMessage";
@@ -24,7 +24,7 @@ const SeatSelection = () => {
     selectedPassengerIndex,
     selectedSeats,
     scheduleId,
-  } = useSelector((state) => state.catagorie);
+  } = useSelector((state) => state.book);
   const [totalPass, setTotalPass] = useState();
 
   useEffect(() => {

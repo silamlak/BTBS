@@ -82,6 +82,17 @@ export const updateBusFun = async ({ id, formData }) => {
   }
 };
 
+export const deleteBusFun = async (id) => {
+  try {
+    const res = await axiosInstance.delete(`${endpoints.delete_bus}/${id}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const addBusFun = async (data) => {
   try {
     const res = await axiosInstance.post(endpoints.add_bus, data, {

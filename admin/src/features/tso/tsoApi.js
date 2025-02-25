@@ -66,6 +66,32 @@ export const updateTsoFun = async ({ id, formData }) => {
   }
 };
 
+export const updateTsoPasswordFun = async ({ id, password }) => {
+  try {
+    const res = await axiosInstance.post(
+      `${endpoints.update_tso_password}/${id}`,
+      { password },
+      {
+        withCredentials: true,
+      }
+    );
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const deleteTsoFun = async (id) => {
+  try {
+    const res = await axiosInstance.delete(`${endpoints.delate_tso}/${id}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const addTsoFun = async (data) => {
   try {
     const res = await axiosInstance.post(endpoints.add_tso, data, {

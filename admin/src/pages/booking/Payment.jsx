@@ -12,7 +12,7 @@ const Payment = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [cCode, setCCode] = useState(0);
   const { passengerData, seats, busId, scheduleId, schedulePrice } =
-    useSelector((state) => state.catagorie);
+    useSelector((state) => state.book);
   const getSearchParams = (query) => {
     return new URLSearchParams(query);
   };

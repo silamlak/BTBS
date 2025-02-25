@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FaRegSave } from "react-icons/fa";
@@ -9,7 +9,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deleteTsoFun,
   updateTsoFun,
+  updateTsoPasswordFun,
   viewTsoFun,
 } from "../../features/tso/tsoApi";
 import { addTsoDetail } from "../../features/tso/tsoSlice";
@@ -35,6 +37,7 @@ const validationSchema = yup.object().shape({
 const SingleTso = () => {
   const currentData = useSelector((state) => state.tso.currentData);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const { id } = useParams();
   const [password, setPassword] = useState("");
   const { data, isLoading, isError, error } = useQuery({
@@ -61,6 +64,7 @@ const SingleTso = () => {
       street: "",
     },
   });
+
 
   useEffect(() => {
     if (data) {
@@ -90,16 +94,37 @@ const SingleTso = () => {
     },
   });
 
+  const mutationp = useMutation({
+    mutationFn: updateTsoPasswordFun,
+    onSuccess: (data) => {
+      console.log(data);
+      setPassword('')
+      // reset()
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const mutationd = useMutation({
+    mutationFn: deleteTsoFun,
+    onSuccess: (data) => {
+      console.log(data);
+      navigate('/tso')
+    },
+    onError: (err) => { 
+      console.log(err);
+    },
+  });
+
   const onSubmit = (formData) => {
-    console.log("object");
-    console.log("Saving updated data:", formData);
     mutation.mutate({ id, formData });
   };
   const onPasswordSubmit = () => {
-    // Logic for saving the updated data
+    mutationp.mutate({id, password})
   };
   const onDelete = () => {
-    // Logic for delete
+    mutationd.mutate(id)
   };
   return (
     <div>

@@ -82,18 +82,22 @@ export const endpoints = {
   get_tso: `${api}/hr/tso/get`,
   get_tso_list: `${api}/hr/tso/get_list`,
   update_tso: `${api}/hr/tso/update`,
+  delate_tso: `${api}/hr/tso/delete`,
+  update_tso_password: `${api}/hr/tso/update/password`,
   add_tso: `${api}/hr/adddtso`,
 
   //drivers
   get_driver_list: `${api}/hr/driver/get_list`,
   get_driver: `${api}/hr/driver/get`,
   update_driver: `${api}/hr/driver/update`,
+  delete_driver: `${api}/hr/driver/delete`,
   add_driver: `${api}/hr/adddriver`,
 
   //buses
   get_bus: `${api}/hr/bus/get`,
   get_bus_list: `${api}/hr/bus/get_list`,
   update_bus: `${api}/hr/bus/update`,
+  delete_bus: `${api}/hr/bus/delete`,
   add_bus: `${api}/hr/addbus`,
 
   //station

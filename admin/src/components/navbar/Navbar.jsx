@@ -1,56 +1,59 @@
-import React, { useState } from 'react'
-import Switcher from '../Switcher'
-import { useDispatch, useSelector } from 'react-redux'
-import { logout } from '../../features/auth/authSlice'
+import React, { useState } from "react";
+import Switcher from "../Switcher";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../features/auth/authSlice";
 import { MdClose, MdLogout, MdMenu, MdOutlineDashboard } from "react-icons/md";
-import { AiOutlineUser } from 'react-icons/ai';
-import { FiFolder, FiMessageSquare, FiShoppingCart } from 'react-icons/fi';
-import { TbReportAnalytics } from 'react-icons/tb';
-import { Link } from 'react-router-dom';
+import { AiOutlineUser } from "react-icons/ai";
+import { FiFolder, FiMessageSquare, FiShoppingCart } from "react-icons/fi";
+import { TbReportAnalytics } from "react-icons/tb";
+import { Link } from "react-router-dom";
 const Navbar = () => {
-  const dispatch = useDispatch()
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const user = useSelector((state) => state.auth.user);
 
-    const toggleSidebar = () => {
-      setIsSidebarOpen(!isSidebarOpen);
-    };
-       const hrs = [
-         { name: "dashboard", link: "/", icon: MdOutlineDashboard },
-         { name: "Orders", link: "/orders", icon: AiOutlineUser },
-         { name: "Create Product", link: "/product/create", icon: FiFolder },
-         { name: "BusOperator", link: "/bus-operator", icon: FiShoppingCart },
-         { name: "Drivers", link: "/drivers", icon: FiShoppingCart },
-         { name: "Buses", link: "/buses", icon: FiShoppingCart },
-         { name: "Tso", link: "/tso", icon: FiShoppingCart },
-       ];
-       const bos = [
-         { name: "dashboard", link: "/", icon: MdOutlineDashboard },
-         { name: "Orders", link: "/orders", icon: AiOutlineUser },
-         { name: "Station", link: "/station", icon: AiOutlineUser },
-         { name: "Route", link: "/route", icon: AiOutlineUser },
-         { name: "Schedule", link: "/schedule", icon: AiOutlineUser },
-       ];
-       const tsos = [
-         { name: "dashboard", link: "/", icon: MdOutlineDashboard },
-         { name: "Orders", link: "/orders", icon: AiOutlineUser },
-         { name: "Booking", link: "/categorie", icon: FiMessageSquare },
-         {
-           name: "Get Booking",
-           link: "/search-booking",
-           icon: TbReportAnalytics,
-           margin: true,
-         },
-       ];
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+  const hrs = [
+    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+    { name: "BusOperator", link: "/bus-operator", icon: FiShoppingCart },
+    { name: "Drivers", link: "/drivers", icon: FiShoppingCart },
+    { name: "Buses", link: "/buses", icon: FiShoppingCart },
+    { name: "Tso", link: "/tso", icon: FiShoppingCart },
+  ];
+  const bos = [
+    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+    { name: "Station", link: "/station", icon: AiOutlineUser },
+    { name: "Route", link: "/route", icon: AiOutlineUser },
+    { name: "Schedule", link: "/schedule", icon: AiOutlineUser },
+  ];
+  const tsos = [
+    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+    { name: "Booking", link: "/booking", icon: FiMessageSquare },
+    {
+      name: "Get Booking",
+      link: "/search-booking",
+      icon: TbReportAnalytics,
+      margin: true,
+    },
+  ];
 
-       const menuItems =
-         user?.role === "hr"
-           ? hrs
-           : user?.role === "bo"
-           ? bos
-           : user?.role === "tso"
-           ? tsos
-           : [];
+  const admin = [
+    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+    { name: "Hr", link: "/hr", icon: FiShoppingCart },
+  ];
+
+  const menuItems =
+    user?.role === "hr"
+      ? hrs
+      : user?.role === "bo"
+      ? bos
+      : user?.role === "tso"
+      ? tsos
+      : user?.role === "admin"
+      ? admin
+      : [];
   return (
     <div className="sticky top-0 right-0 z-50">
       <div className="border-b-2 border-blue-500 dark:border-orange-500">
@@ -111,6 +114,6 @@ const Navbar = () => {
       )}
     </div>
   );
-}
+};
 
-export default Navbar
+export default Navbar;
