@@ -68,8 +68,15 @@ import BookingSuccess from "./pages/booking/BookingSuccess";
 import SignInAdmin from "./pages/auth/SignInAdmin";
 import EditSeatInfo from "./pages/manageBooking/EditSeatInfo";
 import EditPassengerInfo from "./pages/manageBooking/EditPassengerInfo";
+import { useSelector } from "react-redux";
+import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import BoDashboard from "./pages/dashboard/BoDashboard";
+import HRDashboard from "./pages/dashboard/HRDashboard";
 
 const App = () => {
+  const isAuth = useSelector((state) => state.auth.user);
+  const userRole = isAuth?.role?.toLowerCase();
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -84,19 +91,17 @@ const App = () => {
           // element: <Home />,
           element: (
             <ProtectedRoute
-              element={Home}
+              element={
+                userRole === "admin"
+                  ? AdminDashboard
+                  : userRole === "hr"
+                  ? HRDashboard
+                  : BoDashboard
+              }
               allowedRoles={["tso", "hr", "bo", "admin"]}
             />
           ),
         },
-        // {
-        //   path: "/orders",
-        //   element: <Order />,
-        // },
-        // {
-        //   path: "/order/:id",
-        //   element: <SingleOrder />,
-        // },
         {
           path: "/booking",
           element: <ProtectedRoute element={Booking} allowedRoles={["tso"]} />,
@@ -150,22 +155,6 @@ const App = () => {
           path: "/payment",
           element: <ProtectedRoute element={Payment} allowedRoles={["tso"]} />,
         },
-        // {
-        //   path: "/categorie/:id",
-        //   element: <SingleCatagorie />,
-        // },
-        // {
-        //   path: "/product",
-        //   element: <Product />,
-        // },
-        // {
-        //   path: "/product/create",
-        //   element: <CreateProduct />,
-        // },
-        // {
-        //   path: "/product/:id",
-        //   element: <SingleProduct />,
-        // },
         //bo
         {
           path: "/bus-operator",
@@ -256,7 +245,7 @@ const App = () => {
         {
           path: "/add-station",
           element: (
-            <ProtectedRoute element={AddStation} allowedRoles={["hr"]} />
+            <ProtectedRoute element={AddStation} allowedRoles={["bo"]} />
           ),
         },
         //route
@@ -296,8 +285,9 @@ const App = () => {
     {
       path: "/sign-in",
       element: (
-        // <PublicRoute>
-        <Signin />
+        <PublicRoute>
+          <Signin />
+        </PublicRoute>
       ),
     },
     {
@@ -317,33 +307,33 @@ const App = () => {
     {
       path: "/sign-up",
       element: (
-        // <PublicRoute>
-        <Signup />
-        // </PublicRoute>
+        <PublicRoute>
+          <Signup />
+        </PublicRoute>
       ),
     },
     {
       path: "/reset/password",
       element: (
-        // <PublicRoute>
-        <ResetPasswordPage />
-        // </PublicRoute>
+        <PublicRoute>
+          <ResetPasswordPage />
+        </PublicRoute>
       ),
     },
     {
       path: "/request/reset",
       element: (
-        // <PublicRoute>
-        <ForgotPasswordPage />
-        // </PublicRoute>
+        <PublicRoute>
+          <ForgotPasswordPage />
+        </PublicRoute>
       ),
     },
     {
       path: "/confirmation",
       element: (
-        // <PublicRoute>
-        <ConfirmationPage />
-        // </PublicRoute>
+        <PublicRoute>
+          <ConfirmationPage />
+        </PublicRoute>
       ),
     },
     {

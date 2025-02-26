@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FaRegSave } from "react-icons/fa";
@@ -8,7 +8,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { updateStationFun, viewStationFun } from "../../features/station/stationApi";
+import { deleteStationFun, updateStationFun, viewStationFun } from "../../features/station/stationApi";
 import { addStationDetail } from "../../features/station/stationSlice";
 
 // Validation Schema
@@ -16,18 +16,12 @@ const validationSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
   contact_number: yup.string().required("contact_number is required"),
   location: yup.string().required("location is required"),
-  // model: yup.string().required("Model is required"),
-  // year_of_manufacture: yup
-  //   .string()
-  //   .required("Year of Manufacture number is required"),
-  // seating_capacity: yup.string().required("Seating Capacity is required"),
-  // fuel_type: yup.string().required("Fuel Type is required"),
-  // status: yup.string().required("Status is required"),
 });
 
 const SingleStation = () => {
  const currentData = useSelector((state) => state.bus.currentData);
  const dispatch = useDispatch();
+ const navigate = useNavigate()
  const { id } = useParams();
  const [password, setPassword] = useState("");
  const { data, isLoading, isError, error } = useQuery({
@@ -47,11 +41,6 @@ const SingleStation = () => {
      name: "",
      location: "",
      contact_number: "",
-    //  year_of_manufacture: "",
-    //  model: "",
-    //  make: "",
-    //  license_plate: "",
-    //  bus_id: "",
    },
  });
 
@@ -62,11 +51,6 @@ const SingleStation = () => {
        name: data?.name || "",
        location: data.location || "",
        contact_number: data.contact_number || "",
-       //  seating_capacity: data.seating_capacity || "",
-       //  year_of_manufacture: data.year_of_manufacture || "",
-       //  model: data.model || "",
-       //  make: data.make || "",
-       //  license_plate: data.license_plate || "",
      });
    }
  }, [data, reset]);
@@ -75,8 +59,16 @@ const SingleStation = () => {
    mutationFn: updateStationFun,
    onSuccess: (data) => {
      dispatch(addStationDetail(data?.Bus));
-     // console.log(data);
-     // reset()
+   },
+   onError: (err) => {
+     console.log(err);
+   },
+ });
+
+ const mutationd = useMutation({
+   mutationFn: deleteStationFun,
+   onSuccess: (data) => {
+     navigate("/station");
    },
    onError: (err) => {
      console.log(err);
@@ -84,15 +76,10 @@ const SingleStation = () => {
  });
 
  const onSubmit = (formData) => {
-   console.log("object");
-   console.log("Saving updated data:", formData);
    mutation.mutate({ id, formData });
  };
- const onPasswordSubmit = () => {
-   // Logic for saving the updated data
- };
  const onDelete = () => {
-   // Logic for delete
+   mutationd.mutate(id)
  };
  return (
    <div>

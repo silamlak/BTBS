@@ -3,28 +3,39 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addBusFun } from "../../features/buses/busApi";
 import { getDriversListFun } from "../../features/drivers/driversApi";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const AddBus = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    status: "",
-    fuel_type: "",
-    seating_capacity: "",
-    year_of_manufacture: "",
-    model: "",
-    make: "",
-    license_plate: "",
-    bus_id: "",
-    driver_id: "",
+
+  // React Hook Form setup
+  const schema = Yup.object({
+    status: Yup.string().required("Status is required."),
+    fuel_type: Yup.string().required("Fuel type is required."),
+    seating_capacity: Yup.string().required("Seating capacity is required."),
+    model: Yup.string().required("Model is required."),
+    make: Yup.string().required("Make is required."),
+    license_plate: Yup.string().required("License plate is required."),
+    bus_id: Yup.string().required("Bus ID is required."),
+    driver_id: Yup.string().required("Driver is required."),
   });
 
-    const { data, isLoading, isError } = useQuery({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["drivers_list"],
-    queryFn: () =>
-      getDriversListFun(),
+    queryFn: getDriversListFun,
     keepPreviousData: true,
   });
-  const [errors, setErrors] = useState({});
+
   const mutation = useMutation({
     mutationFn: addBusFun,
     onSuccess: () => {
@@ -32,46 +43,27 @@ const AddBus = () => {
     },
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const validate = () => {
-    const errors = {};
-    for (const [key, value] of Object.entries(formData)) {
-      if (!value) {
-        errors[key] = `${key.replace("_", " ")} is required.`;
-      }
-    }
-    setErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validate()) {
-      mutation.mutate(formData);
-    }
+  const onSubmit = (data) => {
+    mutation.mutate(data);
   };
 
   return (
-    <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Add Bus</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Input Fields */}
+    <div className="max-w-lg mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+        Add Bus
+      </h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Status Dropdown */}
         <div className="flex flex-col">
-          <label htmlFor="status" className="text-[13px]">
+          <label
+            htmlFor="status"
+            className="text-[13px] text-gray-700 dark:text-gray-300"
+          >
             Status
           </label>
           <select
             id="status"
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
+            {...register("status")}
             className="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
           >
             <option value="">Select Status</option>
@@ -80,61 +72,62 @@ const AddBus = () => {
             <option value="Under Maintenance">Under Maintenance</option>
             <option value="Retired">Retired</option>
           </select>
-          {errors.status && <p className="text-red-500">{errors.status}</p>}
+          {errors.status && (
+            <p className="text-red-500">{errors.status.message}</p>
+          )}
         </div>
+
+        {/* Other input fields (excluding year_of_manufacture) */}
         {[
-          // "status",
           "fuel_type",
           "seating_capacity",
-          "year_of_manufacture",
           "model",
           "make",
           "license_plate",
           "bus_id",
         ].map((field) => (
           <div key={field}>
-            <label className="block text-gray-700 capitalize">
+            <label className="block text-gray-700 dark:text-gray-300 capitalize">
               {field.replace("_", " ")}
             </label>
             <input
-              name={field}
-              value={formData[field]}
-              onChange={handleChange}
+              {...register(field)}
               type="text"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
             />
-            {errors[field] && <p className="text-red-500">{errors[field]}</p>}
+            {errors[field] && (
+              <p className="text-red-500">{errors[field].message}</p>
+            )}
           </div>
         ))}
 
-        {/* Dropdown for Driver Selection */}
+        {/* Driver Dropdown */}
         <div>
-          <label className="block text-gray-700">Driver</label>
+          <label className="block text-gray-700 dark:text-gray-300">
+            Driver
+          </label>
           <select
-            name="driver_id"
-            value={formData.driver_id}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {...register("driver_id")}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
           >
             <option value="">Select a driver</option>
             {!isLoading &&
               !isError &&
               data?.map((driver) => (
                 <option key={driver._id} value={driver._id}>
-                  {driver.first_name}{" "}
-                  {/* Replace "name" with the appropriate field */}
+                  {driver.first_name} {driver.last_name}
                 </option>
               ))}
           </select>
           {errors.driver_id && (
-            <p className="text-red-500">{errors.driver_id}</p>
+            <p className="text-red-500">{errors.driver_id.message}</p>
           )}
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
+          className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700"
         >
           {mutation.isLoading ? "Submitting..." : "Submit"}
         </button>

@@ -14,6 +14,7 @@ import {
   getDriversList,
   getHBOfficer,
   getRouteBusesList,
+  getTotalCount,
   getTso,
   getTsoList,
   UpdateBOOfficer,
@@ -31,8 +32,12 @@ import {
 import { verifyJWT } from "../middleware/verifyToken.js";
 const router = express.Router();
 
-//Hiring
 
+//dashboard
+router.get("/dashboard/get", getTotalCount);
+
+
+//Hiring
 //bus operator
 router.post("/addbo", BOOfficer);
 router.get("/bo/get/:id", ViewHBOfficer);

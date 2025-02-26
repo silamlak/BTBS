@@ -95,7 +95,7 @@ const bookingSchema = new mongoose.Schema(
       default: "Pending",
     },
     total_price: {
-      type: String,
+      type: Number,
       required: true,
     },
     confirmationCode: {

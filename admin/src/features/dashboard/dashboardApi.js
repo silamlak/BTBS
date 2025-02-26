@@ -59,3 +59,60 @@ export const getSalesRevenueFun = async (id) => {
     return handleError(error);
   }
 };
+
+//d
+
+export const getDashboardCountFun = async () => {
+  try {
+    const res = await axiosInstance.get(`${endpoints.get_bo_dash}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const getDashboardHRCountFun = async () => {
+  try {
+    const res = await axiosInstance.get(`${endpoints.get_hr_dash}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const getDashboardAdminCountFun = async () => {
+  try {
+    const res = await axiosInstance.get(`${endpoints.get_admin_dash}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const getDashboardAdminRadarCountFun = async () => {
+  try {
+    const res = await axiosInstance.get(`${endpoints.get_admin_radar_dash}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const getDashboardAdminChartCountFun = async () => {
+  try {
+    const res = await axiosInstance.get(`${endpoints.get_admin_chart_dash}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};

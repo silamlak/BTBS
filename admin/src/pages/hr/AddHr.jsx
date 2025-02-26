@@ -68,8 +68,10 @@ const AddHr = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Add HR Officer</h2>
+    <div className="max-w-lg mx-auto bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-4 text-slate-900 dark:text-slate-100">
+        Add HR Officer
+      </h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Input Fields */}
         {[
@@ -82,13 +84,13 @@ const AddHr = () => {
           "salary",
         ].map((field) => (
           <div key={field}>
-            <label className="block text-gray-700 capitalize">
+            <label className="block text-gray-700 capitalize dark:text-gray-300">
               {field.replace("_", " ")}
             </label>
             <input
               {...register(field)}
               type={field === "password" ? "password" : "text"}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:text-white dark:border-slate-600"
             />
             {errors[field] && (
               <p className="text-red-500">{errors[field].message}</p>
@@ -98,7 +100,10 @@ const AddHr = () => {
 
         {/* File Input for Images */}
         <div className="border-b-2 flex flex-col w-fit border-slate-500 dark:border-slate-300">
-          <label htmlFor="images" className="text-[14px] flex m-1">
+          <label
+            htmlFor="images"
+            className="text-[14px] flex m-1 dark:text-gray-300"
+          >
             <p>Choose Images </p>
             <span className="text-red-600 font-extrabold">*</span>
             {uploading && (
@@ -113,7 +118,7 @@ const AddHr = () => {
             accept="image/*"
             multiple
             {...register("images")}
-            className="border p-2 rounded-t-lg overflow-hidden bg-slate-100 dark:bg-slate-700 focus:outline-none"
+            className="border p-2 rounded-t-lg overflow-hidden bg-slate-100 dark:bg-slate-700 dark:text-white dark:border-slate-600 focus:outline-none"
           />
           {errors.images && (
             <p className="text-red-500">{errors.images.message}</p>
@@ -122,13 +127,16 @@ const AddHr = () => {
 
         {/* Dropdown for Education */}
         <div className="border-b-2 flex flex-col w-fit border-slate-500 dark:border-slate-300">
-          <label htmlFor="education" className="text-[14px] flex m-1">
+          <label
+            htmlFor="education"
+            className="text-[14px] flex m-1 dark:text-gray-300"
+          >
             Education Level
           </label>
           <select
             id="education"
             {...register("education")}
-            className="border p-2 rounded-t-lg bg-slate-100 dark:bg-slate-700 focus:outline-none"
+            className="border p-2 rounded-t-lg bg-slate-100 dark:bg-slate-700 dark:text-white dark:border-slate-600 focus:outline-none"
           >
             <option value="" disabled>
               Select your education level
@@ -146,7 +154,7 @@ const AddHr = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
+          className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none dark:bg-blue-700 dark:hover:bg-blue-600"
           disabled={uploading || mutation.isLoading}
         >
           {mutation.isLoading || uploading ? "Submitting..." : "Submit"}

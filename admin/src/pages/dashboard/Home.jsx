@@ -23,7 +23,7 @@ const Home = () => {
         </div>
       </section>
       <div>
-        <Description />
+        {/* <Description /> */}
       </div>
     </div>
   );

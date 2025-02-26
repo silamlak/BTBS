@@ -12,6 +12,7 @@ import {
   getSchedule,
   getSeats,
   getStations,
+  getTotalCount,
   UpdatePlace,
   UpdateRoute,
   UpdateSchedule,
@@ -21,6 +22,9 @@ import {
 } from "../controller/boController.js";
 import { get } from "mongoose";
 const router = express.Router();
+
+//dashboard
+router.get("/dashboard/get", getTotalCount);
 
 //route
 router.post("/addroute", addRoute);

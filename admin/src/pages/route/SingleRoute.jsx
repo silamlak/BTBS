@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FaRegSave } from "react-icons/fa";
@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deleteRouteFun,
   updateRouteFun,
   viewRouteFun,
 } from "../../features/route/routeApi";
@@ -23,8 +24,8 @@ const validationSchema = yup.object().shape({
   total_distance: yup.string().required("total_distance is required"),
   estimated_time: yup.string().required("estimated_time is required"),
   stops: yup.object().shape({
-    stop_name: yup.string().required("stop_name is required"),
-    location: yup.string().required("location is required"),
+    stop_name: yup.string(),
+    location: yup.string(),
   }),
 });
 
@@ -32,6 +33,7 @@ const validationSchema = yup.object().shape({
 const SingleRoute = () => {
  const currentData = useSelector((state) => state.bus.currentData);
  const dispatch = useDispatch();
+ const navigate = useNavigate()
  const { id } = useParams();
  const [password, setPassword] = useState("");
  const { data, isLoading, isError, error } = useQuery({
@@ -91,16 +93,22 @@ const SingleRoute = () => {
    },
  });
 
+ const mutationd = useMutation({
+   mutationFn: deleteRouteFun,
+   onSuccess: (data) => {
+     navigate("/route");
+   },
+   onError: (err) => {
+     console.log(err);
+   },
+ });
+
  const onSubmit = (formData) => {
-   console.log("object");
-   console.log("Saving updated data:", formData);
    mutation.mutate({ id, formData });
  };
- const onPasswordSubmit = () => {
-   // Logic for saving the updated data
- };
+
  const onDelete = () => {
-   // Logic for delete
+   mutationd.mutate(id)
  };
  return (
    <div>

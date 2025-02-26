@@ -7,6 +7,26 @@ import busModel from "../models/busModel.js";
 import TicketSalesOfficerModel from "../models/TicketSalesOfficer.js";
 import scheduleModel from "../models/scheduleModel.js";
 
+//total count
+
+export const getTotalCount = async (req, res) => {
+  try {
+    console.log("object");
+    const boCount = await boofficerModel.countDocuments();
+    const driverCount = await driverModel.countDocuments();
+    const tsoCount = await TicketSalesOfficerModel.countDocuments();
+    const busCount = await busModel.countDocuments();
+    res.status(200).json({
+      totalBo: boCount,
+      totalDriver: driverCount,
+      totalTso: tsoCount,
+      totalBus: busCount,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 //Hiring bus operator
 export const BOOfficer = async (req, res, next) => {
   try {
@@ -259,8 +279,14 @@ export const UpdateBus = async (req, res, next) => {
 export const deleteBus = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const Bus = await busModel.findByIdAndDelete(id);
+    const Bus = await busModel.findById(id);
     if (!Bus) return next(custom_error_handler(404, "Bus not found"));
+    await driverModel.findByIdAndUpdate(
+      { _id: Bus.driver_id },
+      { $set: { taken: false } },
+      { new: true }
+    );
+    await busModel.findByIdAndDelete(id);
     res.status(200).json({ msg: "Bus Removed" });
   } catch (error) {
     next(error);

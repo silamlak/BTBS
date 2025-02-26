@@ -60,7 +60,18 @@ export const addStationFun = async (data) => {
     const res = await axiosInstance.post(endpoints.add_station, data, {
       withCredentials: true,
     });
-    return res.data
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const deleteStationFun = async (id) => {
+  try {
+    const res = await axiosInstance.delete(`${endpoints.delete_station}/${id}`, {
+      withCredentials: true,
+    });
+    return res.data;
   } catch (error) {
     return handleError(error);
   }

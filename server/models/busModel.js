@@ -36,7 +36,7 @@ const BusSchema = new mongoose.Schema(
     },
     year_of_manufacture: {
       type: Number,
-      required: true,
+      required: false,
     },
     seating_capacity: {
       type: Number,

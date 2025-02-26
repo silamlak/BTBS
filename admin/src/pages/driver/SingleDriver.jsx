@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FaRegSave } from "react-icons/fa";
@@ -32,6 +32,7 @@ const validationSchema = yup.object().shape({
 const SingleDriver = () => {
   const currentData = useSelector((state) => state.driver.currentData);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const { id } = useParams();
   const [password, setPassword] = useState("");
   const { data, isLoading, isError, error } = useQuery({
@@ -91,6 +92,7 @@ const SingleDriver = () => {
     mutationFn: deleteDriverFun,
     onSuccess: (data) => {
       console.log(data);
+      navigate("/drivers");
     },
     onError: (err) => {
       console.log(err);

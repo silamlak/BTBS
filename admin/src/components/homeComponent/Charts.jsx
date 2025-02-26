@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -10,17 +9,18 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useQuery } from "@tanstack/react-query";
-import { getSalesRevenueFun } from "../../features/dashboard/dashboardApi";
+import { getDashboardAdminChartCountFun } from "../../features/dashboard/dashboardApi";
 import { ChartError, ChartSkeleton } from "../skeleton/Skeletons";
 
 const Charts = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["sales_revenue"],
-    queryFn: getSalesRevenueFun,
+    queryFn: getDashboardAdminChartCountFun,
     retry: 1,
-    refetchInterval: 60000, // refetch every minute
+    refetchInterval: 60000, 
     retryDelay: 60000,
   });
+
 
   if (isLoading) {
     return <ChartSkeleton />
@@ -29,6 +29,7 @@ const Charts = () => {
   if (isError && error) {
     return <ChartError error={error} />
   }
+
   return (
     <div className="p-6 bg-gray-50 dark:bg-slate-900 shadow-md rounded-xl">
       <h1 className="text-xl max-sm:text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">

@@ -2,6 +2,125 @@ import mongoSanitize from "mongo-sanitize";
 import hrofficerModel from "../models/hrofficerModel.js";
 import bcrypt from "bcryptjs";
 import { custom_error_handler } from "../errorHandler/errorHandler.js";
+import scheduleModel from "../models/scheduleModel.js";
+import bookingModel from "../models/bookingModel.js";
+import boofficerModel from "../models/boofficerModel.js";
+import stationModel from "../models/stationModel.js";
+import routeModel from "../models/routeModel.js";
+import busModel from "../models/busModel.js";
+import driverModel from "../models/driverModel.js";
+import TicketSalesOfficerModel from "../models/TicketSalesOfficer.js";
+
+//dashboard
+
+export const getTotalCount = async (req, res) => {
+  try {
+    console.log("object");
+    const boCount = await boofficerModel.countDocuments();
+    const driverCount = await driverModel.countDocuments();
+    const tsoCount = await TicketSalesOfficerModel.countDocuments();
+    const busCount = await busModel.countDocuments();
+    const scheduleCount = await scheduleModel.countDocuments();
+    const routeCount = await routeModel.countDocuments();
+    const stationCount = await stationModel.countDocuments();
+    const hrCount = await hrofficerModel.countDocuments();
+    res.status(200).json({
+      totalBo: boCount,
+      totalDriver: driverCount,
+      totalTso: tsoCount,
+      totalBus: busCount,
+      totalSchedules: scheduleCount,
+      totalRoutes: routeCount,
+      totalStation: stationCount,
+      totalHr: hrCount,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getBookingChartData = async (req, res, next) => {
+  try {
+    // Fetch the total sales and total revenue by date
+    const bookingData = await bookingModel.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, // Group by date
+          totalSales: { $sum: 1 }, // Count the number of bookings (total sales)
+          totalRevenue: { $sum: "$total_price" }, // Sum up total revenue
+        },
+      },
+      {
+        $sort: { _id: 1 }, // Sort by date ascending
+      },
+      {
+        $project: {
+          date: "$_id", // Rename _id to date
+          totalSales: 1,
+          totalRevenue: 1,
+          _id: 0, // Remove _id from the final output
+        },
+      },
+    ]);
+
+    // Send the result back to the client
+    res.status(200).json(bookingData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+};
+
+export const totalPricePerSchedule = async (req, res, next) => {
+  try {
+    const schedules = await scheduleModel.find();
+
+    const schedulesWithTotalPrice = [];
+
+    for (let schedule of schedules) {
+      const bookingsExist = await bookingModel.findOne({
+        scheduleId: schedule._id,
+      });
+
+      if (bookingsExist) {
+        console.log(bookingsExist);
+        const totalPrice = await bookingModel.aggregate([
+          {
+            $match: { scheduleId: schedule._id },
+          },
+          {
+            $group: {
+              _id: "$scheduleId",
+              totalPrice: { $sum: "$total_price" },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              scheduleId: "$_id",
+              totalPrice: "$totalPrice",
+            },
+          },
+        ]);
+
+        schedulesWithTotalPrice.push({
+          scheduleId: schedule.schedule_id,
+          totalPrice: totalPrice.length > 0 ? totalPrice[0].totalPrice : 0,
+        });
+      } else {
+        schedulesWithTotalPrice.push({
+          scheduleId: schedule.schedule_id,
+          totalPrice: 0,
+        });
+      }
+    }
+
+    res.status(200).json(schedulesWithTotalPrice);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+};
 
 //Hiring
 export const HROfficer = async (req, res, next) => {

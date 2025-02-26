@@ -6,32 +6,50 @@ import { custom_error_handler } from "../errorHandler/errorHandler.js";
 import TicketSalesOfficer from "../models/TicketSalesOfficer.js";
 import busModel from "../models/busModel.js";
 import seatModel from "../models/seatModel.js";
+import stationModel from "../models/stationModel.js";
 
 function generateSixDigitNumber() {
   return Math.floor(100000 + Math.random() * 900000);
 }
 
+//total count
+
+export const getTotalCount = async (req, res) => {
+  try {
+    const scheduleCount = await scheduleModel.countDocuments();
+    const routeCount = await routeModel.countDocuments();
+    const stationCount = await stationModel.countDocuments();
+    res.status(200).json({
+      totalSchedules: scheduleCount,
+      totalRoutes: routeCount,
+      totalStation: stationCount,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 //route controller
 export const addRoute = async (req, res, next) => {
   try {
-    console.log(req.body)
+    console.log(req.body);
     const sanitizedData = mongoSanitize(req.body);
     const sixDigitNumber = generateSixDigitNumber();
     sanitizedData.route_id = sixDigitNumber;
     const newRoute = routeModel(sanitizedData);
     const route = await newRoute.save();
-    const busLists = req.body.bus_id
-       if (busLists && Array.isArray(busLists)) {
-         await Promise.all(
-           busLists.map((bus) =>
-             busModel.findByIdAndUpdate(
-               { _id: bus },
-               { $set: { taken: true, route_id: route._id } },
-               { new: true }
-             )
-           )
-         );
-       }
+    const busLists = req.body.bus_id;
+    if (busLists && Array.isArray(busLists)) {
+      await Promise.all(
+        busLists.map((bus) =>
+          busModel.findByIdAndUpdate(
+            { _id: bus },
+            { $set: { taken: true, route_id: route._id } },
+            { new: true }
+          )
+        )
+      );
+    }
     res.status(200).json({ msg: "new Route added" });
   } catch (error) {
     next(error);
@@ -125,11 +143,11 @@ export const addPlace = async (req, res, next) => {
     const sanitizedData = mongoSanitize(req.body);
     const newPlace = stationPlaceModel(sanitizedData);
     const place = await newPlace.save();
-        await TicketSalesOfficer.findByIdAndUpdate(
-          { _id: req.body.tso_id },
-          { $set: { taken: true, StationPlace_id: place._id } },
-          { new: true }
-        );
+    await TicketSalesOfficer.findByIdAndUpdate(
+      { _id: req.body.tso_id },
+      { $set: { taken: true, StationPlace_id: place._id } },
+      { new: true }
+    );
     res.status(200).json({ msg: "new StationPlace added" });
   } catch (error) {
     next(error);
@@ -156,7 +174,10 @@ export const getStations = async (req, res, next) => {
     if (search) {
       query.name = { $regex: search, $options: "i" };
     }
-    const stations = await stationPlaceModel.find(query).skip(skip).limit(limit);
+    const stations = await stationPlaceModel
+      .find(query)
+      .skip(skip)
+      .limit(limit);
     const totalCount = await stationPlaceModel.countDocuments(query);
     const totalPages = Math.ceil(totalCount / limit);
     if (!stations) return next(custom_error_handler(404, "Stations not found"));
@@ -227,13 +248,12 @@ export const addSchedule = async (req, res, next) => {
 export const getSeats = async (req, res, next) => {
   try {
     const { scheduleId, totalPass } = req.body;
-console.log(scheduleId);
+    console.log(scheduleId);
     const Schedule = await scheduleModel.findById(scheduleId);
     if (!Schedule) {
       return res.status(404).json({ message: "Schedule not found" });
     }
-console.log(Schedule);
-
+    console.log(Schedule);
 
     const busIds = Schedule.bus_id;
 
@@ -261,7 +281,6 @@ console.log(Schedule);
     next(error);
   }
 };
-
 
 export const getSchedule = async (req, res, next) => {
   try {
@@ -317,8 +336,7 @@ export const UpdateSchedule = async (req, res, next) => {
     const Schedule = await scheduleModel.findByIdAndUpdate(id, {
       $set: sanitizedData,
     });
-    if (!Schedule)
-      return next(custom_error_handler(404, "Schedule not found"));
+    if (!Schedule) return next(custom_error_handler(404, "Schedule not found"));
     res.status(200).json({ msg: "Schedule info updated" });
   } catch (error) {
     next(error);
@@ -328,9 +346,8 @@ export const UpdateSchedule = async (req, res, next) => {
 export const deleteSchedule = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const Schedule = await scheduleModel.findByIdAndDelete(id);
-    if (!Schedule)
-      return next(custom_error_handler(404, "Schedule not found"));
+    const Schedule = await stationModel.findByIdAndDelete(id);
+    if (!Schedule) return next(custom_error_handler(404, "Schedule not found"));
     res.status(200).json({ msg: "Schedule Removed" });
   } catch (error) {
     next(error);

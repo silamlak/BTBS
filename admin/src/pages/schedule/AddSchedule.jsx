@@ -108,7 +108,7 @@ const AddSchedule = () => {
               !isError &&
               routeData?.map((route) => (
                 <option key={route._id} value={route._id}>
-                  {route.route_id}
+                  {route.route_name}
                 </option>
               ))}
           </select>

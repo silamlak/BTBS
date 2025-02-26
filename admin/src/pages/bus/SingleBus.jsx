@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FaRegSave } from "react-icons/fa";
@@ -22,8 +22,8 @@ const validationSchema = yup.object().shape({
   make: yup.string().required("Make is required"),
   model: yup.string().required("Model is required"),
   year_of_manufacture: yup
-    .string()
-    .required("Year of Manufacture number is required"),
+    .string(),
+    // .required("Year of Manufacture number is required"),
   seating_capacity: yup.string().required("Seating Capacity is required"),
   fuel_type: yup.string().required("Fuel Type is required"),
   status: yup.string().required("Status is required"),
@@ -32,6 +32,7 @@ const validationSchema = yup.object().shape({
 const SingleBus = () => {
   const currentData = useSelector((state) => state.bus.currentData);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const { id } = useParams();
   const [password, setPassword] = useState("");
   const { data, isLoading, isError, error } = useQuery({
@@ -91,7 +92,7 @@ const SingleBus = () => {
     mutationFn: deleteBusFun,
     onSuccess: (data) => {
       console.log(data);
-      // reset()
+      navigate("/buses");
     },
     onError: (err) => {
       console.log(err);

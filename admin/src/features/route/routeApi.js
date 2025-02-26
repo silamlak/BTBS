@@ -76,3 +76,14 @@ export const addRouteFun = async (data) => {
     return handleError(error);
   }
 };
+
+export const deleteRouteFun = async (id) => {
+  try {
+    const res = await axiosInstance.delete(`${endpoints.delete_route}/${id}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};

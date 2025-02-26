@@ -33,7 +33,6 @@ const validationSchema = yup.object().shape({
   departure_time: yup.string().required("departure_time is required"),
   arrival_time: yup.string().required("arrival_time is required"),
   ticket_price: yup.string().required("ticket_price is required"),
-  available_seats: yup.string().required("available_seats is required"),
   status: yup.string().required("status is required"),
 });
 
@@ -63,7 +62,7 @@ const SingleSchedule = () => {
       departure_time: "",
       arrival_time: "",
       ticket_price: "",
-      available_seats: "",
+
       status: "",
     },
   });
@@ -79,7 +78,7 @@ const SingleSchedule = () => {
         from: data.from || "",
         to: data.to || "",
         ticket_price: data.ticket_price || "",
-        available_seats: data.available_seats || "",
+
         status: data.status || "",
       });
     }
@@ -242,37 +241,6 @@ const SingleSchedule = () => {
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col">
-                    <label htmlFor="available_seats" className="text-[13px]">
-                      available_seats
-                    </label>
-                    <input
-                      id="available_seats"
-                      {...register("available_seats")}
-                      type="text"
-                      className="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
-                    />
-                    {errors.available_seats && (
-                      <p className="text-red-500 text-sm">
-                        {errors.available_seats.message}
-                      </p>
-                    )}
-                  </div>
-                  {/* <div className="flex flex-col">
-                    <label htmlFor="date" className="text-[13px]">
-                      Date
-                    </label>
-                    <input
-                      id="date"
-                      type="text"
-                      value={
-                        new Date(currentData?.createdAt).toLocaleDateString() ||
-                        ""
-                      }
-                      disabled
-                      className="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
-                    />
-                  </div> */}
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -297,38 +265,6 @@ const SingleSchedule = () => {
                       </p>
                     )}
                   </div>
-                  {/* <div className="flex flex-col">
-                   <label htmlFor="seating_capacity" className="text-[13px]">
-                     Seating Capacity
-                   </label>
-                   <input
-                     id="seating_capacity"
-                     {...register("seating_capacity")}
-                     type="text"
-                     className="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
-                   />
-                   {errors.seating_capacity && (
-                     <p className="text-red-500 text-sm">
-                       {errors.seating_capacity.message}
-                     </p>
-                   )}
-                 </div>
-                 <div className="flex flex-col">
-                   <label htmlFor="fuel_type" className="text-[13px]">
-                     Fuel Type
-                   </label>
-                   <input
-                     id="fuel_type"
-                     {...register("fuel_type")}
-                     type="text"
-                     className="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
-                   />
-                   {errors.fuel_type && (
-                     <p className="text-red-500 text-sm">
-                       {errors.fuel_type.message}
-                     </p>
-                   )}
-                 </div> */}
                 </div>
               </div>
 

@@ -72,6 +72,13 @@ export const endpoints = {
   delete_bo: `${api}/hr/bo/delete`,
   add_bo: `${api}/hr/addbo`,
 
+  //dashboard
+  get_bo_dash: `${api}/bo/dashboard/get`,
+  get_hr_dash: `${api}/hr/dashboard/get`,
+  get_admin_dash: `${api}/admin/dashboard/get`,
+  get_admin_radar_dash: `${api}/admin/dashboard/get/radar`,
+  get_admin_chart_dash: `${api}/admin/dashboard/get/chart`,
+
   //hr
   get_hr: `${api}/admin/hr/get`,
   update_hr: `${api}/admin/hr/update`,
@@ -104,6 +111,7 @@ export const endpoints = {
   get_station: `${api}/bo/place/get`,
   update_station: `${api}/bo/place/update`,
   add_station: `${api}/bo/addplace`,
+  delete_station: `${api}/bo/schedule/delete`,
 
   //schedule
   get_schedule: `${api}/bo/schedule/get`,
@@ -115,6 +123,7 @@ export const endpoints = {
   get_route_list: `${api}/bo/route/get_list`,
   update_route: `${api}/bo/route/update`,
   add_route: `${api}/bo/addroute`,
+  delete_route: `${api}/bo/route/delete`,
 
   //tsoo
   booking: `${api}/tso/book`,

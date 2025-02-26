@@ -1,14 +1,24 @@
 import express from "express";
 import {
   deleteHROfficer,
+  getBookingChartData,
   getHr,
+  getTotalCount,
   HROfficer,
+  totalPricePerSchedule,
   UpdateHROfficer,
   UpdateHROfficerPassword,
   ViewHROfficer,
 } from "../controller/adminController.js";
 import { verifyJWT } from "../middleware/verifyToken.js";
 const router = express.Router();
+
+
+//dashboard
+router.get("/dashboard/get", getTotalCount);
+router.get("/dashboard/get/radar", totalPricePerSchedule);
+router.get("/dashboard/get/chart", getBookingChartData);
+
 
 //Hiring
 router.post("/addhr", HROfficer);
