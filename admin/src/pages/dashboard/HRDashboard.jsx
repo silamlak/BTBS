@@ -6,8 +6,10 @@ import { MdProductionQuantityLimits, MdLocationOn } from "react-icons/md";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { LuUsers } from "react-icons/lu";
 import { getDashboardHRCountFun } from "../../features/dashboard/dashboardApi";
+import { useSelector } from "react-redux";
 
 const HRDashboard = () => {
+   const isAuth = useSelector((state) => state.auth.user);
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["each_totals"],
     queryFn: getDashboardHRCountFun,
@@ -50,7 +52,9 @@ const HRDashboard = () => {
             complete overview of your ongoing bus operations.
           </h2>
         </div>
-        <div></div>
+        <div>
+          <p className="text-xl text-slate-100 mb-4">{isAuth?.first_name}</p>
+        </div>
       </section>
       {isLoading && !isError && !error && <TotalSkeleton />}
       {isError && error && <TotalError error={error} />}
