@@ -9,6 +9,7 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import cron from "node-cron";
 import axios from "axios";
+import twilio from 'twilio'
 
 import authRoute from "./route/authRoute.js";
 import adminRoute from './route/adminRoute.js'
@@ -34,6 +35,24 @@ app.use("/api/admin", adminRoute);
 app.use("/api/hr", hrRoute);
 app.use("/api/bo", boRoute);
 app.use("/api/tso", tsoRoute);
+
+const sendMessage = () => {
+  const client = new twilio(process.env.SID, process.env.TOKEN);
+  return client.messages
+    .create({
+      body: "Hey there",
+      from: "+19034874781",
+      to: "+251972183262",
+    })
+    .then((msg) => {
+      console.log("Message sent:", msg.sid); // Show message SID for confirmation
+    })
+    .catch((err) => {
+      console.error("Error sending message:", err);
+    });
+};
+
+sendMessage();
 
 app.post("/accept-payment", async (req, res) => {
   const {

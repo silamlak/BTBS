@@ -13,7 +13,7 @@ import TicketSalesOfficerModel from "../models/TicketSalesOfficer.js";
 
 //dashboard
 
-export const getTotalCount = async (req, res) => {
+export const getTotalCount = async (req, res, next) => {
   try {
     console.log("object");
     const boCount = await boofficerModel.countDocuments();

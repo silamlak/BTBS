@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login, loginData } from "../../features/auth/authSlice";
 import { jwtDecode } from "jwt-decode";
+import { AiOutlineMail, AiOutlineLock } from "react-icons/ai";
 
 const Signin = () => {
   const isAuth = useSelector((state) => state.auth);
@@ -44,61 +45,78 @@ const Signin = () => {
   }
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-4 bg-white rounded shadow-md">
-        <h2 className="text-2xl font-bold text-center">Sign In</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div>
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg">
+        <h2 className="text-2xl font-bold text-center text-gray-800">
+          Sign In
+        </h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          {/* Email Input */}
+          <div className="relative">
             <label
               htmlFor="email"
               className="block text-sm font-medium text-gray-700"
             >
               Email
             </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              {...register("email")}
-              className={`mt-1 block w-full px-3 py-2 border ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
-            />
+            <div className="relative">
+              <AiOutlineMail
+                className="absolute left-3 top-3 text-gray-400"
+                size={20}
+              />
+              <input
+                id="email"
+                type="email"
+                {...register("email", { required: "Email is required" })}
+                className={`w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                }`}
+                placeholder="Enter your email"
+              />
+            </div>
             {errors.email && (
-              <div className="mt-2 text-sm text-red-600">
+              <p className="mt-1 text-sm text-red-600">
                 {errors.email.message}
-              </div>
+              </p>
             )}
           </div>
-          <div>
+
+          {/* Password Input */}
+          <div className="relative">
             <label
               htmlFor="password"
               className="block text-sm font-medium text-gray-700"
             >
               Password
             </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              {...register("password")}
-              className={`mt-1 block w-full px-3 py-2 border ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
-            />
+            <div className="relative">
+              <AiOutlineLock
+                className="absolute left-3 top-3 text-gray-400"
+                size={20}
+              />
+              <input
+                id="password"
+                type="password"
+                {...register("password", { required: "Password is required" })}
+                className={`w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                }`}
+                placeholder="Enter your password"
+              />
+            </div>
             {errors.password && (
-              <div className="mt-2 text-sm text-red-600">
+              <p className="mt-1 text-sm text-red-600">
                 {errors.password.message}
-              </div>
+              </p>
             )}
           </div>
-          <div>
-            <button
-              type="submit"
-              className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Sign In
-            </button>
-          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+          >
+            Sign In
+          </button>
         </form>
       </div>
     </div>

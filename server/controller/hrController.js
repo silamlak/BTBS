@@ -9,7 +9,7 @@ import scheduleModel from "../models/scheduleModel.js";
 
 //total count
 
-export const getTotalCount = async (req, res) => {
+export const getTotalCount = async (req, res, next) => {
   try {
     console.log("object");
     const boCount = await boofficerModel.countDocuments();

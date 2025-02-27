@@ -14,7 +14,7 @@ function generateSixDigitNumber() {
 
 //total count
 
-export const getTotalCount = async (req, res) => {
+export const getTotalCount = async (req, res, next) => {
   try {
     const scheduleCount = await scheduleModel.countDocuments();
     const routeCount = await routeModel.countDocuments();
