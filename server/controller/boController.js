@@ -12,6 +12,17 @@ function generateSixDigitNumber() {
   return Math.floor(100000 + Math.random() * 900000);
 }
 
+const convertTo12HourFormat = (timeString) => {
+  if (!timeString) return null;
+
+  let [hours, minutes] = timeString.split(":");
+  hours = parseInt(hours, 10);
+  let period = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12; // Convert 0 to 12 for midnight
+
+  return `${hours}:${minutes} ${period}`;
+};
+
 //total count
 
 export const getTotalCount = async (req, res, next) => {
@@ -235,11 +246,28 @@ export const deletePlace = async (req, res, next) => {
 export const addSchedule = async (req, res, next) => {
   try {
     const sanitizedData = mongoSanitize(req.body);
+    console.log("Before Processing:", sanitizedData);
+
+    if (sanitizedData.departure_time) {
+      sanitizedData.departure_time = convertTo12HourFormat(
+        sanitizedData.departure_time
+      );
+    }
+    if (sanitizedData.arrival_time) {
+      sanitizedData.arrival_time = convertTo12HourFormat(
+        sanitizedData.arrival_time
+      );
+    }
+
     const sixDigitNumber = generateSixDigitNumber();
     sanitizedData.schedule_id = sixDigitNumber;
-    const newSchedule = scheduleModel(sanitizedData);
+    console.log("After Processing:", sanitizedData);
+    const newSchedule = new scheduleModel(sanitizedData);
     await newSchedule.save();
-    res.status(200).json({ msg: "new schedule added" });
+
+    res
+      .status(200)
+      .json({ msg: "New schedule added successfully", schedule: newSchedule });
   } catch (error) {
     next(error);
   }
@@ -260,13 +288,20 @@ export const getSeats = async (req, res, next) => {
     // Iterate over each bus ID
     for (const busId of busIds) {
       const bus = await busModel.findById(busId);
+      console.log(bus);
       if (!bus) continue;
 
       const { seating_capacity } = bus;
 
       // Count occupied seats and find seat data
-      const occupiedSeats = await seatModel.countDocuments({ bus_id: busId });
+      const occupiedSeats = await seatModel.countDocuments({
+        bus_id: busId,
+        scheduleId,
+      });
+      console.log(occupiedSeats);
       const availableSeats = seating_capacity - occupiedSeats;
+      console.log(availableSeats);
+      console.log(totalPass);
 
       // Check if the bus is suitable
       if (availableSeats >= totalPass) {

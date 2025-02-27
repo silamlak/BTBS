@@ -9,14 +9,13 @@ const BookingSuccess = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-  const { confirmation } = useSelector((state) => state.book);
+  const { confirmation, passengerData } = useSelector((state) => state.book);
   console.log(confirmation);
   useEffect(() => {
-    if (!id) {
+    if (!id || !passengerData) {
       navigate("/booking", { replace: true });
     }
-    dispatch(clearAll());
-  }, [dispatch, id, navigate, confirmation]);
+  }, [dispatch, id, navigate, confirmation, passengerData]);
   const handleToDashboard = () => {
     dispatch(clearAll());
     navigate("/booking");

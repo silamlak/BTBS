@@ -7,6 +7,7 @@ import seatModel from "../models/seatModel.js";
 import busModel from "../models/busModel.js";
 import { sendBookingConfirmationEmail } from "../emailController.js";
 import crypto from "crypto";
+import { sendMessage } from "../sms.js";
 
 function generateSixDigitNumber() {
   return Math.floor(100000 + Math.random() * 900000);
@@ -50,6 +51,15 @@ export const searchSchedules = async (req, res, next) => {
 
 //book
 export const bookTicket = async (req, res, next) => {
+   function formatDate(dateString) {
+     const date = new Date(dateString);
+
+     const year = date.getFullYear();
+     const month = String(date.getMonth() + 1).padStart(2, "0");
+     const day = String(date.getDate()).padStart(2, "0");
+
+     return `${year}-${month}-${day}`;
+   }
   try {
     const confirmationCode = crypto
       .randomBytes(4)
@@ -77,6 +87,25 @@ export const bookTicket = async (req, res, next) => {
           busDetail,
           scheduleDetail,
         });
+
+        const body = `
+Booking Confirmation
+
+Hi ${passenger?.first_name} ${
+          passenger?.last_name
+        }, your booking for a bus from ${scheduleDetail?.from} to ${
+          scheduleDetail?.to
+        } is confirmed!
+
+Bus: ${busDetail?.license_plate}
+Departure Date: ${formatDate(scheduleDetail?.schedule_date)}
+Time: ${scheduleDetail?.departure_time}
+Seat Number: ${booked.seats[i].seatNo}
+Please arrive 15 minutes early.
+Safe travels!
+Habesha Bus
+              `;
+                await sendMessage(passenger.phone, body);
       }
     }
     res.status(200).json({ booked, msg: "booked succ" });

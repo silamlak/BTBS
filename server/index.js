@@ -9,23 +9,26 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import cron from "node-cron";
 import axios from "axios";
-import twilio from 'twilio'
+import moment from "moment";
 
 import authRoute from "./route/authRoute.js";
-import adminRoute from './route/adminRoute.js'
-import hrRoute from './route/hrRoute.js'
+import adminRoute from "./route/adminRoute.js";
+import hrRoute from "./route/hrRoute.js";
 import boRoute from "./route/boRoute.js";
 import tsoRoute from "./route/tsoRoute.js";
 import userModel from "./models/userModel.js";
+import scheduleModel from "./models/scheduleModel.js";
+import bookingModel from "./models/bookingModel.js";
+
+import { sendMessage } from "./sms.js";
 
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://10.10.34.224:3000", "http://localhost:5173"], // Use the correct frontend IP
+    origin: ["http://10.10.34.224:3000", "http://localhost:5173"],
     credentials: true,
   })
 );
-
 
 app.use(bodyParser.json());
 dotenv.config();
@@ -35,24 +38,6 @@ app.use("/api/admin", adminRoute);
 app.use("/api/hr", hrRoute);
 app.use("/api/bo", boRoute);
 app.use("/api/tso", tsoRoute);
-
-const sendMessage = () => {
-  const client = new twilio(process.env.SID, process.env.TOKEN);
-  return client.messages
-    .create({
-      body: "Hey there",
-      from: "+19034874781",
-      to: "+251972183262",
-    })
-    .then((msg) => {
-      console.log("Message sent:", msg.sid); // Show message SID for confirmation
-    })
-    .catch((err) => {
-      console.error("Error sending message:", err);
-    });
-};
-
-sendMessage();
 
 app.post("/accept-payment", async (req, res) => {
   const {
@@ -105,18 +90,61 @@ app.post("/accept-payment", async (req, res) => {
   }
 });
 
-// cron.schedule("* * * * *", async () => {
-//   const now = new Date();
-//   try {
-//     const result = await userModel.updateMany(
-//       { otpExpires: { $lt: now } },
-//       { $unset: { otp: "", otpExpires: "" } }
-//     );
-//     // console.log(`OTP fields cleared for ${result.email} users`);
-//   } catch (error) {
-//     console.error("Error clearing OTP fields:", error);
-//   }
-// });
+cron.schedule("* * * * *", async () => {
+  const now = new Date();
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
+
+  try {
+    const tomorrowStart = moment().add(1, "days").startOf("day").toDate();
+    const tomorrowEnd = moment().add(1, "days").endOf("day").toDate();
+
+    const schedules = await scheduleModel.find({
+      schedule_date: { $gte: tomorrowStart, $lte: tomorrowEnd },
+    });
+
+    const scheduleIds = schedules.map((schedule) => schedule._id);
+
+    const bookings = await bookingModel.find({
+      scheduleId: { $in: scheduleIds },
+      notify: false,
+    });
+
+    bookings?.forEach(async (booking) => {
+      await bookingModel.findByIdAndUpdate(booking._id, {
+        $set: { notify: true },
+      });
+      booking.passengers?.forEach(async (pass) => {
+        const schedule = await scheduleModel.findById(booking.scheduleId);
+        console.log(schedule);
+        const body = `
+      Booking Reminder
+
+Hi ${pass?.first_name} ${pass?.last_name}, your bus to ${
+          schedule?.to
+        } departs on ${formatDate(schedule?.schedule_date)} at ${
+          schedule?.departure_time
+        }.
+
+Safe travels!
+Habesha Bus
+      `;
+        await sendMessage(pass.phone, body);
+      });
+    });
+
+    console.log(bookings);
+  } catch (err) {
+    console.error("Error:", err);
+  }
+});
 
 app.use((err, req, res, next) => {
   const status = err.status || 500;
@@ -135,4 +163,3 @@ app.listen(process.env.PORT, () => {
     .then(() => console.log("db"))
     .catch((err) => console.log(err));
 });
-

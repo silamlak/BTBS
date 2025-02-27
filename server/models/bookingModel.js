@@ -101,6 +101,10 @@ const bookingSchema = new mongoose.Schema(
     confirmationCode: {
       type: String,
       required: true,
+    },
+    notify: {
+      type: Boolean,
+      default: false,
     }
   },
   { timestamps: true }

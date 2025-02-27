@@ -91,17 +91,20 @@ const AddSchedule = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Add Bus Schedule</h2>
+    <div className="max-w-lg mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+        Add Bus Schedule
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Step 1: Select Route */}
         <div>
-          <label className="block text-gray-700">Select Route</label>
+          <label className="block text-gray-700 dark:text-gray-300">
+            Select Route
+          </label>
           <select
             name="route_id"
             value={formData.route_id}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 bg-gray-100 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
           >
             <option value="">Select a Route</option>
             {!isLoading &&
@@ -115,16 +118,18 @@ const AddSchedule = () => {
           {errors.route_id && <p className="text-red-500">{errors.route_id}</p>}
         </div>
 
-        {/* Step 2: Select Date */}
         {formData.route_id && (
           <div>
-            <label className="block text-gray-700">Schedule Date</label>
+            <label className="block text-gray-700 dark:text-gray-300">
+              Schedule Date
+            </label>
             <input
               name="schedule_date"
               value={formData.schedule_date}
               onChange={handleChange}
               type="date"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              min={new Date().toISOString().split("T")[0]}
+              className="w-full px-4 py-2 bg-gray-100 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
             />
             {errors.schedule_date && (
               <p className="text-red-500">{errors.schedule_date}</p>
@@ -132,41 +137,42 @@ const AddSchedule = () => {
           </div>
         )}
 
-        {/* Step 3: From */}
         {formData.schedule_date && (
           <div>
-            <label className="block text-gray-700">From</label>
+            <label className="block text-gray-700 dark:text-gray-300">
+              From
+            </label>
             <input
               name="from"
               value={formData.from}
               onChange={handleChange}
               type="text"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-gray-100 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
             />
             {errors.from && <p className="text-red-500">{errors.from}</p>}
           </div>
         )}
 
-        {/* Step 4: To */}
         {formData.from && (
           <div>
-            <label className="block text-gray-700">To</label>
+            <label className="block text-gray-700 dark:text-gray-300">To</label>
             <input
               name="to"
               value={formData.to}
               onChange={handleChange}
               type="text"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-gray-100 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
             />
             {errors.to && <p className="text-red-500">{errors.to}</p>}
           </div>
         )}
 
-        {/* Step 5: Remaining Fields */}
         {formData.to && (
           <>
             <div>
-              <label className="block text-gray-700">Buses</label>
+              <label className="block text-gray-700 dark:text-gray-300">
+                Buses
+              </label>
               <Select
                 isMulti
                 name="bus_id"
@@ -194,6 +200,7 @@ const AddSchedule = () => {
               />
               {errors.bus_id && <p className="text-red-500">{errors.bus_id}</p>}
             </div>
+
             {[
               "schedule_id",
               "departure_time",
@@ -201,7 +208,7 @@ const AddSchedule = () => {
               "ticket_price",
             ].map((field) => (
               <div key={field}>
-                <label className="block text-gray-700 capitalize">
+                <label className="block text-gray-700 dark:text-gray-300 capitalize">
                   {field.replace("_", " ")}
                 </label>
                 <input
@@ -209,7 +216,7 @@ const AddSchedule = () => {
                   value={formData[field]}
                   onChange={handleChange}
                   type="text"
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-gray-100 border text-slate-9 border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                 />
                 {errors[field] && (
                   <p className="text-red-500">{errors[field]}</p>
@@ -219,7 +226,6 @@ const AddSchedule = () => {
           </>
         )}
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
@@ -228,7 +234,6 @@ const AddSchedule = () => {
           {mutation.isLoading ? "Submitting..." : "Submit"}
         </button>
 
-        {/* Success Message */}
         {mutation.isSuccess && (
           <p className="text-green-500 mt-4">Schedule added successfully!</p>
         )}

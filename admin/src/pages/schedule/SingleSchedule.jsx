@@ -73,8 +73,8 @@ const SingleSchedule = () => {
       reset({
         schedule_id: data?.schedule_id || "",
         schedule_date: formatDate(data?.schedule_date) || "",
-        departure_time: formatDate(data.departure_time) || "",
-        arrival_time: formatDate(data.arrival_time) || "",
+        departure_time: data.departure_time || "",
+        arrival_time: data.arrival_time || "",
         from: data.from || "",
         to: data.to || "",
         ticket_price: data.ticket_price || "",
