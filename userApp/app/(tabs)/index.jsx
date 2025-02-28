@@ -10,24 +10,29 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useColorScheme } from "nativewind";
+import img1 from "../../assets/images/habesha1.png";
+import img2 from "../../assets/images/chapa.png";
+import img3 from "../../assets/images/24.jpg";
+import img4 from "../../assets/images/price.jpg";
 
 export default function index() {
   const { colorScheme } = useColorScheme();
   const iconColor = colorScheme === "dark" ? "#e4e4e4" : "#111418";
 
-
   return (
     <View className="flex-1 bg-white dark:bg-slate-800">
       <View className="flex-row bg-white dark:bg-slate-900 items-center justify-between p-4 shadow-slate-900 dark:shadow-slate-100 shadow-xl pb-2">
         <View className="flex-shrink-0 flex items-center text-[#0e141b] dark:text-[#e4e4e4]">
-          <FontAwesome name="info-circle" size={20} color={iconColor} />
+          <Link href="/about">
+            <FontAwesome name="info-circle" size={20} color={iconColor} />
+          </Link>
         </View>
         <Text className="text-[#0e141b] dark:text-[#e4e4e4] text-xl font-bold text-center flex-1">
           Habesha Bus
         </Text>
         <View className="w-12 flex items-center justify-end">
           <TouchableOpacity className="flex items-center justify-center w-12 h-12 rounded-full bg-transparent text-[#0e141b] dark:text-[#e4e4e4] p-0">
-            <FontAwesome name="cogs" size={20} color={iconColor} />
+            <Link href='/profile'><FontAwesome name="cogs" size={20} color={iconColor} /></Link>
           </TouchableOpacity>
         </View>
       </View>
@@ -35,9 +40,7 @@ export default function index() {
       <ScrollView className="relative" scrollEventThrottle={16}>
         <View className="bg-slate-5 px-4 mt-4">
           <Image
-            source={{
-              uri: "https://cdn.usegalileo.ai/sdxl10/32a1ff90-c222-4c3f-8e23-13fd5cbfda64.png",
-            }}
+            source={img1} // Removed uri object wrapper
             className="w-full h-56 rounded-xl"
           />
 
@@ -58,7 +61,7 @@ export default function index() {
               href="book"
               className="text-white w-full text-center font-bold text-xl"
             >
-              Search for buses
+              Search for schedule
             </Link>
           </TouchableOpacity>
 
@@ -72,21 +75,21 @@ export default function index() {
           >
             {[
               {
-                text: "Lowest prices",
-                img: "https://cdn.usegalileo.ai/sdxl10/e3c6d20b-4660-4917-81b9-1753ef40dde8.png",
+                text: "Best prices",
+                img: img4,
               },
               {
                 text: "Easy payments",
-                img: "https://cdn.usegalileo.ai/sdxl10/4b4eb904-859d-47e9-a020-570e19b022a2.png",
+                img: img2,
               },
               {
                 text: "24/7 support",
-                img: "https://cdn.usegalileo.ai/sdxl10/9ec7315d-bca5-4861-b2e5-b2a3dfa18a5d.png",
+                img: img3,
               },
             ].map((item, index) => (
               <View key={index} className="mr-3 w-40">
                 <Image
-                  source={{ uri: item.img }}
+                  source={item.img} // Removed uri object wrapper
                   className="w-full h-40 rounded-xl"
                 />
                 <Text className="text-center text-[#0e141b] dark:text-[#e4e4e4] text-base font-medium mt-2">
@@ -98,7 +101,7 @@ export default function index() {
 
           <View className="items-center mt-6 mb-6">
             <Text className="text-[#4e7397] text-base">
-              © 2022 Bus.com. All rights reserved.
+              © 2025 HabeshaBus.com. All rights reserved.
             </Text>
           </View>
         </View>

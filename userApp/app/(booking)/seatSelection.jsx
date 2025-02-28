@@ -26,7 +26,6 @@ const seatSelection = () => {
   } = useSelector((state) => state.booking);
   const [totalPass, setTotalPass] = useState();
 
-  // Parse the parameters
   const query = {
     adults: parseInt(params.adults, 10) || 0,
     children: parseInt(params.children, 10) || 0,
@@ -151,9 +150,7 @@ const renderSeatMap = () => {
               return (
                 <TouchableOpacity
                   key={seatNumber}
-                  className={`${
-                    isSpecialSeat ? "mr-10" : ""
-                  } w-12 h-12 relative rounded-md flex items-center justify-center cursor-pointer
+                  className={`w-12 h-12 relative rounded-md flex items-center justify-center cursor-pointer
                   ${
                     isTaken
                       ? "bg-red-500 text-white cursor-not-allowed"

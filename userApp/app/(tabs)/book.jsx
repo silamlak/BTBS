@@ -13,10 +13,13 @@ import {
   FlatList,
 } from "react-native";
 import React, { useState } from "react";
-import { usePathname, router } from "expo-router";
+import { usePathname, router, Link } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
-import {useDispatch} from 'react-redux'
-import {clearAll, deletePassengerData} from '../../feature/booking/bookingSlice'
+import { useDispatch } from "react-redux";
+import {
+  clearAll,
+  deletePassengerData,
+} from "../../feature/booking/bookingSlice";
 import { useColorScheme } from "nativewind";
 const places = [
   "Addis Ababa",
@@ -39,15 +42,15 @@ const places = [
 const Book = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentPlaceType, setCurrentPlaceType] = useState(null);
-const { colorScheme } = useColorScheme();
-const iconColor = colorScheme === "dark" ? "#e4e4e4" : "#111418";
+  const { colorScheme } = useColorScheme();
+  const iconColor = colorScheme === "dark" ? "#e4e4e4" : "#111418";
   const pathname = usePathname();
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [date, setDate] = useState("");
   const [passengers, setPassengers] = useState({ adult: 1, child: 0 });
   const [showPassengerModal, setShowPassengerModal] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const totalPassengers = passengers.adult + passengers.child;
 
@@ -124,18 +127,22 @@ const iconColor = colorScheme === "dark" ? "#e4e4e4" : "#111418";
           <View className="bg-gray-100 h-full">
             {/* Title */}
             <View className="flex-row bg-white dark:bg-slate-900 items-center justify-between p-4 shadow-slate-900 dark:shadow-slate-100 shadow-xl pb-2">
-        <View className="flex-shrink-0 flex items-center text-[#0e141b] dark:text-[#e4e4e4]">
-          <FontAwesome name="info-circle" size={20} color={iconColor} />
-        </View>
-        <Text className="text-[#0e141b] dark:text-[#e4e4e4] text-xl font-bold text-center flex-1">
-          Habesha Bus
-        </Text>
-        <View className="w-12 flex items-center justify-end">
-          <TouchableOpacity className="flex items-center justify-center w-12 h-12 rounded-full bg-transparent text-[#0e141b] dark:text-[#e4e4e4] p-0">
-            <FontAwesome name="cogs" size={20} color={iconColor} />
-          </TouchableOpacity>
-        </View>
-      </View>
+              <View className="flex-shrink-0 flex items-center text-[#0e141b] dark:text-[#e4e4e4]">
+                <Link href="/about">
+                  <FontAwesome name="info-circle" size={20} color={iconColor} />
+                </Link>
+              </View>
+              <Text className="text-[#0e141b] dark:text-[#e4e4e4] text-xl font-bold text-center flex-1">
+                Habesha Bus
+              </Text>
+              <View className="w-12 flex items-center justify-end">
+                <TouchableOpacity className="flex items-center justify-center w-12 h-12 rounded-full bg-transparent text-[#0e141b] dark:text-[#e4e4e4] p-0">
+                  <Link href="/profile">
+                    <FontAwesome name="cogs" size={20} color={iconColor} />
+                  </Link>
+                </TouchableOpacity>
+              </View>
+            </View>
 
             <View className="p-4">
               {/* modal inputs  */}

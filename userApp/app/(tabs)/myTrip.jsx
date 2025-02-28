@@ -10,12 +10,12 @@ import React, { useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
 import { GetMyBookingFun } from "../../feature/booking/bookingApi";
-import { usePathname, router } from "expo-router";
+import { usePathname, router, Link } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import { useColorScheme } from "nativewind";
 
 const MyTrip = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [myBooking, setMyBooking] = useState();
@@ -26,7 +26,7 @@ const MyTrip = () => {
     mutationFn: GetMyBookingFun,
     onSuccess: (data) => {
       console.log(data);
-      setMyBooking(data)
+      setMyBooking(data);
     },
   });
 
@@ -37,20 +37,24 @@ const MyTrip = () => {
 
   const onDetailPage = (id) => {
     router.push(`/myBookingDetail?id=${id}`);
-  }
+  };
 
   return (
     <View className="flex-1 bg-white dark:bg-slate-800">
       <View className="flex-row bg-white dark:bg-slate-900 items-center justify-between p-4 shadow-slate-900 dark:shadow-slate-100 shadow-xl pb-2">
         <View className="flex-shrink-0 flex items-center text-[#0e141b] dark:text-[#e4e4e4]">
-          <FontAwesome name="info-circle" size={20} color={iconColor} />
+          <Link href="/about">
+            <FontAwesome name="info-circle" size={20} color={iconColor} />
+          </Link>
         </View>
         <Text className="text-[#0e141b] dark:text-[#e4e4e4] text-xl font-bold text-center flex-1">
           Habesha Bus
         </Text>
         <View className="w-12 flex items-center justify-end">
           <TouchableOpacity className="flex items-center justify-center w-12 h-12 rounded-full bg-transparent text-[#0e141b] dark:text-[#e4e4e4] p-0">
-            <FontAwesome name="cogs" size={20} color={iconColor} />
+            <Link href="/profile">
+              <FontAwesome name="cogs" size={20} color={iconColor} />
+            </Link>
           </TouchableOpacity>
         </View>
       </View>

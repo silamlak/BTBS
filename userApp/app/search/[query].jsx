@@ -4,7 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getBookingSearchFun } from "../../feature/booking/bookingApi";
 import moment from "moment";
 import { useDispatch } from "react-redux";
-import { setScheduleId } from "../../feature/booking/bookingSlice";
+import {
+  setScheduleId,
+  setSchedulePrice,
+} from "../../feature/booking/bookingSlice";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 
 const SearchResults = () => {
@@ -24,7 +27,8 @@ const SearchResults = () => {
   const formatScheduleDate = (date) => moment(date).format("MMM Do YYYY");
 
   // Function to navigate to the Passenger Info screen
-  const goToPassengerInfo = (id, bus_id) => {
+  const goToPassengerInfo = (id, ticket_price) => {
+    dispatch(setSchedulePrice(ticket_price));
     dispatch(setScheduleId({ id }));
     router.push(`/passengerInfo?${query}`);
   };
@@ -47,7 +51,7 @@ const SearchResults = () => {
             <TouchableOpacity
               key={index}
               className="bg-white p-4 rounded-3xl mb-4 shadow-md"
-              onPress={() => goToPassengerInfo(item._id, item.bus_id)}
+              onPress={() => goToPassengerInfo(item._id, item.ticket_price)}
             >
               <View className="flex flex-row justify-between gap-2 items-center">
                 <View className="flex flex-row justify-between gap-2 items-center">

@@ -75,7 +75,7 @@ export default function About() {
             Email
           </Text>
           <Text className="text-[#111418] dark:text-[#e4e4e4] text-base">
-            support@bus.com
+            support@habeshabus.com
           </Text>
         </View>
         <View className="flex-row items-center gap-4 bg-white dark:bg-[#2a2a2a] px-4 min-h-14 justify-between">
@@ -83,7 +83,7 @@ export default function About() {
             Phone
           </Text>
           <Text className="text-[#111418] dark:text-[#e4e4e4] text-base">
-            (415) 787-2864
+            (+251) 9 2773 4504
           </Text>
         </View>
         <View className="flex-row items-center gap-4 bg-white dark:bg-[#2a2a2a] px-4 min-h-14 justify-between">
@@ -91,7 +91,7 @@ export default function About() {
             Address
           </Text>
           <Text className="text-[#111418] dark:text-[#e4e4e4] text-base">
-            123 Townsend St., San Francisco, CA 94107
+            123 Rwanda St., Addis Ababa
           </Text>
         </View>
 

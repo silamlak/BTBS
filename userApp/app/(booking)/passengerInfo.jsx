@@ -69,8 +69,9 @@ const PassengerInfo = () => {
           type: "adult",
           first_name: "",
           last_name: "",
-          age: "",
           gender: "",
+          email: "",
+          phone: "",
           seat: "",
           id: code,
         });
@@ -81,7 +82,6 @@ const PassengerInfo = () => {
           type: "child",
           first_name: "",
           last_name: "",
-          age: "",
           gender: "",
           seat: "",
           id: code,
@@ -122,7 +122,7 @@ const PassengerInfo = () => {
   const allPassengerInfoFilled = () => {
     return (
       passengerData?.length > 0 &&
-      passengerData.every((p) => p.first_name && p.age && p.last_name && p.gender)
+      passengerData.every((p) => p.first_name && p.last_name && p.gender)
     );
   };
 
@@ -187,16 +187,6 @@ const PassengerInfo = () => {
                   handleInputChange(selectedPassengerIndex, "last_name", value)
                 }
               />
-              <Text className="text-lg font-semibold mb-2">Age</Text>
-              <TextInput
-                className="border border-gray-300 p-2 mb-3 rounded"
-                placeholder="Age"
-                keyboardType="numeric"
-                value={passengerData[selectedPassengerIndex].age}
-                onChangeText={(value) =>
-                  handleInputChange(selectedPassengerIndex, "age", value)
-                }
-              />
 
               <Text className="text-lg font-semibold mb-2">Gender</Text>
               <View className="flex flex-row gap-4 mb-3">
@@ -227,6 +217,35 @@ const PassengerInfo = () => {
                   </TouchableOpacity>
                 ))}
               </View>
+              {passengerData[selectedPassengerIndex].type === "adult" && (
+                <View>
+                  <Text className="text-lg font-semibold mb-2">Phone</Text>
+                  <TextInput
+                    className="border border-gray-300 p-2 mb-3 rounded"
+                    placeholder="Phone"
+                    keyboardType="numeric"
+                    value={passengerData[selectedPassengerIndex].phone}
+                    onChangeText={(value) =>
+                      handleInputChange(selectedPassengerIndex, "phone", value)
+                    }
+                  />
+                </View>
+              )}
+
+              {passengerData[selectedPassengerIndex].type === "adult" && (
+                <View>
+                  <Text className="text-lg font-semibold mb-2">Email</Text>
+                  <TextInput
+                    className="border border-gray-300 p-2 mb-3 rounded"
+                    placeholder="email"
+                    keyboardType="email"
+                    value={passengerData[selectedPassengerIndex].email}
+                    onChangeText={(value) =>
+                      handleInputChange(selectedPassengerIndex, "email", value)
+                    }
+                  />
+                </View>
+              )}
 
               {allPassengerInfoFilled() && (
                 <Button

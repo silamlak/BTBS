@@ -4,6 +4,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useColorScheme } from "nativewind";
 import { useTranslation } from "react-i18next";
 import i18next from "../../services/i18next";
+import { Link } from "expo-router";
 
 const Profile = () => {
   const { colorScheme, toggleColorScheme } = useColorScheme();
@@ -21,7 +22,7 @@ const Profile = () => {
     <View className="flex-1 bg-white dark:bg-slate-800">
       <View className="flex-row bg-white dark:bg-slate-900 items-center justify-between p-4 shadow-slate-900 dark:shadow-slate-100 shadow-xl pb-2">
         <View className="flex-shrink-0 flex items-center text-[#0e141b] dark:text-[#e4e4e4]">
-          <FontAwesome name="info-circle" size={20} color={iconColor} />
+          <Link href='/about'><FontAwesome name="info-circle" size={20} color={iconColor} /></Link>
         </View>
         <Text className="text-[#0e141b] dark:text-[#e4e4e4] text-xl font-bold text-center flex-1">
           Habesha Bus

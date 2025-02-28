@@ -3,8 +3,11 @@ import React from "react";
 import { Image, Platform, StatusBar, Text, View } from "react-native";
 import { Colors } from "@/constants/Colors";
 import icons from "../../constants/icons";
+import { useColorScheme } from "nativewind";
 
 const TabIcon = ({ icon, color, name, focused }) => {
+  const { colorScheme, toggleColorScheme } = useColorScheme();
+  const iconColor = colorScheme === "dark" ? "#161622" : "#fff";
   return (
     <View className="flex items-center justify-center gap-1">
       <Image
@@ -14,9 +17,9 @@ const TabIcon = ({ icon, color, name, focused }) => {
         className="w-8 h-8"
       />
       <Text
-        className={`${
+        className={`text-nowrap ${
           focused ? "font-psemibold" : "font-pregular"
-        } text-md -mt-2`}
+        } text-[10px] -mt-2`}
         style={{
           color: focused ? Colors.primary : color,
           fontWeight: focused ? "600" : "400",
@@ -29,6 +32,8 @@ const TabIcon = ({ icon, color, name, focused }) => {
 };
 
 export default function TabLayout() {
+  const { colorScheme, toggleColorScheme } = useColorScheme();
+
   return (
     <>
       <Tabs
@@ -89,7 +94,7 @@ export default function TabLayout() {
               <TabIcon
                 icon={icons.myTrip}
                 color={color}
-                name="MyTrip"
+                name="Trip"
                 focused={focused}
               />
             ),
@@ -111,7 +116,7 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
-      {/* <StatusBar backgroundColor="#161622" style="light" /> */}
+      {/* <StatusBar backgroundColor="#252534" barStyle="light-content" /> */}
     </>
   );
 }

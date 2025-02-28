@@ -9,9 +9,10 @@ const initialState = {
   busId: null,
   adults: 0,
   children: 0,
-  passengerData: [], 
+  passengerData: [],
   selectedPassengerIndex: 0,
   selectedSeats: {},
+  schedulePrice: 0,
   seats: [],
 };
 
@@ -22,6 +23,9 @@ const passengerSlice = createSlice({
     setScheduleId: (state, action) => {
       state.scheduleId = action.payload.id;
     },
+    setSchedulePrice: (state, action) => {
+      state.schedulePrice = action.payload;
+    },
     setBusId: (state, action) => {
       state.busId = action.payload.bus_id;
     },
@@ -29,7 +33,7 @@ const passengerSlice = createSlice({
       state.passengerData = action.payload;
     },
     deletePassengerData: (state, action) => {
-      state.passengerData = []
+      state.passengerData = [];
     },
     setSeats: (state, action) => {
       state.seats = action.payload;
@@ -90,9 +94,11 @@ const passengerSlice = createSlice({
       state.adults = 0;
       state.children = 0;
       state.passengerData = [];
-      state.selectedPassengerIndex = 0; 
+      state.selectedPassengerIndex = 0;
       state.selectedSeats = {};
       state.seats = [];
+
+      state.schedulePrice = 0;
     },
   },
 });
@@ -103,6 +109,7 @@ export const {
   updatePassenger,
   setAdults,
   setSeats,
+  setSchedulePrice,
   setScheduleId,
   setBusId,
   setChildren,
