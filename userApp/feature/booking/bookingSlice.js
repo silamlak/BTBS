@@ -14,6 +14,7 @@ const initialState = {
   selectedSeats: {},
   schedulePrice: 0,
   seats: [],
+  confirmation: null,
 };
 
 const passengerSlice = createSlice({
@@ -22,6 +23,9 @@ const passengerSlice = createSlice({
   reducers: {
     setScheduleId: (state, action) => {
       state.scheduleId = action.payload.id;
+    },
+    setConfirmation: (state, action) => {
+      state.confirmation = action.payload;
     },
     setSchedulePrice: (state, action) => {
       state.schedulePrice = action.payload;
@@ -97,8 +101,8 @@ const passengerSlice = createSlice({
       state.selectedPassengerIndex = 0;
       state.selectedSeats = {};
       state.seats = [];
-
       state.schedulePrice = 0;
+      state.confirmation = null;
     },
   },
 });
@@ -116,6 +120,7 @@ export const {
   setSelectedSeat,
   clearAll,
   deletePassengerData,
+  setConfirmation,
 } = passengerSlice.actions;
 
 const persistConfig = {

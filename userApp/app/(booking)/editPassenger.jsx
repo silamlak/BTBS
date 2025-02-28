@@ -1,108 +1,56 @@
-import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  TextInput,
   Button,
   ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { useRouter, useLocalSearchParams, Link } from "expo-router";
+import { Picker } from "@react-native-picker/picker";
+import { useEffect, useState } from "react";
+import { Link, useLocalSearchParams, router } from "expo-router";
 import { useSelector, useDispatch } from "react-redux";
+import { useColorScheme } from "nativewind";
 import {
   setPassengerData,
   setSelectedPassengerIndex,
   updatePassenger,
   setAdults,
   setChildren,
-  deletePassengerData,
+  clearAll,
 } from "../../feature/booking/bookingSlice";
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useColorScheme } from "nativewind";
 import { useTranslation } from "react-i18next";
-import i18next from "../../services/i18next";
-const PassengerInfo = () => {
-  // Use `useLocalSearchParams` to get query parameters
-  const params = useLocalSearchParams();
-  const router = useRouter();
-  const { search } = router;
+import { useMutation } from "@tanstack/react-query";
+import { updateBookingPassengerFun } from "../../feature/booking/bookingApi";
+import { FontAwesome } from "@expo/vector-icons";
+const editPassenger = () => {
+  const dispatch = useDispatch();
+  const { search } = useLocalSearchParams();
+  const { colorScheme } = useColorScheme();
   const { adults, children, passengerData, selectedPassengerIndex } =
     useSelector((state) => state.booking);
-  const dispatch = useDispatch();
-    const { colorScheme } = useColorScheme();
-    const iconColor = colorScheme === "dark" ? "#e4e4e4" : "#111418";
-      const { t } = useTranslation();
-
-  const toggleLanguage = () => {
-    const currentLang = i18next.language;
-    const newLang = currentLang === "en" ? "am" : "en";
-    i18next.changeLanguage(newLang);
-  }
-  const [loading, setLoading] = useState(false);
-
-  // Function to generate OTP
-  const generateOTP = () => {
-    const otpLength = 6;
-    const newOtp = Array.from({ length: otpLength }, () =>
-      Math.floor(Math.random() * 10)
-    ).join("");
-    return newOtp;
-  };
-
-  // Parse the parameters
-  const query = {
-    adults: parseInt(params.adults, 10) || 0,
-    children: parseInt(params.children, 10) || 0,
-    fromPlace: params.from || "",
-    toPlace: params.to || "",
-    travelDate: params.date || "",
-  };
-
   useEffect(() => {
-    if (
-      query.adults !== passengerData.filter((p) => p.type === "adult").length
-    ) {
-      dispatch(setAdults(query.adults));
+    if (!passengerData) {
+      router.push("/book");
     }
-    if (
-      query.children !== passengerData.filter((p) => p.type === "child").length
-    ) {
-      dispatch(setChildren(query.children));
+  }, [passengerData]);
+  const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
+  const iconColor = colorScheme === "dark" ? "#e4e4e4" : "#111418";
+
+  console.log(search, passengerData, selectedPassengerIndex);
+  useEffect(() => {
+    let adults, children;
+
+    if (adults !== passengerData?.filter((p) => p.type === "adult").length) {
+      dispatch(setAdults(adults));
+    }
+    if (children !== passengerData?.filter((p) => p.type === "child").length) {
+      dispatch(setChildren(children));
     }
 
-    // Initialize passenger data if empty
-    if (passengerData.length === 0) {
-      const initialPassengerData = [];
-      for (let i = 0; i < query.adults; i++) {
-        const code = generateOTP();
-        initialPassengerData.push({
-          type: "adult",
-          first_name: "",
-          last_name: "",
-          gender: "",
-          email: "",
-          phone: "",
-          seat: "",
-          id: code,
-        });
-      }
-      for (let i = 0; i < query.children; i++) {
-        const code = generateOTP();
-        initialPassengerData.push({
-          type: "child",
-          first_name: "",
-          last_name: "",
-          gender: "",
-          seat: "",
-          id: code,
-        });
-      }
-      dispatch(setPassengerData(initialPassengerData));
-    }
-
-    // Set the default selected passenger
-    if (query.adults + query.children > 0 && selectedPassengerIndex === null) {
+    if (adults + children > 0 && selectedPassengerIndex === null) {
       dispatch(setSelectedPassengerIndex(0));
     }
   }, [search, dispatch, passengerData, selectedPassengerIndex]);
@@ -112,55 +60,68 @@ const PassengerInfo = () => {
   };
 
   const handlePassengerClick = (index) => {
-    if (index >= 0 && index < passengerData.length) {
+    if (index >= 0 && index < passengerData?.length) {
       dispatch(setSelectedPassengerIndex(index));
     }
   };
 
+  const mutation = useMutation({
+    mutationFn: updateBookingPassengerFun,
+    onSuccess: (data) => {
+      console.log(data);
+      router.replace(`/myBookingDetail?id=${search}`);
+      dispatch(clearAll());
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    // console.log("Passenger Info Submitted:", passengerData);
-    router.push(
-      `/seatSelection?from=${query.fromPlace}&to=${query.toPlace}&date=${query.travelDate}&adults=${query.adults}&children=${query.children}`
-    );
-
-    setLoading(false);
+    // console.log(search, passengerData)
+    mutation.mutate({ id: search, data: passengerData });
   };
 
-  // Check if all passenger information is filled
   const allPassengerInfoFilled = () => {
     return (
       passengerData?.length > 0 &&
-      passengerData.every((p) => p.first_name && p.last_name && p.gender)
+      passengerData?.every(
+        (p) =>
+          p.first_name &&
+          p.last_name &&
+          p.gender &&
+          (p.type === "adult" ? p.email && p.phone : true)
+      )
     );
   };
-
-  if (query.adults + query.children === 0) {
-    return <Text>No passengers to fill information for.</Text>;
-  }
-
   return (
     <View className="flex-1 bg-gray-100 dark:bg-gray-900">
-      {/* Header */}
-      <View className="flex-row bg-white dark:bg-slate-900 items-center justify-between p-4 shadow-lg shadow-gray-500 dark:shadow-gray-800">
-        <TouchableOpacity className="p-2">
+      <View className="flex-row bg-white dark:bg-slate-900 items-center justify-between p-4 shadow-slate-900 dark:shadow-slate-100 shadow-xl pb-2">
+        <View className="flex-shrink-0 flex items-center">
           <Link href="/about">
-            <FontAwesome name="info-circle" size={24} color={iconColor} />
+            <FontAwesome
+              name="info-circle"
+              size={20}
+              color={iconColor}
+              className="dark:text-[#e4e4e4]"
+            />
           </Link>
-        </TouchableOpacity>
-        <Text className="text-[#0e141b] dark:text-[#e4e4e4] text-2xl font-bold text-center flex-1">
+        </View>
+        <Text className="text-[#0e141b] dark:text-[#e4e4e4] text-xl font-bold text-center flex-1">
           {t("habeshabus")}
         </Text>
-        <TouchableOpacity className="p-2">
-          <Link href="/profile">
-            <FontAwesome name="cogs" size={24} color={iconColor} />
-          </Link>
-        </TouchableOpacity>
+        <View className="w-12 flex items-center justify-end">
+          <TouchableOpacity className="flex items-center justify-center w-12 h-12 rounded-full bg-transparent p-0">
+            <Link href="/profile">
+              <FontAwesome
+                name="cogs"
+                size={20}
+                color={iconColor}
+                className="dark:text-[#e4e4e4]"
+              />
+            </Link>
+          </TouchableOpacity>
+        </View>
       </View>
-
-      <ScrollView className="p-4">
+      <ScrollView contentContainerStyle={{ padding: 16 }}>
         {/* Passenger Tabs */}
         {adults + children > 1 && (
           <ScrollView
@@ -173,13 +134,13 @@ const PassengerInfo = () => {
                 key={index}
                 className={`px-4 py-2 rounded-lg shadow-md ${
                   selectedPassengerIndex === index
-                    ? "bg-lime-500 dark:bg-lime-600 border-lime-600 text-white"
-                    : "bg-gray-200 dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+                    ? "bg-lime-500 dark:bg-lime-600"
+                    : "bg-gray-200 dark:bg-gray-700"
                 }`}
                 onPress={() => handlePassengerClick(index)}
               >
                 <Text
-                  className={`text-base font-semibold ${
+                  className={`font-semibold ${
                     selectedPassengerIndex === index
                       ? "text-white"
                       : "text-gray-800 dark:text-gray-200"
@@ -196,8 +157,8 @@ const PassengerInfo = () => {
         {selectedPassengerIndex !== null &&
           selectedPassengerIndex >= 0 &&
           selectedPassengerIndex < passengerData.length && (
-            <View className="mt-4 p-5 bg-white dark:bg-gray-800 rounded-2xl shadow-md shadow-gray-300 dark:shadow-gray-700">
-              <Text className="text-xl font-bold text-gray-800 dark:text-white mb-4">
+            <View className="mt-4 p-5 bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
+              <Text className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
                 {passengerData[selectedPassengerIndex].type === "adult"
                   ? `Adult ${selectedPassengerIndex + 1}`
                   : `Child ${selectedPassengerIndex + 1}`}
@@ -323,4 +284,6 @@ const PassengerInfo = () => {
   );
 };
 
-export default PassengerInfo;
+export default editPassenger;
+
+const styles = StyleSheet.create({});

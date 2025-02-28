@@ -21,6 +21,8 @@ import {
   deletePassengerData,
 } from "../../feature/booking/bookingSlice";
 import { useColorScheme } from "nativewind";
+import { useTranslation } from "react-i18next";
+import i18next from "../../services/i18next";
 const places = [
   "Addis Ababa",
   "Dire Dawa",
@@ -39,18 +41,37 @@ const places = [
   "Nekemte",
   "Hosaena",
 ];
+import DateTimePicker from "@react-native-community/datetimepicker";
 const Book = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentPlaceType, setCurrentPlaceType] = useState(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const { colorScheme } = useColorScheme();
   const iconColor = colorScheme === "dark" ? "#e4e4e4" : "#111418";
   const pathname = usePathname();
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
-  const [date, setDate] = useState("");
+const [date, setDate] = useState(new Date());
+  const { t } = useTranslation();
+
+  const toggleLanguage = () => {
+    const currentLang = i18next.language;
+    const newLang = currentLang === "en" ? "am" : "en";
+    i18next.changeLanguage(newLang);
+  };
   const [passengers, setPassengers] = useState({ adult: 1, child: 0 });
   const [showPassengerModal, setShowPassengerModal] = useState(false);
   const dispatch = useDispatch();
+
+ const handleDateChange = (event, selectedDate) => {
+   setShowDatePicker(false);
+   if (selectedDate) {
+     setDate(selectedDate);
+   }
+ };
+
+  console.log(selectedDate);
 
   const totalPassengers = passengers.adult + passengers.child;
 
@@ -109,220 +130,248 @@ const Book = () => {
     setTo(temp);
   };
 
-  const handleSubmit = () => {
-    dispatch(clearAll());
-    if (!from || !to || !date) {
-      Alert.alert("Error", "Please fill all fields before booking.");
-      return;
-    }
+const handleSubmit = () => {
+  dispatch(clearAll());
 
-    const query = `from=${from}&to=${to}&date=${date}&adults=${passengers.adult}&children=${passengers.child}`;
-    router.push(`/search/${query}`);
-  };
+  if (!from || !to || !date) {
+    Alert.alert("Error", "Please fill all fields before booking.");
+    return;
+  }
+
+  // Extract YYYY-MM-DD format from date
+  const formattedDate = date.toISOString().split("T")[0];
+
+  const query = `from=${from}&to=${to}&date=${formattedDate}&adults=${passengers.adult}&children=${passengers.child}`;
+  router.push(`/search/${query}`);
+};
+
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} keyboardVerticalOffset={80}>
+    <KeyboardAvoidingView
+      behavior="padding"
+      keyboardVerticalOffset={80}
+      className="flex-1"
+    >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <View className="bg-gray-100 h-full">
-            {/* Title */}
-            <View className="flex-row bg-white dark:bg-slate-900 items-center justify-between p-4 shadow-slate-900 dark:shadow-slate-100 shadow-xl pb-2">
-              <View className="flex-shrink-0 flex items-center text-[#0e141b] dark:text-[#e4e4e4]">
-                <Link href="/about">
-                  <FontAwesome name="info-circle" size={20} color={iconColor} />
-                </Link>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          className="bg-gray-100 dark:bg-gray-900"
+        >
+          {/* Header */}
+          <View className="flex-row bg-white dark:bg-slate-900 items-center justify-between p-4 shadow-lg shadow-gray-500 dark:shadow-gray-800">
+            <TouchableOpacity className="p-2">
+              <Link href="/about">
+                <FontAwesome name="info-circle" size={24} color={iconColor} />
+              </Link>
+            </TouchableOpacity>
+            <Text className="text-[#0e141b] dark:text-[#e4e4e4] text-2xl font-bold text-center flex-1">
+              {t("habeshabus")}
+            </Text>
+            <TouchableOpacity className="p-2">
+              <Link href="/profile">
+                <FontAwesome name="cogs" size={24} color={iconColor} />
+              </Link>
+            </TouchableOpacity>
+          </View>
+
+          {/* Main Content */}
+          <View className="p-5">
+            {/* From/To Inputs */}
+            <View className="flex flex-col items-center space-y-2">
+              <View className="w-full bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
+                <Text className="text-lg font-medium text-gray-700 dark:text-gray-300 -mb-2">
+                  From
+                </Text>
+                <TouchableOpacity
+                  className="pt-4"
+                  onPress={() => {
+                    setCurrentPlaceType("departure");
+                    setIsModalVisible(true);
+                  }}
+                >
+                  <Text className="text-xl font-semibold text-gray-900 dark:text-white">
+                    {from || "Choose Departure Place"}
+                  </Text>
+                </TouchableOpacity>
               </View>
-              <Text className="text-[#0e141b] dark:text-[#e4e4e4] text-xl font-bold text-center flex-1">
-                Habesha Bus
-              </Text>
-              <View className="w-12 flex items-center justify-end">
-                <TouchableOpacity className="flex items-center justify-center w-12 h-12 rounded-full bg-transparent text-[#0e141b] dark:text-[#e4e4e4] p-0">
-                  <Link href="/profile">
-                    <FontAwesome name="cogs" size={20} color={iconColor} />
-                  </Link>
+
+              <TouchableOpacity
+                className="p-3 rounded-full bg-lime-500 dark:bg-lime-600 shadow-md -my-4 z-10 active:bg-lime-600 dark:active:bg-lime-700"
+                onPress={handleSwapPlaces}
+              >
+                <FontAwesome
+                  name="exchange"
+                  size={22}
+                  color="white"
+                  style={{ transform: [{ rotate: "90deg" }] }}
+                />
+              </TouchableOpacity>
+
+              <View className="w-full bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
+                <Text className="text-lg font-medium text-gray-700 dark:text-gray-300 -mb-2">
+                  To
+                </Text>
+                <TouchableOpacity
+                  className="pt-4"
+                  onPress={() => {
+                    setCurrentPlaceType("destination");
+                    setIsModalVisible(true);
+                  }}
+                >
+                  <Text className="text-xl font-semibold text-gray-900 dark:text-white">
+                    {to || "Choose Destination Place"}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
 
-            <View className="p-4">
-              {/* modal inputs  */}
-              <View className="flex flex-col w-full items-center justify-between">
-                <View className="w-full bg-white">
-                  <Text className="text-lg -mb-4 ml-2">From</Text>
-                  <TouchableOpacity
-                    className="p-4"
-                    onPress={() => {
-                      setCurrentPlaceType("departure");
-                      setIsModalVisible(true);
-                    }}
-                  >
-                    <Text className="text-lg font-semibold text-gray-700">
-                      {from ? from : "Choose Departure Place"}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <TouchableOpacity
-                  className="p-2 rounded-full z-50 -my-2 bg-lime-500"
-                  onPress={handleSwapPlaces}
-                >
-                  <FontAwesome
-                    name="exchange"
-                    size={20}
-                    color="white"
-                    style={{ transform: [{ rotate: "90deg" }] }}
-                  />
-                </TouchableOpacity>
-                <View className="w-full bg-white">
-                  <Text className="text-lg -mb-4 ml-2 text-gray-600 text-md">
-                    To
+            {/* Place Selection Modal */}
+            <Modal
+              visible={isModalVisible}
+              transparent={true}
+              animationType="fade"
+              onRequestClose={() => setIsModalVisible(false)}
+            >
+              <View className="flex-1 justify-center items-center bg-black/60">
+                <View className="bg-white dark:bg-gray-800 p-6 rounded-2xl w-11/12 max-w-md shadow-xl shadow-gray-900 dark:shadow-gray-700 h-3/4">
+                  <Text className="text-2xl font-bold text-gray-800 dark:text-white mb-5">
+                    Select a Place
                   </Text>
-                  <TouchableOpacity
-                    className="p-4"
-                    onPress={() => {
-                      setCurrentPlaceType("destination");
-                      setIsModalVisible(true);
-                    }}
-                  >
-                    <Text className="text-lg font-semibold text-gray-700">
-                      {to ? to : "Choose Destination Place"}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <Modal
-                visible={isModalVisible}
-                transparent={true}
-                animationType="fade"
-                onRequestClose={() => setIsModalVisible(false)}
-              >
-                <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-                  <View className="bg-white p-6 rounded-lg w-4/5 h-3/4">
-                    <Text className="text-xl font-semibold mb-4">
-                      Select a Place
-                    </Text>
-
-                    {/* FlatList to display places */}
-                    <FlatList
-                      data={places}
-                      keyExtractor={(item) => item}
-                      renderItem={({ item }) => (
-                        <TouchableOpacity
-                          className="p-3 border-b border-gray-300"
-                          onPress={() => handlePlaceSelect(item)}
-                        >
-                          <Text className="text-lg text-gray-700">{item}</Text>
-                        </TouchableOpacity>
-                      )}
-                    />
-
-                    <TouchableOpacity
-                      className="mt-4 bg-gray-300 p-3 rounded-lg"
-                      onPress={() => setIsModalVisible(false)}
-                    >
-                      <Text className="text-center text-lg text-gray-700">
-                        Close
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </Modal>
-
-              {/* Date Input */}
-              <View className="mb-4">
-                <Text className="text-gray-700 mb-2">Date</Text>
-                <TextInput
-                  className="border border-gray-300 p-3 rounded-lg"
-                  placeholder="Enter travel date (YYYY-MM-DD)"
-                  value={date}
-                  onChangeText={setDate}
-                />
-              </View>
-
-              {/* Passengers Selector */}
-              <View className="w-full bg-white">
-                <Text className="text-lg -mb-4 ml-2">Passengers</Text>
-                <TouchableOpacity
-                  className="p-4"
-                  onPress={() => setShowPassengerModal(true)}
-                >
-                  <Text className="text-gray-800 text-lg font-semibold">
-                    {`Passengers: ${
-                      passengers.adult + passengers.child
-                    } (Adults: ${passengers.adult}, Children: ${
-                      passengers.child
-                    })`}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* Passenger Modal */}
-              <Modal
-                visible={showPassengerModal}
-                transparent
-                animationType="slide"
-              >
-                <View className="flex-1 justify-center items-center bg-black/60">
-                  <View className="bg-white p-6 rounded-2xl w-4/5 shadow-lg shadow-gray-900">
-                    <Text className="text-2xl font-bold text-center mb-6 text-gray-800">
-                      Select Passengers
-                    </Text>
-
-                    {/* Passenger Picker */}
-                    {[
-                      { label: "Adults", key: "adult" },
-                      { label: "Children (Below 7)", key: "child" },
-                    ].map(({ label, key }) => (
-                      <View
-                        key={key}
-                        className="flex-row justify-between items-center mb-6"
+                  <FlatList
+                    data={places}
+                    keyExtractor={(item) => item}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        className="p-4 border-b border-gray-200 dark:border-gray-700 active:bg-gray-100 dark:active:bg-gray-700"
+                        onPress={() => handlePlaceSelect(item)}
                       >
-                        <Text className="text-lg text-gray-700">{label}</Text>
-                        <View className="flex-row items-center">
-                          <TouchableOpacity
-                            className="bg-gray-300 py-1 px-4 rounded-lg active:bg-gray-400"
-                            onPress={() => handlePassengerDecrement(key)}
-                          >
-                            <Text className="text-2xl font-bold text-gray-800">
-                              -
-                            </Text>
-                          </TouchableOpacity>
-                          <Text className="mx-4 text-lg font-semibold text-gray-900">
-                            {passengers[key]}
-                          </Text>
-                          <TouchableOpacity
-                            className="bg-gray-300 py-1 px-4 rounded-lg active:bg-gray-400"
-                            onPress={() => handlePassengerIncrement(key)}
-                          >
-                            <Text className="text-2xl font-bold text-gray-800">
-                              +
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                    ))}
-
-                    <TouchableOpacity
-                      className="bg-lime-500 py-3 rounded-xl mt-4 active:bg-blue-700"
-                      onPress={() => setShowPassengerModal(false)}
-                    >
-                      <Text className="text-center text-white text-lg font-semibold">
-                        Confirm
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+                        <Text className="text-lg text-gray-700 dark:text-gray-200">
+                          {item}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  />
+                  <TouchableOpacity
+                    className="mt-5 bg-gray-300 dark:bg-gray-700 p-3 rounded-lg shadow-md active:bg-gray-400 dark:active:bg-gray-600"
+                    onPress={() => setIsModalVisible(false)}
+                  >
+                    <Text className="text-center text-lg font-semibold text-gray-800 dark:text-gray-200">
+                      Close
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-              </Modal>
+              </View>
+            </Modal>
 
-              {/* Submit Button */}
+            {/* Date Picker */}
+            <View className="mt-6">
+              <Text className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Date
+              </Text>
               <TouchableOpacity
-                onPress={handleSubmit}
-                className="bg-lime-500 p-2 mt-6 rounded-lg"
+                onPress={() => setShowDatePicker(true)}
+                className="border border-gray-300 dark:border-gray-700 p-4 rounded-lg bg-white dark:bg-gray-800 shadow-md"
               >
-                <Text className="text-center text-2xl text-white font-bold">
-                  Book Now
+                <Text className="text-lg text-gray-900 dark:text-white">
+                  {date.toISOString().split("T")[0]}
+                </Text>
+              </TouchableOpacity>
+              {showDatePicker && (
+                <DateTimePicker
+                  value={date}
+                  minimumDate={new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={handleDateChange}
+                />
+              )}
+            </View>
+
+            {/* Passengers Selector */}
+            <View className="mt-6 w-full bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
+              <Text className="text-lg font-medium text-gray-700 dark:text-gray-300 -mb-2">
+                Passengers
+              </Text>
+              <TouchableOpacity
+                className="pt-4"
+                onPress={() => setShowPassengerModal(true)}
+              >
+                <Text className="text-xl font-semibold text-gray-900 dark:text-white">
+                  {`Passengers: ${
+                    passengers.adult + passengers.child
+                  } (Adults: ${passengers.adult}, Children: ${
+                    passengers.child
+                  })`}
                 </Text>
               </TouchableOpacity>
             </View>
+
+            {/* Passenger Modal */}
+            <Modal
+              visible={showPassengerModal}
+              transparent
+              animationType="slide"
+            >
+              <View className="flex-1 justify-center items-center bg-black/60">
+                <View className="bg-white dark:bg-gray-800 p-6 rounded-2xl w-11/12 max-w-md shadow-xl shadow-gray-900 dark:shadow-gray-700">
+                  <Text className="text-2xl font-bold text-gray-800 dark:text-white text-center mb-6">
+                    Select Passengers
+                  </Text>
+                  {[
+                    { label: "Adults", key: "adult" },
+                    { label: "Children (Below 7)", key: "child" },
+                  ].map(({ label, key }) => (
+                    <View
+                      key={key}
+                      className="flex-row justify-between items-center mb-6"
+                    >
+                      <Text className="text-lg font-medium text-gray-700 dark:text-gray-200">
+                        {label}
+                      </Text>
+                      <View className="flex-row items-center space-x-3">
+                        <TouchableOpacity
+                          className="bg-gray-300 dark:bg-gray-700 py-2 px-4 rounded-full shadow-md active:bg-gray-400 dark:active:bg-gray-600"
+                          onPress={() => handlePassengerDecrement(key)}
+                        >
+                          <Text className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                            -
+                          </Text>
+                        </TouchableOpacity>
+                        <Text className="text-xl font-semibold text-gray-900 dark:text-white w-10 text-center">
+                          {passengers[key]}
+                        </Text>
+                        <TouchableOpacity
+                          className="bg-gray-300 dark:bg-gray-700 py-2 px-4 rounded-full shadow-md active:bg-gray-400 dark:active:bg-gray-600"
+                          onPress={() => handlePassengerIncrement(key)}
+                        >
+                          <Text className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                            +
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ))}
+                  <TouchableOpacity
+                    className="bg-lime-500 dark:bg-lime-600 py-3 rounded-xl shadow-md mt-6 active:bg-lime-600 dark:active:bg-lime-700"
+                    onPress={() => setShowPassengerModal(false)}
+                  >
+                    <Text className="text-center text-lg font-semibold text-white">
+                      Confirm
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+
+            {/* Submit Button */}
+            <TouchableOpacity
+              onPress={handleSubmit}
+              className="bg-lime-500 dark:bg-lime-600 p-4 mt-8 rounded-xl shadow-lg active:bg-lime-600 dark:active:bg-lime-700"
+            >
+              <Text className="text-center text-2xl font-bold text-white">
+                Book Now
+              </Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </TouchableWithoutFeedback>

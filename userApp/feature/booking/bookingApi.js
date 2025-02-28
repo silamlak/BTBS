@@ -31,12 +31,9 @@ export const totalSeatFun = async ({ totalPass, scheduleId }) => {
 export const getBookingSearchFun = async (query) => {
   try {
     console.log(query);
-    const res = await axios.get(
-      `${endpoints.search_booking}?${query}`,
-      {
-        withCredentials: true,
-      }
-    );
+    const res = await axios.get(`${endpoints.search_booking}?${query}`, {
+      withCredentials: true,
+    });
     return res.data;
   } catch (error) {
     return handleError(error);
@@ -117,3 +114,33 @@ export const GetMyBookingDetailFun = async (id) => {
   }
 };
 
+export const updateBookingPassengerFun = async ({ id, data }) => {
+  try {
+    console.log(id);
+    const res = await axios.post(
+      `${endpoints.update_booking_pass}/${id}`,
+      data,
+      {
+        withCredentials: true,
+      }
+    );
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const updateBookingSeatFun = async ({ id, data, seats }) => {
+  try {
+    const res = await axios.post(
+      `${endpoints.update_booking_seat}/${id}`,
+      { data, seats },
+      {
+        withCredentials: true,
+      }
+    );
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};

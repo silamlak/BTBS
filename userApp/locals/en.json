@@ -1,4 +1,27 @@
 {
   "change": "Language",
-  "welcome": "Welcome"
+  "welcome": "Welcome",
+  "habeshabus": "Habesha Bus",
+  "slogan": "Bus travel made simple",
+  "input": "from to date passenger",
+  "link": "Search for schedule",
+  "why": "Why book with us?",
+  "price": "Best prices",
+  "payment": "Easy payments",
+  "service": "24/7 support",
+
+  "about": "App features",
+  "eticket": "E-tickets",
+  "instant": "Instant mobile tickets",
+  "fastservice": "Fast Service",
+  "quick": "Quick and efficient bookings",
+  "24": "24/7 Support",
+  "available": "Available around the clock",
+  "contactus": "Contact us",
+  "email": "Email",
+  "phone": "Phone",
+  "adress": "Address",
+  "legal": "Legal",
+  "privacy": "Privacy Policy",
+  "term": "Terms of Use"
 }

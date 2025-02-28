@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, Button, Linking, Modal } from "react-native";
+import { View, Text, TextInput, Button, Linking, Modal, ScrollView, TouchableOpacity } from "react-native";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
@@ -171,92 +171,125 @@ const payment = () => {
         setModalVisible(true);
       }
 
-      // Reset form after successful submission
-      //  setForm({
-      //    amount: "",
-      //    currency: "",
-      //    email: "",
-      //    first_name: "",
-      //    last_name: "",
-      //    phone_number: "",
-      //    tx_ref,
-      //  });
     } catch (error) {
       console.log("Error", error);
     }
   };
 
   return (
-    <View className="p-4">
+    <ScrollView className="flex-1 bg-gray-100 dark:bg-gray-900 p-4">
+      {/* Payment Modal */}
       <Modal visible={modalVisible} animationType="slide">
-        <View className="flex-1">
-          <Button title="Close" onPress={() => setModalVisible(false)} />
-          {checkoutUrl && <WebView source={{ uri: checkoutUrl }} />}
+        <View className="flex-1 bg-white dark:bg-gray-900">
+          <TouchableOpacity
+            className="bg-gray-200 dark:bg-gray-700 p-3 rounded-lg shadow-md m-4"
+            onPress={() => setModalVisible(false)}
+          >
+            <Text className="text-center text-lg font-semibold text-gray-800 dark:text-gray-200">
+              Close
+            </Text>
+          </TouchableOpacity>
+          {checkoutUrl && (
+            <WebView source={{ uri: checkoutUrl }} style={{ flex: 1 }} />
+          )}
         </View>
       </Modal>
-      <View className="px-6 py-8 bg-white">
-        <Text className="text-lg font-bold mb-2">Amount:</Text>
+
+      {/* Form Card */}
+      <View className="px-6 py-8 bg-white dark:bg-gray-800 rounded-2xl shadow-md shadow-gray-300 dark:shadow-gray-700 mb-6">
+        <Text className="text-xl font-bold text-gray-800 dark:text-white mb-4">
+          Payment Details
+        </Text>
+
+        {/* Amount */}
+        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Amount
+        </Text>
         <TextInput
-          className="shadow appearance-none border rounded w-full py-2 px-3 mb-4 text-gray-700"
+          className="border border-gray-300 dark:border-gray-700 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 shadow-sm mb-4"
           placeholder="Amount"
           value={form.amount}
           editable={false}
           onChangeText={(value) => handleInputChange("amount", value)}
         />
 
-        <Text className="text-lg font-bold mb-2">Currency:</Text>
+        {/* Currency */}
+        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Currency
+        </Text>
         <TextInput
-          className="shadow appearance-none border rounded w-full py-2 px-3 mb-4 text-gray-700"
+          className="border border-gray-300 dark:border-gray-700 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 shadow-sm mb-4"
           placeholder="Currency"
           value={form.currency}
           editable={false}
           onChangeText={(value) => handleInputChange("currency", value)}
         />
 
-        <Text className="text-lg font-bold mb-2">Email:</Text>
+        {/* Email */}
+        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Email
+        </Text>
         <TextInput
-          className="shadow appearance-none border rounded w-full py-2 px-3 mb-4 text-gray-700"
+          className="border border-gray-300 dark:border-gray-700 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 shadow-sm mb-4"
           placeholder="Email"
           value={form.email}
           onChangeText={(value) => handleInputChange("email", value)}
+          keyboardType="email-address"
         />
 
-        <Text className="text-lg font-bold mb-2">First Name:</Text>
+        {/* First Name */}
+        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          First Name
+        </Text>
         <TextInput
-          className="shadow appearance-none border rounded w-full py-2 px-3 mb-4 text-gray-700"
+          className="border border-gray-300 dark:border-gray-700 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 shadow-sm mb-4"
           placeholder="First Name"
           value={form.first_name}
           onChangeText={(value) => handleInputChange("first_name", value)}
         />
 
-        <Text className="text-lg font-bold mb-2">Last Name:</Text>
+        {/* Last Name */}
+        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Last Name
+        </Text>
         <TextInput
-          className="shadow appearance-none border rounded w-full py-2 px-3 mb-4 text-gray-700"
+          className="border border-gray-300 dark:border-gray-700 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 shadow-sm mb-4"
           placeholder="Last Name"
           value={form.last_name}
           onChangeText={(value) => handleInputChange("last_name", value)}
         />
 
-        <Text className="text-lg font-bold mb-2">Phone Number:</Text>
+        {/* Phone Number */}
+        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Phone Number
+        </Text>
         <TextInput
-          className="shadow appearance-none border rounded w-full py-2 px-3 mb-4 text-gray-700"
+          className="border border-gray-300 dark:border-gray-700 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 shadow-sm mb-6"
           placeholder="Phone Number"
           value={form.phone_number}
           onChangeText={(value) => handleInputChange("phone_number", value)}
+          keyboardType="phone-pad"
         />
 
-        <Button
-          title="Submit"
+        {/* Submit Button */}
+        <TouchableOpacity
+          className="bg-lime-500 dark:bg-lime-600 p-3 rounded-lg shadow-md active:bg-lime-600 dark:active:bg-lime-700"
           onPress={handleSubmit}
-          color="#4CAF50" // You can use Tailwind color if you customize NativeWind settings for React Native
-        />
+        >
+          <Text className="text-white text-center font-semibold text-lg">
+            Submit
+          </Text>
+        </TouchableOpacity>
       </View>
-      <Text className="text-xl font-semibold text-slate-800 mb-4">Payment</Text>
-      <Text className="mb-4">
+
+      {/* Payment Section */}
+      <Text className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+        Payment
+      </Text>
+      <Text className="text-base text-gray-600 dark:text-gray-400 mb-6">
         Please review your booking before proceeding.
       </Text>
-      {/* <Button title="Book Now" onPress={handleBooking} /> */}
-    </View>
+    </ScrollView>
   );
 };
 

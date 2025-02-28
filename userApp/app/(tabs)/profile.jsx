@@ -22,10 +22,12 @@ const Profile = () => {
     <View className="flex-1 bg-white dark:bg-slate-800">
       <View className="flex-row bg-white dark:bg-slate-900 items-center justify-between p-4 shadow-slate-900 dark:shadow-slate-100 shadow-xl pb-2">
         <View className="flex-shrink-0 flex items-center text-[#0e141b] dark:text-[#e4e4e4]">
-          <Link href='/about'><FontAwesome name="info-circle" size={20} color={iconColor} /></Link>
+          <Link href="/about">
+            <FontAwesome name="info-circle" size={20} color={iconColor} />
+          </Link>
         </View>
         <Text className="text-[#0e141b] dark:text-[#e4e4e4] text-xl font-bold text-center flex-1">
-          Habesha Bus
+          {t("habeshabus")}
         </Text>
         <View className="w-12 flex items-center justify-end">
           <TouchableOpacity className="flex items-center justify-center w-12 h-12 rounded-full bg-transparent text-[#0e141b] dark:text-[#e4e4e4] p-0">

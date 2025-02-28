@@ -51,15 +51,15 @@ export const searchSchedules = async (req, res, next) => {
 
 //book
 export const bookTicket = async (req, res, next) => {
-   function formatDate(dateString) {
-     const date = new Date(dateString);
+  function formatDate(dateString) {
+    const date = new Date(dateString);
 
-     const year = date.getFullYear();
-     const month = String(date.getMonth() + 1).padStart(2, "0");
-     const day = String(date.getDate()).padStart(2, "0");
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
 
-     return `${year}-${month}-${day}`;
-   }
+    return `${year}-${month}-${day}`;
+  }
   try {
     const confirmationCode = crypto
       .randomBytes(4)
@@ -105,7 +105,7 @@ Please arrive 15 minutes early.
 Safe travels!
 Habesha Bus
               `;
-                await sendMessage(passenger.phone, body);
+        await sendMessage(passenger.phone, body);
       }
     }
     res.status(200).json({ booked, msg: "booked succ" });
@@ -164,7 +164,7 @@ export const getBooking = async (req, res, next) => {
 export const cancelBooking = async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log(id)
+    console.log(id);
     const CancelledBooking = await bookingModel.findByIdAndDelete(id);
     const CancelledSeats = await seatModel.deleteMany({ bookId: id });
     res.status(201).json({ msg: "Booking Cancelled" });
@@ -176,8 +176,10 @@ export const cancelBooking = async (req, res, next) => {
 export const myBooking = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    const myBooking = await bookingModel.findById(id);
+console.log(id)
+    const myBooking = await bookingModel.findOne({
+      confirmationCode: id,
+    });
     if (!myBooking) {
       return res.status(404).json({ msg: "not found" });
     }

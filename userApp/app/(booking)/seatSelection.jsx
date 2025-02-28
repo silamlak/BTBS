@@ -95,37 +95,43 @@ const seatSelection = () => {
   const totalSeats = getTotalSeats?.seating_capacity || 60;
   const rows = Math.ceil((totalSeats - lastRowSeats) / seatsPerRow) + 1;
 
-  const renderPassengerButtons = () => (
-    <View className="flex flex-row flex-wrap gap-4 mb-4">
-      {passengerData.map((passenger, index) => (
-        <TouchableOpacity
-          key={index}
-          className={`p-2 border rounded-md ${
+const renderPassengerButtons = () => (
+  <View className="flex flex-row flex-wrap gap-3 mb-6">
+    {passengerData.map((passenger, index) => (
+      <TouchableOpacity
+        key={index}
+        className={`px-4 py-2 border rounded-lg shadow-md ${
+          selectedPassengerIndex === index
+            ? "bg-lime-500 dark:bg-lime-600 border-lime-600 text-white"
+            : "bg-gray-200 dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+        }`}
+        onPress={() => handlePassengerClick(index)}
+      >
+        <Text
+          className={`text-base font-semibold ${
             selectedPassengerIndex === index
-              ? "bg-blue-500 text-white"
-              : "bg-gray-300"
+              ? "text-white"
+              : "text-gray-800 dark:text-gray-200"
           }`}
-          onPress={() => handlePassengerClick(index)}
         >
-          <Text className="text-base">
-            {passenger.type === "adult"
-              ? `Adult ${index + 1}`
-              : `Child ${index + 1}`}
-            {selectedPassengerIndex === index && ` (Selected)`}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
+          {passenger.type === "adult"
+            ? `Adult ${index + 1}`
+            : `Child ${index + 1}`}
+          {selectedPassengerIndex === index && ` (Selected)`}
+        </Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+);
+
 const renderSeatMap = () => {
-  // Generate the array of custom seat numbers: 2, 6, 10, 14, ...
   const seatNumbers = [];
   for (let i = 2; i <= totalSeats; i += 4) {
     seatNumbers.push(i);
   }
 
   return (
-    <View className="flex flex-col gap-4 mb-4">
+    <View className="flex flex-col gap-6 mb-6">
       {Array.from({ length: rows }).map((_, rowIndex) => {
         const isLastRow = rowIndex === rows - 1;
         const seatCount = isLastRow ? lastRowSeats : seatsPerRow;
@@ -143,41 +149,37 @@ const renderSeatMap = () => {
                 (seat) => seat.seat_no === seatNumber
               );
               const occupiedByPassenger = selectedSeats[seatNumber];
-
-              // Determine if the seat number is one of the special numbers (2, 6, 10, ...)
               const isSpecialSeat = seatNumbers.includes(seatNumber);
 
               return (
                 <TouchableOpacity
                   key={seatNumber}
-                  className={`w-12 h-12 relative rounded-md flex items-center justify-center cursor-pointer
-                  ${
+                  className={`w-14 h-14 relative rounded-lg flex items-center justify-center shadow-md border ${
                     isTaken
-                      ? "bg-red-500 text-white cursor-not-allowed"
+                      ? "bg-red-500 dark:bg-red-600 border-red-600 text-white"
                       : occupiedByPassenger !== undefined
-                      ? "bg-lime-500 text-white"
-                      : "hover:bg-gray-300 bg-gray-300"
+                      ? "bg-lime-500 dark:bg-lime-600 border-lime-600 text-white"
+                      : "bg-gray-200 dark:bg-gray-800 border-gray-300 dark:border-gray-700"
                   }`}
                   onPress={() => !isTaken && handleSeatClick(seatNumber)}
                   disabled={isTaken}
                 >
                   {!isTaken && occupiedByPassenger == undefined && (
-                    <View className="absolute -right-1 bottom-[6px] h-1/2 w-2 rounded-2xl bg-white border"></View>
+                    <View className="absolute -right-1 bottom-[6px] h-1/2 w-2 rounded-2xl bg-white dark:bg-gray-300 border border-gray-300 dark:border-gray-700" />
                   )}
                   {!isTaken && occupiedByPassenger == undefined && (
-                    <View className="absolute -left-1 bottom-[6px] h-1/2 w-2 rounded-2xl bg-white border"></View>
+                    <View className="absolute -left-1 bottom-[6px] h-1/2 w-2 rounded-2xl bg-white dark:bg-gray-300 border border-gray-300 dark:border-gray-700" />
                   )}
                   {!isTaken && occupiedByPassenger == undefined && (
-                    <View className="absolute bottom-0 h-2 w-full rounded-2xl bg-white border"></View>
+                    <View className="absolute bottom-0 h-2 w-full rounded-b-lg bg-white dark:bg-gray-300 border-t border-gray-300 dark:border-gray-700" />
                   )}
-
-                  <Text className="text-center">
+                  <Text className="text-center text-sm font-medium text-gray-800 dark:text-gray-200">
                     {isTaken
                       ? "Taken"
                       : occupiedByPassenger !== undefined
                       ? `P${occupiedByPassenger + 1}`
                       : isSpecialSeat
-                      ? `${seatNumber} `
+                      ? `${seatNumber}`
                       : `${seatNumber}`}
                   </Text>
                 </TouchableOpacity>
@@ -190,17 +192,23 @@ const renderSeatMap = () => {
   );
 };
 
-
-  return (
-    <ScrollView className="p-4">
-      <Text className="text-lg font-semibold text-slate-800 mb-4">
-        Seat Selection
+return (
+  <ScrollView className="flex-1 bg-gray-100 dark:bg-gray-900 p-4">
+    <Text className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-6">
+      Seat Selection
+    </Text>
+    {renderPassengerButtons()}
+    {renderSeatMap()}
+    <TouchableOpacity
+      className="bg-lime-500 dark:bg-lime-600 p-3 rounded-lg shadow-md active:bg-lime-600 dark:active:bg-lime-700"
+      onPress={handleSeatSubmit}
+    >
+      <Text className="text-white text-center font-semibold text-lg">
+        Submit
       </Text>
-      {renderPassengerButtons()}
-      {renderSeatMap()}
-      <Button title="Submit" onPress={handleSeatSubmit} />
-    </ScrollView>
-  );
+    </TouchableOpacity>
+  </ScrollView>
+);
 };
 
 export default seatSelection;
