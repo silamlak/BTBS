@@ -69,6 +69,7 @@ const AddSchedule = () => {
     }));
   };
 
+
   const validate = () => {
     const errors = {};
     for (const [key, value] of Object.entries(formData)) {

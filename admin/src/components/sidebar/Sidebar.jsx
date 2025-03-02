@@ -7,7 +7,7 @@ import { AiOutlineUser, AiOutlineHeart } from "react-icons/ai";
 import { FiMessageSquare, FiFolder, FiShoppingCart } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { FaTicketAlt, FaBus, FaBuilding } from "react-icons/fa";  // FontAwesome Ticket Icon
+import { FaTicketAlt, FaBus, FaBuilding, FaUserCog } from "react-icons/fa";  // FontAwesome Ticket Icon
 
 
 const Sidebar = ({ theme }) => {
@@ -37,7 +37,7 @@ const Sidebar = ({ theme }) => {
   ];
   const admin = [
     { name: "dashboard", link: "/", icon: MdOutlineDashboard },
-    { name: "Hr", link: "/hr", icon: FiShoppingCart },
+    { name: "Hr", link: "/hr", icon: FaUserCog },
   ];
 
   const menus =
@@ -58,7 +58,7 @@ const Sidebar = ({ theme }) => {
       <div
         className={`min-h-screen z-50 ${
           open ? "w-56" : "w-[67px]"
-        } transition-[width] duration-500 text-gray-100 px-4 bg-slate-50 dark:bg-slate-950`}
+        } transition-[width] duration-500 text-gray-100 px-4 bg-slate-50 dark:bg-slate-900`}
       >
         <div className="py-3 flex justify-end">
           <HiMenuAlt3

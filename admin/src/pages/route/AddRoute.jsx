@@ -1,7 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { addRouteFun } from "../../features/route/routeApi";
+import {
+  addRouteFun,
+  getRouteFun,
+  getStationListFun,
+} from "../../features/route/routeApi";
 import { getBusesListFun } from "../../features/buses/busApi";
 import Select from "react-select";
 import { useForm, Controller } from "react-hook-form";
@@ -16,6 +20,19 @@ const AddRoute = () => {
     keepPreviousData: true,
   });
 
+  const {
+    data: stations,
+    isLoading: isL,
+    isError: isE,
+  } = useQuery({
+    queryKey: ["routes"],
+    queryFn: () => getStationListFun(),
+    // enabled: !!filterType,
+    keepPreviousData: true,
+  });
+
+  console.log(stations);
+
   // Validation schema with Yup
   const validationSchema = Yup.object({
     route_id: Yup.string().required("Route ID is required"),
@@ -28,11 +45,18 @@ const AddRoute = () => {
       stop_name: Yup.string(),
       location: Yup.string(),
     }),
-    bus_id: Yup.array().min(1, "At least one bus must be selected").max(2, "You can select up to 2 buses"),
+    bus_id: Yup.array()
+      .min(1, "At least one bus must be selected")
+      .max(2, "You can select up to 2 buses"),
   });
 
   // React Hook Form setup
-  const { control, handleSubmit, formState: { errors }, setValue } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       bus_id: [],
@@ -44,6 +68,8 @@ const AddRoute = () => {
   });
 
   const [selectedBuses, setSelectedBuses] = useState([]);
+  const [selectedStartLocation, setSelectedStartLocation] = useState(null);
+  const [selectedEndLocation, setSelectedEndLocation] = useState(null);
 
   const mutation = useMutation({
     mutationFn: addRouteFun,
@@ -57,6 +83,8 @@ const AddRoute = () => {
     mutation.mutate({
       ...data,
       bus_id: data.bus_id.map((bus) => bus.value),
+      start_location: selectedStartLocation?.label,
+      end_location: selectedEndLocation?.label,
     });
   };
 
@@ -64,89 +92,10 @@ const AddRoute = () => {
     <div className="max-w-lg mx-auto bg-gray-900 p-6 rounded-lg shadow-md dark:bg-gray-900">
       <h2 className="text-3xl font-bold mb-6 text-white">Add Route</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Route ID */}
         <div>
-          <label className="block text-gray-300 dark:text-gray-100">Route ID</label>
-          <input
-            {...control.register("route_id")}
-            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-          />
-          {errors.route_id && <p className="text-red-500 mt-2">{errors.route_id.message}</p>}
-        </div>
-
-        {/* Route Name */}
-        <div>
-          <label className="block text-gray-300 dark:text-gray-100">Route Name</label>
-          <input
-            {...control.register("route_name")}
-            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-          />
-          {errors.route_name && <p className="text-red-500 mt-2">{errors.route_name.message}</p>}
-        </div>
-
-        {/* Start Location */}
-        <div>
-          <label className="block text-gray-300 dark:text-gray-100">Start Location</label>
-          <input
-            {...control.register("start_location")}
-            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-          />
-          {errors.start_location && <p className="text-red-500 mt-2">{errors.start_location.message}</p>}
-        </div>
-
-        {/* End Location */}
-        <div>
-          <label className="block text-gray-300 dark:text-gray-100">End Location</label>
-          <input
-            {...control.register("end_location")}
-            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-          />
-          {errors.end_location && <p className="text-red-500 mt-2">{errors.end_location.message}</p>}
-        </div>
-
-        {/* Total Distance */}
-        <div>
-          <label className="block text-gray-300 dark:text-gray-100">Total Distance</label>
-          <input
-            {...control.register("total_distance")}
-            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-          />
-          {errors.total_distance && <p className="text-red-500 mt-2">{errors.total_distance.message}</p>}
-        </div>
-
-        {/* Estimated Time */}
-        <div>
-          <label className="block text-gray-300 dark:text-gray-100">Estimated Time</label>
-          <input
-            {...control.register("estimated_time")}
-            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-          />
-          {errors.estimated_time && <p className="text-red-500 mt-2">{errors.estimated_time.message}</p>}
-        </div>
-
-        {/* Stops - Stop Name */}
-        <div>
-          <label className="block text-gray-300 dark:text-gray-100">Stop Name</label>
-          <input
-            {...control.register("stops.stop_name")}
-            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-          />
-          {errors.stops?.stop_name && <p className="text-red-500 mt-2">{errors.stops.stop_name.message}</p>}
-        </div>
-
-        {/* Stops - Location */}
-        <div>
-          <label className="block text-gray-300 dark:text-gray-100">Location</label>
-          <input
-            {...control.register("stops.location")}
-            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-          />
-          {errors.stops?.location && <p className="text-red-500 mt-2">{errors.stops.location.message}</p>}
-        </div>
-
-        {/* Multi-Select Dropdown for Buses */}
-        <div>
-          <label className="block text-gray-300 dark:text-gray-100">Select Buses</label>
+          <label className="block text-gray-300 dark:text-gray-100">
+            Select Buses
+          </label>
           <Controller
             name="bus_id"
             control={control}
@@ -171,8 +120,155 @@ const AddRoute = () => {
               />
             )}
           />
-          {errors.bus_id && <p className="text-red-500 mt-2">{errors.bus_id.message}</p>}
+          {errors.bus_id && (
+            <p className="text-red-500 mt-2">{errors.bus_id.message}</p>
+          )}
         </div>
+        {/* Route ID */}
+        <div>
+          <label className="block text-gray-300 dark:text-gray-100">
+            Route ID
+          </label>
+          <input
+            {...control.register("route_id")}
+            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+          />
+          {errors.route_id && (
+            <p className="text-red-500 mt-2">{errors.route_id.message}</p>
+          )}
+        </div>
+
+        {/* Route Name */}
+        <div>
+          <label className="block text-gray-300 dark:text-gray-100">
+            Route Name
+          </label>
+          <input
+            {...control.register("route_name")}
+            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+          />
+          {errors.route_name && (
+            <p className="text-red-500 mt-2">{errors.route_name.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-gray-300 dark:text-gray-100">
+            Select Start Location
+          </label>
+          <select
+            {...control.register("start_location")}
+            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+            onChange={(e) =>
+              setSelectedStartLocation(e.target.selectedOptions[0])
+            }
+          >
+            <option value="">Select Start Location</option>
+            {!isL && !isE
+              ? stations?.stations?.map((station) => (
+                  <option
+                    key={station._id}
+                    value={station._id}
+                    disabled={selectedEndLocation?.label === station.name}
+                  >
+                    {station.name}
+                  </option>
+                ))
+              : null}
+          </select>
+          {errors.start_location && (
+            <p className="text-red-500 mt-2">{errors.start_location.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-gray-300 dark:text-gray-100">
+            Select End Location
+          </label>
+          <select
+            {...control.register("end_location")}
+            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+            onChange={(e) =>
+              setSelectedEndLocation(e.target.selectedOptions[0])
+            }
+          >
+            <option value="">Select End Location</option>
+            {!isL && !isE
+              ? stations?.stations?.map((station) => (
+                  <option
+                    key={station._id}
+                    value={station._id}
+                    disabled={selectedStartLocation?.label === station.name}
+                  >
+                    {station.name}
+                  </option>
+                ))
+              : null}
+          </select>
+          {errors.end_location && (
+            <p className="text-red-500 mt-2">{errors.end_location.message}</p>
+          )}
+        </div>
+
+        {/* Total Distance */}
+        <div>
+          <label className="block text-gray-300 dark:text-gray-100">
+            Total Distance
+          </label>
+          <input
+            {...control.register("total_distance")}
+            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+          />
+          {errors.total_distance && (
+            <p className="text-red-500 mt-2">{errors.total_distance.message}</p>
+          )}
+        </div>
+
+        {/* Estimated Time */}
+        <div>
+          <label className="block text-gray-300 dark:text-gray-100">
+            Estimated Time
+          </label>
+          <input
+            {...control.register("estimated_time")}
+            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+          />
+          {errors.estimated_time && (
+            <p className="text-red-500 mt-2">{errors.estimated_time.message}</p>
+          )}
+        </div>
+
+        {/* Stops - Stop Name */}
+        <div>
+          <label className="block text-gray-300 dark:text-gray-100">
+            Stop Name
+          </label>
+          <input
+            {...control.register("stops.stop_name")}
+            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+          />
+          {errors.stops?.stop_name && (
+            <p className="text-red-500 mt-2">
+              {errors.stops.stop_name.message}
+            </p>
+          )}
+        </div>
+
+        {/* Stops - Location */}
+        <div>
+          <label className="block text-gray-300 dark:text-gray-100">
+            Location
+          </label>
+          <input
+            {...control.register("stops.location")}
+            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+          />
+          {errors.stops?.location && (
+            <p className="text-red-500 mt-2">{errors.stops.location.message}</p>
+          )}
+        </div>
+
+        {/* Multi-Select Dropdown for Buses */}
 
         {/* Submit Button */}
         <button

@@ -12,6 +12,7 @@ import {
   getSchedule,
   getSeats,
   getStations,
+  getStationsForRoute,
   getTotalCount,
   UpdatePlace,
   UpdateRoute,
@@ -37,6 +38,7 @@ router.delete("/route/delete/:id", deleteRoute);
 //stationPlace
 router.post("/addplace", addPlace);
 router.get("/place/get", getStations);
+router.get("/place/route/get", getStationsForRoute);
 router.get("/place/get/:id", ViewPlace);
 router.post("/place/update/:id", UpdatePlace);
 router.delete("/place/delete/:id", deletePlace);

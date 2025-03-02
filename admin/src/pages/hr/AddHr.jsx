@@ -55,7 +55,7 @@ const AddHr = () => {
       // Prepare formData with image URLs
       const formData = {
         ...data,
-        id_url: imageUrls,
+        // id_url: imageUrls,
       };
 
       mutation.mutate(formData);
@@ -99,7 +99,7 @@ const AddHr = () => {
         ))}
 
         {/* File Input for Images */}
-        <div className="border-b-2 flex flex-col w-fit border-slate-500 dark:border-slate-300">
+        {/* <div className="border-b-2 flex flex-col w-fit border-slate-500 dark:border-slate-300">
           <label
             htmlFor="images"
             className="text-[14px] flex m-1 dark:text-gray-300"
@@ -123,7 +123,7 @@ const AddHr = () => {
           {errors.images && (
             <p className="text-red-500">{errors.images.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Dropdown for Education */}
         <div className="border-b-2 flex flex-col w-fit border-slate-500 dark:border-slate-300">

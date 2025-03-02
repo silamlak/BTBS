@@ -6,7 +6,10 @@ import DataTable, { createTheme } from "react-data-table-component";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AiOutlineMinusCircle } from "react-icons/ai";
-import { addStation, deleteStationFiles } from "../../features/station/stationSlice";
+import {
+  addStation,
+  deleteStationFiles,
+} from "../../features/station/stationSlice";
 import { IoMdAdd } from "react-icons/io";
 import { getStationFun } from "../../features/station/stationApi";
 
@@ -72,132 +75,132 @@ const columns = [
 ];
 
 const Stations = () => {
-   const theme = useSelector((state) => state.theme.theme);
-   const orderedData = useSelector((state) => state.station.orderData);
+  const theme = useSelector((state) => state.theme.theme);
+  const orderedData = useSelector((state) => state.station.orderData);
 
-   const dispatch = useDispatch();
-   const navigate = useNavigate();
-   const location = useLocation();
-   const queryParams = new URLSearchParams(location.search);
-   const pageFromURL = parseInt(queryParams.get("page"), 10) || 1;
-   const limitFromURL = parseInt(queryParams.get("limit"), 10) || 10;
-   const searchFromURL = queryParams.get("search") || "";
-   const dateFromURL = queryParams.get("date") || "";
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const pageFromURL = parseInt(queryParams.get("page"), 10) || 1;
+  const limitFromURL = parseInt(queryParams.get("limit"), 10) || 10;
+  const searchFromURL = queryParams.get("search") || "";
+  const dateFromURL = queryParams.get("date") || "";
 
-   const [currentPage, setCurrentPage] = useState(pageFromURL);
-   const [limit, setLimit] = useState(limitFromURL);
-   const [searchQuery, setSearchQuery] = useState(searchFromURL);
-   const [dateValue, setDateValue] = useState(dateFromURL || "");
-   const [toDelete, setToDelete] = useState([]);
-   const [filterType, setFilterType] = useState("");
-   const [customValue, setCustomValue] = useState("");
-   const [filterText, setFilterText] = useState("");
+  const [currentPage, setCurrentPage] = useState(pageFromURL);
+  const [limit, setLimit] = useState(limitFromURL);
+  const [searchQuery, setSearchQuery] = useState(searchFromURL);
+  const [dateValue, setDateValue] = useState(dateFromURL || "");
+  const [toDelete, setToDelete] = useState([]);
+  const [filterType, setFilterType] = useState("");
+  const [customValue, setCustomValue] = useState("");
+  const [filterText, setFilterText] = useState("");
 
-   useEffect(() => {
-     const queryParams = new URLSearchParams();
-     queryParams.set("page", currentPage);
-     queryParams.set("limit", limit);
-     if (searchQuery) queryParams.set("search", searchQuery);
-     if (dateValue) queryParams.set("date", dateValue);
-     navigate({ search: queryParams.toString() });
-   }, [currentPage, limit, dateValue, searchQuery, navigate]);
+  useEffect(() => {
+    const queryParams = new URLSearchParams();
+    queryParams.set("page", currentPage);
+    queryParams.set("limit", limit);
+    if (searchQuery) queryParams.set("search", searchQuery);
+    if (dateValue) queryParams.set("date", dateValue);
+    navigate({ search: queryParams.toString() });
+  }, [currentPage, limit, dateValue, searchQuery, navigate]);
 
-   useEffect(() => {
-     const pageFromURL = parseInt(queryParams.get("page"), 10) || 1;
-     const limitFromURL = parseInt(queryParams.get("limit"), 10) || 10;
-     const searchFromURL = queryParams.get("search") || "";
-     const dateFromURL = queryParams.get("date") || "";
+  useEffect(() => {
+    const pageFromURL = parseInt(queryParams.get("page"), 10) || 1;
+    const limitFromURL = parseInt(queryParams.get("limit"), 10) || 10;
+    const searchFromURL = queryParams.get("search") || "";
+    const dateFromURL = queryParams.get("date") || "";
 
-     setCurrentPage(pageFromURL);
-     setLimit(limitFromURL);
-     setSearchQuery(searchFromURL);
-     setDateValue(dateFromURL);
-   }, [location.search]);
+    setCurrentPage(pageFromURL);
+    setLimit(limitFromURL);
+    setSearchQuery(searchFromURL);
+    setDateValue(dateFromURL);
+  }, [location.search]);
 
-   const { data, isLoading, isError } = useQuery({
-     queryKey: ["station", currentPage, limit, searchQuery, dateValue],
-     queryFn: () =>
-       getStationFun({
-         limit,
-         currentPage,
-         searchQuery,
-         dateValue,
-       }),
-     // enabled: !!filterType,
-     keepPreviousData: true,
-   });
-console.log(data)
-   useEffect(() => {
-     if (data) {
-       dispatch(addStation(data.stations));
-     }
-   }, [data]);
-   console.log(data);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["station", currentPage, limit, searchQuery, dateValue],
+    queryFn: () =>
+      getStationFun({
+        limit,
+        currentPage,
+        searchQuery,
+        dateValue,
+      }),
+    // enabled: !!filterType,
+    keepPreviousData: true,
+  });
+  console.log(data);
+  useEffect(() => {
+    if (data) {
+      dispatch(addStation(data.stations));
+    }
+  }, [data]);
+  console.log(data);
 
-   const handleDateChange = (e) => {
-     setDateValue(e.target.value);
-     setCurrentPage(1);
-   };
-   const handleSearchChange = (event) => {
-     setSearchQuery(event.target.value);
-     setCurrentPage(1);
-   };
+  const handleDateChange = (e) => {
+    setDateValue(e.target.value);
+    setCurrentPage(1);
+  };
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
+  };
 
-   const handleFilterTypeChange = (e) => {
-     setFilterType(e.target.value);
-     setCustomValue("");
-     setDateValue("");
-   };
+  const handleFilterTypeChange = (e) => {
+    setFilterType(e.target.value);
+    setCustomValue("");
+    setDateValue("");
+  };
 
-   const handleResetFilters = () => {
-     setFilterText("");
-     setFilterType("");
-     setCustomValue("");
-     setDateValue("");
-   };
+  const handleResetFilters = () => {
+    setFilterText("");
+    setFilterType("");
+    setCustomValue("");
+    setDateValue("");
+  };
 
-   const mutation = useMutation({
-     mutationFn: () => getDeleteCustomerFun(toDelete),
-     onSuccess: (data) => {
-       console.log(data);
-       dispatch(deleteStationFiles(toDelete));
-       setToDelete([]);
-       toast.success(data?.msg);
-     },
-   });
+  const mutation = useMutation({
+    mutationFn: () => getDeleteCustomerFun(toDelete),
+    onSuccess: (data) => {
+      console.log(data);
+      dispatch(deleteStationFiles(toDelete));
+      setToDelete([]);
+      toast.success(data?.msg);
+    },
+  });
 
-   const handleDeleteRows = (rows) => {
-     setToDelete([]);
-     const ids = rows.map((row) => row._id);
-     setToDelete(ids);
-   };
+  const handleDeleteRows = (rows) => {
+    setToDelete([]);
+    const ids = rows.map((row) => row._id);
+    setToDelete(ids);
+  };
 
-   const handleDeleteAll = () => {
-     mutation.mutate(toDelete);
-   };
+  const handleDeleteAll = () => {
+    mutation.mutate(toDelete);
+  };
 
-   const handleRowClick = (row) => {
-     //   dispatch(addOrderDetail(row._id));
-     navigate(`/station/${row?._id}`);
-   };
+  const handleRowClick = (row) => {
+    //   dispatch(addOrderDetail(row._id));
+    navigate(`/station/${row?._id}`);
+  };
 
-   const handleAddBo = (row) => {
-     navigate(`/add-station`);
-   };
+  const handleAddBo = (row) => {
+    navigate(`/add-station`);
+  };
 
-   return (
-     <div className="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl shadow-md">
-       <div className="flex flex-row-reverse gap-4 justify-between">
-         <div className="mb-4 flex items-center space-x-2">
-           <button onClick={handleAddBo}>
-             <IoMdAdd />
-           </button>
-           {isLoading && !isError && (
-             <div>
-               <Loader />
-             </div>
-           )}
-           {filterType === "date" && (
+  return (
+    <div className="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl shadow-md">
+      <div className="flex flex-row-reverse gap-4 justify-between">
+        <div className="mb-4 flex items-center space-x-2">
+          <button onClick={handleAddBo}>
+            <IoMdAdd className="text-slate-800 dark:text-slate-100" />
+          </button>
+          {isLoading && !isError && (
+            <div>
+              <Loader />
+            </div>
+          )}
+          {/* {filterType === "date" && (
              <input
                type="date"
                value={dateValue}
@@ -220,61 +223,61 @@ console.log(data)
              >
                <AiOutlineMinusCircle />
              </button>
-           )}
-         </div>
+           )} */}
+        </div>
 
-         <input
-           type="text"
-           placeholder="Search..."
-           value={searchQuery}
-           onChange={(e) => handleSearchChange(e)}
-           className="mb-4 p-2 rounded w-fit focus:outline dark:outline-orange-400 outline-blue-500 text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-700"
-         />
-       </div>
-       {toDelete?.length !== 0 && (
-         <div className="px-2 py-1 bg-red-400 flex items-center justify-between">
-           <p className="text-white font-semibold">{toDelete?.length}</p>
-           <button
-             onClick={handleDeleteAll}
-             className="shadow-xl bg-red-600 hover:bg-red-700 p-2 text-white rounded"
-           >
-             Delete All
-           </button>
-         </div>
-       )}
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => handleSearchChange(e)}
+          className="mb-4 p-2 rounded w-fit focus:outline dark:outline-orange-400 outline-blue-500 text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-700"
+        />
+      </div>
+      {toDelete?.length !== 0 && (
+        <div className="px-2 py-1 bg-red-400 flex items-center justify-between">
+          <p className="text-white font-semibold">{toDelete?.length}</p>
+          <button
+            onClick={handleDeleteAll}
+            className="shadow-xl bg-red-600 hover:bg-red-700 p-2 text-white rounded"
+          >
+            Delete All
+          </button>
+        </div>
+      )}
 
-       <DataTable
-         columns={columns}
-         data={orderedData}
-         pagination
-         selectableRows
-         onRowClicked={handleRowClick}
-         onSelectedRowsChange={(row) => handleDeleteRows(row.selectedRows)}
-         selectableRowsHighlight
-         highlightOnHover
-         theme={theme === "dark" ? "dark" : "solarized"}
-         responsive
-         paginationTotalRows={data?.totalCount || 0}
-         persistTableHead
-         clearSelectedRows={true}
-         paginationServer="true"
-         customStyles={customStyles}
-         paginationDefaultPage={data?.currentPage}
-         onChangePage={(page) => {
-           setCurrentPage(page);
-         }}
-         onChangeRowsPerPage={(newLimit) => {
-           setLimit(newLimit);
-           setCurrentPage(1);
-         }}
-         paginationComponentOptions={{
-           rowsPerPageText: "Rows per page:",
-           rangeSeparatorText: "of",
-         }}
-         noDataComponent="No data available"
-       />
-     </div>
-   );
+      <DataTable
+        columns={columns}
+        data={orderedData}
+        pagination
+        selectableRows
+        onRowClicked={handleRowClick}
+        onSelectedRowsChange={(row) => handleDeleteRows(row.selectedRows)}
+        selectableRowsHighlight
+        highlightOnHover
+        theme={theme === "dark" ? "dark" : "solarized"}
+        responsive
+        paginationTotalRows={data?.totalCount || 0}
+        persistTableHead
+        clearSelectedRows={true}
+        paginationServer="true"
+        customStyles={customStyles}
+        paginationDefaultPage={data?.currentPage}
+        onChangePage={(page) => {
+          setCurrentPage(page);
+        }}
+        onChangeRowsPerPage={(newLimit) => {
+          setLimit(newLimit);
+          setCurrentPage(1);
+        }}
+        paginationComponentOptions={{
+          rowsPerPageText: "Rows per page:",
+          rangeSeparatorText: "of",
+        }}
+        noDataComponent="No data available"
+      />
+    </div>
+  );
 };
 
 export default Stations;

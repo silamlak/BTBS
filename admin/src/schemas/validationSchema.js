@@ -52,21 +52,21 @@ export const schema = yup.object().shape({
       "Education level must be one of the predefined options."
     )
     .required("Education level is required."),
-  images: yup
-    .mixed()
-    .test(
-      "required",
-      "Please select exactly two images.",
-      (value) => value?.length === 2
-    )
-    .test("fileType", "Only images are allowed.", (value) =>
-      Array.from(value || []).every((file) =>
-        ["image/jpeg", "image/png", "image/jpg"].includes(file.type)
-      )
-    )
-    .test("fileSize", "Each file must be less than 2MB.", (value) =>
-      Array.from(value || []).every((file) => file.size <= 2 * 1024 * 1024)
-    ),
+  // images: yup
+  //   .mixed()
+  //   .test(
+  //     "required",
+  //     "Please select exactly two images.",
+  //     (value) => value?.length === 2
+  //   )
+  //   .test("fileType", "Only images are allowed.", (value) =>
+  //     Array.from(value || []).every((file) =>
+  //       ["image/jpeg", "image/png", "image/jpg"].includes(file.type)
+  //     )
+  //   )
+  //   .test("fileSize", "Each file must be less than 2MB.", (value) =>
+  //     Array.from(value || []).every((file) => file.size <= 2 * 1024 * 1024)
+  //   ),
 });
 
 

@@ -60,7 +60,7 @@ const columns = [
     name: "end_location",
     selector: (row) => row?.end_location,
     sortable: true,
-    cell: (row) => <span className="text-green-500">{row?.end_location}</span>,
+    cell: (row) => <span className="">{row?.end_location}</span>,
   },
   // ,
   // {
@@ -192,14 +192,14 @@ const Routes = () => {
        <div className="flex flex-row-reverse gap-4 justify-between">
          <div className="mb-4 flex items-center space-x-2">
            <button onClick={handleAddBo}>
-             <IoMdAdd />
+             <IoMdAdd className="text-slate-800 dark:text-slate-100" />
            </button>
            {isLoading && !isError && (
              <div>
                <Loader />
              </div>
            )}
-           {filterType === "date" && (
+           {/* {filterType === "date" && (
              <input
                type="date"
                value={dateValue}
@@ -222,7 +222,7 @@ const Routes = () => {
              >
                <AiOutlineMinusCircle />
              </button>
-           )}
+           )} */}
          </div>
 
          <input

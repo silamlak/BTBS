@@ -29,6 +29,17 @@ export const getRouteFun = async ({
   }
 };
 
+export const getStationListFun = async () => {
+  try {
+    const res = await axiosInstance.get(endpoints.get_station_list, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const getRoutesListFun = async () => {
   try {
     const res = await axiosInstance.get(endpoints.get_route_list, {
@@ -68,6 +79,7 @@ export const updateRouteFun = async ({ id, formData }) => {
 
 export const addRouteFun = async (data) => {
   try {
+    console.log(data)
     const res = await axiosInstance.post(endpoints.add_route, data, {
       withCredentials: true,
     });

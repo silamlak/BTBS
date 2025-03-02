@@ -11,21 +11,12 @@ const Booking = () => {
   const [showToDropdown, setShowToDropdown] = useState(false);
   const locations = [
     "Addis Ababa",
-    "Dire Dawa",
-    "Mekelle",
     "Bahir Dar",
-    "Hawassa",
-    "Adama",
     "Gondar",
     "Jimma",
-    "Harar",
     "Dessie",
-    "Shashamane",
     "Arba Minch",
-    "Debre Markos",
-    "Sodo",
-    "Nekemte",
-    "Hosaena",
+    "Hawassa",
   ];
   const navigate = useNavigate();
   const [fromPlace, setFromPlace] = useState("");

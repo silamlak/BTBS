@@ -121,6 +121,7 @@ export const endpoints = {
   //route
   get_route: `${api}/bo/route/get`,
   get_route_list: `${api}/bo/route/get_list`,
+  get_station_list: `${api}/bo/place/route/get`,
   update_route: `${api}/bo/route/update`,
   add_route: `${api}/bo/addroute`,
   delete_route: `${api}/bo/route/delete`,
