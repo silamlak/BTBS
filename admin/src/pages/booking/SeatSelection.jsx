@@ -215,7 +215,7 @@ const SeatSelection = () => {
       {renderSeatMap()}
       {allPassengerInfoFilled() && (
         <button
-          className="bg-lime-500 hover:bg-lime-600 text-white p-2 rounded-md transition-all"
+          className="bg-lime-500 hover:bg-lime-600 text-white p-2 mb-10 rounded-md transition-all"
           onClick={handleSeatSubmit}
         >
           Submit

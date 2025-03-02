@@ -226,9 +226,10 @@ const EditSeat = () => {
       <TouchableOpacity
         className="bg-lime-500 dark:bg-lime-600 p-3 mb-10 rounded-lg shadow-md active:bg-lime-600 dark:active:bg-lime-700"
         onPress={handleSeatSubmit}
+        disabled={mutation.isPending}
       >
         <Text className="text-white text-center font-semibold text-lg">
-          Submit
+          {mutation.isPending ? "Submitting..." : "Submit"}
         </Text>
       </TouchableOpacity>
     </ScrollView>

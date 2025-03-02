@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, Button, Linking, Modal, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  Linking,
+  Modal,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
@@ -23,6 +32,7 @@ const payment = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [checkoutUrl, setCheckoutUrl] = useState(null);
+  const [isGood, setIsGood] = useState(false);
 
   const openInAppBrowser = () => {
     if (data?.data?.checkout_url) {
@@ -42,15 +52,39 @@ const payment = () => {
     total_price: totalPrice,
   };
 
-  const { mutate: seatMutate } = useMutation({
+  const handleChapa = async () => {
+    try {
+      const response = await fetch("http://10.10.34.17:8000/accept-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...form,
+          tx_ref,
+        }),
+      });
+
+      const data = await response.json();
+      console.log(data);
+      if (data.data && data.data.checkout_url) {
+        Linking.openURL(data.data.checkout_url);
+        dispatch(clearAll());
+        router.push("/book");
+      }
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  const { mutate: seatMutate, isPending } = useMutation({
     mutationFn: seatFun,
     onSuccess: (data) => {
-      // dispatch(clearAll());
-      router.push("/book");
+      handleChapa();
     },
   });
 
-  const { mutate: bookMutate } = useMutation({
+  const { mutate: bookMutate, isPending: isP } = useMutation({
     mutationFn: bookingFun,
     onSuccess: (data) => {
       const updatedData = seatData.map((s, i) => ({
@@ -151,78 +185,16 @@ const payment = () => {
   };
 
   const handleSubmit = async () => {
-    try {
-      handleBooking();
-      const response = await fetch("http://10.10.34.17:8000/accept-payment", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...form,
-          tx_ref,
-        }),
-      });
-
-      const data = await response.json();
-      console.log(data);
-      if (data.data && data.data.checkout_url) {
-        Linking.openURL(data.data.checkout_url);
-      }
-
-    } catch (error) {
-      console.log("Error", error);
-    }
+    bookMutate(bookingData);
   };
 
   return (
     <ScrollView className="flex-1 bg-gray-100 dark:bg-gray-900 p-4">
-      {/* Payment Modal */}
-      <Modal visible={modalVisible} animationType="slide">
-        <View className="flex-1 bg-white dark:bg-gray-900">
-          <TouchableOpacity
-            className="bg-gray-200 dark:bg-gray-700 p-3 rounded-lg shadow-md m-4"
-            onPress={() => setModalVisible(false)}
-          >
-            <Text className="text-center text-lg font-semibold text-gray-800 dark:text-gray-200">
-              Close
-            </Text>
-          </TouchableOpacity>
-          {checkoutUrl && (
-            <WebView source={{ uri: checkoutUrl }} style={{ flex: 1 }} />
-          )}
-        </View>
-      </Modal>
-
       {/* Form Card */}
       <View className="px-6 py-8 bg-white dark:bg-gray-800 rounded-2xl shadow-md shadow-gray-300 dark:shadow-gray-700 mb-6">
         <Text className="text-xl font-bold text-gray-800 dark:text-white mb-4">
           Payment Details
         </Text>
-
-        {/* Amount */}
-        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          Amount
-        </Text>
-        <TextInput
-          className="border border-gray-300 dark:border-gray-700 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 shadow-sm mb-4"
-          placeholder="Amount"
-          value={form.amount}
-          editable={false}
-          onChangeText={(value) => handleInputChange("amount", value)}
-        />
-
-        {/* Currency */}
-        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          Currency
-        </Text>
-        <TextInput
-          className="border border-gray-300 dark:border-gray-700 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 shadow-sm mb-4"
-          placeholder="Currency"
-          value={form.currency}
-          editable={false}
-          onChangeText={(value) => handleInputChange("currency", value)}
-        />
 
         {/* Email */}
         <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -274,20 +246,13 @@ const payment = () => {
         <TouchableOpacity
           className="bg-lime-500 dark:bg-lime-600 p-3 rounded-lg shadow-md active:bg-lime-600 dark:active:bg-lime-700"
           onPress={handleSubmit}
+          disabled={isPending || isP}
         >
           <Text className="text-white text-center font-semibold text-lg">
-            Submit
+            {isPending || isP ? "Wait..." : "Pay With Chapa"}
           </Text>
         </TouchableOpacity>
       </View>
-
-      {/* Payment Section */}
-      <Text className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
-        Payment
-      </Text>
-      <Text className="text-base text-gray-600 dark:text-gray-400 mb-6">
-        Please review your booking before proceeding.
-      </Text>
     </ScrollView>
   );
 };

@@ -105,7 +105,7 @@ const MyBookingDetail = () => {
       </View>
 
       {/* Ticket Header */}
-      <View className="bg-lime-500 p-6 pt-12 flex-row justify-between items-center">
+      <View className="bg-lime-500 p-6 flex-row justify-between items-center">
         <View className="flex-row items-center space-x-3">
           <View className="bg-white/20 p-2 rounded-full">
             <FontAwesome name="bus" size={28} color="white" />
@@ -118,7 +118,7 @@ const MyBookingDetail = () => {
       </View>
 
       {/* Main Content */}
-      <View className="flex-1 p-4 -mt-4">
+      <View className="flex-1 p-4 mt-2">
         {/* Journey Card */}
         <View className="bg-white dark:bg-gray-800 rounded-2xl p-5 mb-4 shadow-md">
           <View className="flex-row justify-between items-center">

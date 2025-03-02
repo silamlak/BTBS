@@ -123,35 +123,34 @@ const editPassenger = () => {
       </View>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
         {/* Passenger Tabs */}
-        {adults + children > 1 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            className="flex-row gap-3 pb-4"
-          >
-            {passengerData.map((passenger, index) => (
-              <TouchableOpacity
-                key={index}
-                className={`px-4 py-2 rounded-lg shadow-md ${
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="flex-row gap-3 pb-4"
+        >
+          {passengerData.map((passenger, index) => (
+            <TouchableOpacity
+              key={index}
+              className={`px-4 py-2 rounded-lg shadow-md ${
+                selectedPassengerIndex === index
+                  ? "bg-lime-500 dark:bg-lime-600"
+                  : "bg-gray-200 dark:bg-gray-700"
+              }`}
+              onPress={() => handlePassengerClick(index)}
+            >
+              <Text
+                className={`font-semibold ${
                   selectedPassengerIndex === index
-                    ? "bg-lime-500 dark:bg-lime-600"
-                    : "bg-gray-200 dark:bg-gray-700"
+                    ? "text-white"
+                    : "text-gray-800 dark:text-gray-200"
                 }`}
-                onPress={() => handlePassengerClick(index)}
               >
-                <Text
-                  className={`font-semibold ${
-                    selectedPassengerIndex === index
-                      ? "text-white"
-                      : "text-gray-800 dark:text-gray-200"
-                  }`}
-                >
-                  {passenger.type === "adult" ? "Adult" : "Child"} {index + 1}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        )}
+                {passenger.type === "adult" ? "Adult" : "Child"} {index + 1}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
 
         {/* Passenger Form */}
         {selectedPassengerIndex !== null &&
@@ -270,10 +269,10 @@ const editPassenger = () => {
                       : "active:bg-lime-600 dark:active:bg-lime-700"
                   }`}
                   onPress={handleSubmit}
-                  disabled={loading}
+                  disabled={mutation.isPending}
                 >
                   <Text className="text-white text-center font-semibold text-lg">
-                    {loading ? "Submitting..." : "Submit"}
+                    {mutation.isPending ? "Submitting..." : "Submit"}
                   </Text>
                 </TouchableOpacity>
               )}

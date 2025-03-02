@@ -43,7 +43,7 @@ const Book = () => {
   const pathname = usePathname();
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
-const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date());
   const { t } = useTranslation();
 
   const toggleLanguage = () => {
@@ -55,12 +55,12 @@ const [date, setDate] = useState(new Date());
   const [showPassengerModal, setShowPassengerModal] = useState(false);
   const dispatch = useDispatch();
 
- const handleDateChange = (event, selectedDate) => {
-   setShowDatePicker(false);
-   if (selectedDate) {
-     setDate(selectedDate);
-   }
- };
+  const handleDateChange = (event, selectedDate) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
+  };
 
   console.log(selectedDate);
 
@@ -106,12 +106,29 @@ const [date, setDate] = useState(new Date());
     }
   };
 
-  const handlePlaceSelect = (place) => {
-    if (currentPlaceType === "departure") {
-      setFrom(place);
-    } else {
-      setTo(place);
+  const handlePlaceSelect = (selectedPlace) => {
+    if (currentPlaceType === "departure" && selectedPlace === to) {
+      Alert.alert(
+        "Invalid Selection",
+        "Departure and Destination cannot be the same."
+      );
+      return;
     }
+
+    if (currentPlaceType === "destination" && selectedPlace === from) {
+      Alert.alert(
+        "Invalid Selection",
+        "Departure and Destination cannot be the same."
+      );
+      return;
+    }
+
+    if (currentPlaceType === "departure") {
+      setFrom(selectedPlace);
+    } else {
+      setTo(selectedPlace);
+    }
+
     setIsModalVisible(false);
   };
 
@@ -121,21 +138,20 @@ const [date, setDate] = useState(new Date());
     setTo(temp);
   };
 
-const handleSubmit = () => {
-  dispatch(clearAll());
+  const handleSubmit = () => {
+    dispatch(clearAll());
 
-  if (!from || !to || !date) {
-    Alert.alert("Error", "Please fill all fields before booking.");
-    return;
-  }
+    if (!from || !to || !date) {
+      Alert.alert("Error", "Please fill all fields before booking.");
+      return;
+    }
 
-  // Extract YYYY-MM-DD format from date
-  const formattedDate = date.toISOString().split("T")[0];
+    // Extract YYYY-MM-DD format from date
+    const formattedDate = date.toISOString().split("T")[0];
 
-  const query = `from=${from}&to=${to}&date=${formattedDate}&adults=${passengers.adult}&children=${passengers.child}`;
-  router.push(`/search/${query}`);
-};
-
+    const query = `from=${from}&to=${to}&date=${formattedDate}&adults=${passengers.adult}&children=${passengers.child}`;
+    router.push(`/search/${query}`);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -270,7 +286,7 @@ const handleSubmit = () => {
               {showDatePicker && (
                 <DateTimePicker
                   value={date}
-                  // minimumDate={new Date()}
+                  minimumDate={new Date()}
                   mode="date"
                   display="default"
                   onChange={handleDateChange}
