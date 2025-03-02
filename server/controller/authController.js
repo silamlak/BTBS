@@ -260,7 +260,8 @@ export const signIn = async (req, res, next) => {
         role,
         email: user.email,
         first_name: user.first_name,
-        middle_name: user.middle_name,
+        middle_name: user.father_name || user.last_name,
+        phone: user.ethPhone,
       },
     };
 

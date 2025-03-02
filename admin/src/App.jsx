@@ -76,6 +76,7 @@ import RescheduleSearch from "./pages/manageBooking/RescheduleSearch";
 import RescheduleSeat from "./pages/manageBooking/RescheduleSeat";
 import ReschedulePayment from "./pages/manageBooking/ReschedulePayment";
 import RescheduleSeccess from "./pages/manageBooking/RescheduleSeccess";
+import AdminProfile from "./pages/profile/AdminProfile";
 
 const App = () => {
   const isAuth = useSelector((state) => state.auth.user);
@@ -109,6 +110,12 @@ const App = () => {
           ),
         },
         {
+          path: "/profile",
+          element: (
+            <ProtectedRoute element={AdminProfile} allowedRoles={["admin"]} />
+          ),
+        },
+        {
           path: "/booking",
           element: <ProtectedRoute element={Booking} allowedRoles={["tso"]} />,
         },
@@ -133,13 +140,19 @@ const App = () => {
         {
           path: "/reschedule/payment",
           element: (
-            <ProtectedRoute element={ReschedulePayment} allowedRoles={["tso"]} />
+            <ProtectedRoute
+              element={ReschedulePayment}
+              allowedRoles={["tso"]}
+            />
           ),
         },
         {
           path: "/reschedule/success/:id",
           element: (
-            <ProtectedRoute element={RescheduleSeccess} allowedRoles={["tso"]} />
+            <ProtectedRoute
+              element={RescheduleSeccess}
+              allowedRoles={["tso"]}
+            />
           ),
         },
         {

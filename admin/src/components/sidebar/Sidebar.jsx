@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
-import { MdOutlineDashboard, MdDriveEta } from "react-icons/md";
+import { MdOutlineDashboard, MdDriveEta, MdAltRoute } from "react-icons/md";
 import { RiSettings4Line } from "react-icons/ri";
 import { TbReportAnalytics } from "react-icons/tb";
-import { AiOutlineUser, AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineUser, AiOutlineSchedule } from "react-icons/ai";
 import { FiMessageSquare, FiFolder, FiShoppingCart } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { FaTicketAlt, FaBus, FaBuilding, FaUserCog } from "react-icons/fa";  // FontAwesome Ticket Icon
+import {
+  FaTicketAlt,
+  FaBus,
+  FaBuilding,
+  FaUserCog,
+  FaTrain,
+} from "react-icons/fa";  // FontAwesome Ticket Icon
 
 
 const Sidebar = ({ theme }) => {
@@ -22,9 +28,9 @@ const Sidebar = ({ theme }) => {
   ];
   const bos = [
     { name: "Dashboard", link: "/", icon: MdOutlineDashboard },
-    { name: "Station", link: "/station", icon: AiOutlineUser },
-    { name: "Route", link: "/route", icon: AiOutlineUser },
-    { name: "Schedule", link: "/schedule", icon: AiOutlineUser },
+    { name: "Station", link: "/station", icon: FaTrain },
+    { name: "Route", link: "/route", icon: MdAltRoute },
+    { name: "Schedule", link: "/schedule", icon: AiOutlineSchedule },
   ];
   const tsos = [
     { name: "Dashboard", link: "/", icon: MdOutlineDashboard },
