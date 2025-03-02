@@ -8,15 +8,19 @@ import {
   editBookingSeatDetail,
   getBooking,
   getSeats,
+  listSchedules,
   myBooking,
   myBookingDetail,
+  rescheduleBookTicket,
   searchSchedules,
 } from "../controller/tsoController.js";
 const router = express.Router();
 
 //booking
 router.get("/search", searchSchedules);
+router.get("/schedule/list/:id", listSchedules);
 router.post("/book", bookTicket);
+router.post("/reschedule/book/:id", rescheduleBookTicket);
 router.post("/seat", addSeat);
 router.get("/seat/:id", getSeats);
 router.get("/booking/:id", getBooking);

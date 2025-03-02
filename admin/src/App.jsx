@@ -72,6 +72,10 @@ import { useSelector } from "react-redux";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import BoDashboard from "./pages/dashboard/BoDashboard";
 import HRDashboard from "./pages/dashboard/HRDashboard";
+import RescheduleSearch from "./pages/manageBooking/RescheduleSearch";
+import RescheduleSeat from "./pages/manageBooking/RescheduleSeat";
+import ReschedulePayment from "./pages/manageBooking/ReschedulePayment";
+import RescheduleSeccess from "./pages/manageBooking/RescheduleSeccess";
 
 const App = () => {
   const isAuth = useSelector((state) => state.auth.user);
@@ -112,6 +116,30 @@ const App = () => {
           path: "/search-booking",
           element: (
             <ProtectedRoute element={SearchBooking} allowedRoles={["tso"]} />
+          ),
+        },
+        {
+          path: "/reschedule/search",
+          element: (
+            <ProtectedRoute element={RescheduleSearch} allowedRoles={["tso"]} />
+          ),
+        },
+        {
+          path: "/reschedule/seat",
+          element: (
+            <ProtectedRoute element={RescheduleSeat} allowedRoles={["tso"]} />
+          ),
+        },
+        {
+          path: "/reschedule/payment",
+          element: (
+            <ProtectedRoute element={ReschedulePayment} allowedRoles={["tso"]} />
+          ),
+        },
+        {
+          path: "/reschedule/success/:id",
+          element: (
+            <ProtectedRoute element={RescheduleSeccess} allowedRoles={["tso"]} />
           ),
         },
         {

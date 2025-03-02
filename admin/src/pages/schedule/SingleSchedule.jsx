@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FaRegSave } from "react-icons/fa";
@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deleteScheduleFun,
   updateScheduleFun,
   viewScheduleFun,
 } from "../../features/schedule/scheduleApi";
@@ -39,6 +40,7 @@ const validationSchema = yup.object().shape({
 const SingleSchedule = () => {
   const currentData = useSelector((state) => state.schedule.currentData);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const { id } = useParams();
   const [password, setPassword] = useState("");
   const { data, isLoading, isError, error } = useQuery({
@@ -96,16 +98,24 @@ const SingleSchedule = () => {
     },
   });
 
+  const mutationd = useMutation({
+    mutationFn: deleteScheduleFun,
+    onSuccess: (data) => {
+      navigate("/schedule");
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   const onSubmit = (formData) => {
     console.log("object");
     console.log("Saving updated data:", formData);
     mutation.mutate({ id, formData });
   };
-  const onPasswordSubmit = () => {
-    // Logic for saving the updated data
-  };
+
   const onDelete = () => {
-    // Logic for delete
+    mutationd.mutate(id)
   };
   return (
     <div>

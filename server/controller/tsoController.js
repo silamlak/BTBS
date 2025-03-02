@@ -48,6 +48,29 @@ export const searchSchedules = async (req, res, next) => {
     next(error);
   }
 };
+export const listSchedules = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Fetch the schedule by ID
+    const schedule = await scheduleModel.findById(id);
+    if (!schedule) {
+      return res.status(404).json({ message: "Schedule not found" });
+    }
+
+    // Get the `from` and `to` fields
+    const { from, to } = schedule;
+
+    // Find up to 5 schedules with the same `from` and `to` fields
+    const relatedSchedules = await scheduleModel
+      .find({ from, to, _id: { $ne: id } }) // Exclude the original schedule
+      .limit(15);
+
+    res.status(200).json(relatedSchedules);
+  } catch (error) {
+    next(error);
+  }
+};
 
 //book
 export const bookTicket = async (req, res, next) => {
@@ -109,6 +132,82 @@ Habesha Bus
       }
     }
     res.status(200).json({ booked, msg: "booked succ" });
+  } catch (error) {
+    next(error);
+  }
+};
+export const rescheduleBookTicket = async (req, res, next) => {
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  try {
+    const { id } = req.params;
+    const booking = await bookingModel.findById(id);
+    console.log(booking);
+    if (!booking) {
+      return res.status(400).json({ msg: "Not Found" }); // ✅ Fix: Added return to stop execution
+    }
+    const seatNumbers = booking.seats.map((seat) => seat.seatNo);
+
+    // Delete seats from the database using seatNo and bookingId
+    await seatModel.deleteMany({
+      seat_no: { $in: seatNumbers },
+      bookId: id,
+    });
+
+    console.log(req.body);
+
+    const booked = await bookingModel.findByIdAndUpdate(
+      id,
+      {
+        $set: { ...req.body },
+      },
+      { new: true }
+    );
+
+    const busDetail = await busModel.findById(booked?.busId);
+    const scheduleDetail = await scheduleModel.findById(booked?.scheduleId);
+
+    for (let i = 0; i < booked.passengers.length; i++) {
+      let passenger = booked.passengers[i];
+
+      if (passenger?.type === "adult") {
+        await sendBookingConfirmationEmail(passenger.email, {
+          passenger,
+          booked,
+          seat: booked.seats[i],
+          busDetail,
+          scheduleDetail,
+        });
+
+        const body = `
+Booking Reschedule
+
+Hi ${passenger?.first_name} ${
+          passenger?.last_name
+        }, your booking for a bus from ${scheduleDetail?.from} to ${
+          scheduleDetail?.to
+        } is confirmed!
+
+Bus: ${busDetail?.license_plate}
+Departure Date: ${formatDate(scheduleDetail?.schedule_date)}
+Time: ${scheduleDetail?.departure_time}
+Seat Number: ${booked.seats[i].seatNo}
+Please arrive 15 minutes early.
+Safe travels!
+Habesha Bus
+        `;
+
+        await sendMessage(passenger.phone, body);
+      }
+    }
+
+    res.status(200).json({ booked, msg: "Rescheduled successfully" });
   } catch (error) {
     next(error);
   }
@@ -176,7 +275,7 @@ export const cancelBooking = async (req, res, next) => {
 export const myBooking = async (req, res, next) => {
   try {
     const { id } = req.params;
-console.log(id)
+    console.log(id);
     const myBooking = await bookingModel.findOne({
       confirmationCode: id,
     });

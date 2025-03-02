@@ -11,6 +11,7 @@ import {
   XCircle,
   Armchair,
   BookOpen,
+  CalendarClock,
 } from "lucide-react";
 import {
   cancelBookingFun,
@@ -20,20 +21,25 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ErrorMessage from "../../components/ErrorMessage";
 import Loader from "../../components/Loader";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   clearAll,
+  setAdults,
+  setBookId,
   setBusId,
+  setChildren,
   setPassengerData,
   setScheduleId,
+  setSchedulePrice,
   setSeats,
+  setSelectedPassengerIndex,
 } from "../../features/book/bookSlice";
 
 const formatDate = (dateString) => {
   if (!dateString) return;
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
-    month: "long",
+    month: "numeric",
     day: "numeric",
   }).format(new Date(dateString));
 };
@@ -42,6 +48,8 @@ const MyBooking = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+  // const { adults, children, passengerData, selectedPassengerIndex } =
+  //   useSelector((state) => state.book);
   const params = new URLSearchParams(location.search);
   const search = params.get("search");
   const { data, isLoading, isError, error } = useQuery({
@@ -93,6 +101,44 @@ const MyBooking = () => {
   if (isError) {
     return <ErrorMessage error={error} />;
   }
+
+  console.log(data);
+
+  const handleReschedule = () => {
+    dispatch(clearAll());
+    dispatch(setPassengerData(data?.booking?.passengers));
+    // dispatch(setSeats(data?.booking?.seats));
+    console.log(data?.booking?.scheduleId);
+    dispatch(setScheduleId({ id: data?.booking?.scheduleId }));
+    dispatch(setSchedulePrice(data?.booking?.total_price));
+    dispatch(setBookId({ id: data?.booking?._id }));
+    dispatch(setBusId({ bus_id: data?.booking?.busId }));
+
+    // Extract adult and child count from data.booking.passengers
+    let adults = data.booking.passengers.filter(
+      (p) => p.type === "adult"
+    ).length;
+    let children = data.booking.passengers.filter(
+      (p) => p.type === "child"
+    ).length;
+
+    console.log("Adults:", adults, "Children:", children);
+
+    // Dispatch values if needed
+    dispatch(setAdults(adults));
+    dispatch(setChildren(children));
+
+    dispatch(setSelectedPassengerIndex(0));
+
+    if (
+      data?.schedule?.from &&
+      data?.schedule?.to &&
+      formatDate(data?.schedule?.schedule_date)
+    ) {
+      // Redirect to the search page with the correct query parameters
+      navigate(`/reschedule/search?id=${data?.schedule?._id}`);
+    }
+  };
 
   console.log(data);
 
@@ -225,6 +271,13 @@ const MyBooking = () => {
             >
               <Armchair size={20} />
               <span>Edit Seat</span>
+            </button>
+            <button
+              onClick={handleReschedule}
+              className="flex items-center space-x-2 text-green-500 hover:text-green-700 dark:text-green-400 dark:hover:text-green-600"
+            >
+              <CalendarClock size={20} />
+              <span>Reschedule</span>
             </button>
           </div>
         </motion.div>

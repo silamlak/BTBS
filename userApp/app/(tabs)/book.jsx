@@ -25,21 +25,12 @@ import { useTranslation } from "react-i18next";
 import i18next from "../../services/i18next";
 const places = [
   "Addis Ababa",
-  "Dire Dawa",
-  "Mekelle",
   "Bahir Dar",
-  "Hawassa",
-  "Adama",
   "Gondar",
   "Jimma",
-  "Harar",
   "Dessie",
-  "Shashamane",
   "Arba Minch",
-  "Debre Markos",
-  "Sodo",
-  "Nekemte",
-  "Hosaena",
+  "Hawassa",
 ];
 import DateTimePicker from "@react-native-community/datetimepicker";
 const Book = () => {

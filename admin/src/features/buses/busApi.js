@@ -43,12 +43,9 @@ export const getRoutesBusesListFun = async (id, date, from, to) => {
   try {
     console.log(id, date, from, to);
 
-    const res = await axiosInstance.get(
-      `${endpoints.get_bus_list}/${id}?date=${date}&from=${from}&to=${to}`,
-      {
-        withCredentials: true,
-      }
-    );
+    const res = await axiosInstance.get(`${endpoints.get_bo_bus_list}/${id}`, {
+      withCredentials: true,
+    });
     return res.data;
   } catch (error) {
     return handleError(error);

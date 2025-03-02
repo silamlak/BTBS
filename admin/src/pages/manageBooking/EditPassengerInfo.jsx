@@ -62,7 +62,7 @@ const EditPassengerInfo = () => {
     mutationFn: updateBookingPassengerFun,
     onSuccess: (data) => {
       console.log(data);
-      navigate(-1, {replace: true})
+      navigate(-1, { replace: true });
       dispatch(clearAll());
     },
   });
@@ -85,31 +85,30 @@ const EditPassengerInfo = () => {
       )
     );
   };
+  console.log(passengerData);
   return (
     <div className="p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-lg mx-auto mt-10">
       <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">
         Passenger Information
       </h2>
 
-      {adults + children > 1 && (
-        <div className="flex flex-wrap gap-4">
-          {passengerData.map((passenger, index) => (
-            <button
-              key={index}
-              className={`p-2 border rounded-md transition-colors ${
-                selectedPassengerIndex === index
-                  ? "bg-lime-500 text-white"
-                  : "bg-gray-300 dark:bg-gray-700 dark:text-white"
-              }`}
-              onClick={() => handlePassengerClick(index)}
-            >
-              {passenger.type === "adult"
-                ? `Adult ${index + 1}`
-                : `Child ${index + 1}`}
-            </button>
-          ))}
-        </div>
-      )}
+      <div className="flex flex-wrap gap-4">
+        {passengerData.map((passenger, index) => (
+          <button
+            key={index}
+            className={`p-2 border rounded-md transition-colors ${
+              selectedPassengerIndex === index
+                ? "bg-lime-500 text-white"
+                : "bg-gray-300 dark:bg-gray-700 dark:text-white"
+            }`}
+            onClick={() => handlePassengerClick(index)}
+          >
+            {passenger.type === "adult"
+              ? `Adult ${index + 1}`
+              : `Child ${index + 1}`}
+          </button>
+        ))}
+      </div>
 
       {selectedPassengerIndex !== null &&
         selectedPassengerIndex >= 0 &&

@@ -18,7 +18,7 @@ const AddSchedule = () => {
     arrival_time: "",
     ticket_price: "",
     route_id: "",
-    bus_id: [],
+    // bus_id: [],
   });
 
   const [errors, setErrors] = useState({});
@@ -40,35 +40,57 @@ const AddSchedule = () => {
     keepPreviousData: true,
   });
 
-  const {
-    data: busData,
-    isLoading: isBusLoading,
-    isError: isBusError,
-  } = useQuery({
-    queryKey: ["buses", formData.route_id],
-    queryFn: () =>
-      getRoutesBusesListFun(
-        formData.route_id,
-        formData.schedule_date,
-        formData.from,
-        formData.to
-      ),
-    keepPreviousData: true,
-    enabled:
-      !!formData.route_id &&
-      !!formData.schedule_date &&
-      !!formData.from &&
-      !!formData.to,
-  });
+  // const {
+  //   data: busData,
+  //   isLoading: isBusLoading,
+  //   isError: isBusError,
+  // } = useQuery({
+  //   queryKey: ["buses", formData.route_id],
+  //   queryFn: () =>
+  //     getRoutesBusesListFun(
+  //       formData.route_id,
+  //       formData.schedule_date,
+  //       formData.from,
+  //       formData.to
+  //     ),
+  //   keepPreviousData: true,
+  //   enabled:
+  //     !!formData.route_id &&
+  //     !!formData.schedule_date &&
+  //     !!formData.from &&
+  //     !!formData.to,
+  // });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+    console.log(name, value);
+    if (name === "route_id") {
+      const selectedSchedule = routeData.find(
+        (schedule) => schedule._id === value
+      );
 
+      console.log(selectedSchedule);
+
+      if (selectedSchedule) {
+        setFormData((prevData) => ({
+          ...prevData,
+          [name]: value,
+          from: selectedSchedule.start_location,
+          to: selectedSchedule.end_location,
+        }));
+      } else {
+        setFormData((prevData) => ({
+          ...prevData,
+          [name]: value,
+        }));
+      }
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  };
 
   const validate = () => {
     const errors = {};
@@ -86,7 +108,7 @@ const AddSchedule = () => {
     if (validate()) {
       mutation.mutate({
         ...formData,
-        bus_id: formData.bus_id.map((bus) => bus.value),
+        // bus_id: formData.bus_id.map((bus) => bus.value),
       });
     }
   };
@@ -170,7 +192,7 @@ const AddSchedule = () => {
 
         {formData.to && (
           <>
-            <div>
+            {/* <div>
               <label className="block text-gray-700 dark:text-gray-300">
                 Buses
               </label>
@@ -200,7 +222,7 @@ const AddSchedule = () => {
                 classNamePrefix="select"
               />
               {errors.bus_id && <p className="text-red-500">{errors.bus_id}</p>}
-            </div>
+            </div> */}
 
             {[
               "schedule_id",

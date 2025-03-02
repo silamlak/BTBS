@@ -13,6 +13,22 @@ export const bookingFun = async (data) => {
     return handleError(error);
   }
 };
+
+export const rescheduleBookingFun = async ({ id, bookingData }) => {
+  try {
+    console.log("object");
+    const res = await axiosInstance.post(
+      `${endpoints.reschedule_booking}/${id}`,
+      bookingData,
+      {
+        withCredentials: true,
+      }
+    );
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
 export const totalSeatFun = async ({ totalPass, scheduleId }) => {
   console.log(totalPass, scheduleId);
   try {
@@ -71,16 +87,19 @@ export const getBookingFun = async (id) => {
 export const cancelBookingFun = async (id) => {
   try {
     console.log(id);
-    const res = await axiosInstance.delete(`${endpoints.cancel_booking}/${id}`, {
-      withCredentials: true,
-    });
+    const res = await axiosInstance.delete(
+      `${endpoints.cancel_booking}/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
     return res.data;
   } catch (error) {
     return handleError(error);
   }
 };
 
-export const updateBookingPassengerFun = async ({id, data}) => {
+export const updateBookingPassengerFun = async ({ id, data }) => {
   try {
     console.log(id);
     const res = await axiosInstance.post(

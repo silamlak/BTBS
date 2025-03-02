@@ -104,7 +104,7 @@ export const getRoute = async (req, res, next) => {
 
 export const getRouteList = async (req, res, next) => {
   try {
-    console.log('object')
+    console.log("object");
     const routes = await routeModel.find();
     if (!routes) return next(custom_error_handler(404, "Route not found"));
     res.status(200).json(routes);
@@ -262,6 +262,17 @@ export const addSchedule = async (req, res, next) => {
     const sanitizedData = mongoSanitize(req.body);
     console.log("Before Processing:", sanitizedData);
 
+     if (sanitizedData.route_id) {
+       const route = await routeModel.findById(sanitizedData.route_id);
+
+       if (!route) {
+         return res.status(404).json({ msg: "Route not found" });
+       }
+
+       // Extract bus_id array from the route and add it to sanitizedData
+       sanitizedData.bus_id = route.bus_id; // Assuming `bus_ids` is an array in the route document
+     }
+
     if (sanitizedData.departure_time) {
       sanitizedData.departure_time = convertTo12HourFormat(
         sanitizedData.departure_time
@@ -325,6 +336,23 @@ export const getSeats = async (req, res, next) => {
     }
 
     // If no suitable bus is found after the loop
+    return res.status(404).json({ message: "No suitable bus available" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getBuses = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const route = await routeModel.findById(id);
+    if (!route) {
+      return res.status(404).json({ message: "Route not found" });
+    }
+
+    console.log(route);
+
     return res.status(404).json({ message: "No suitable bus available" });
   } catch (error) {
     next(error);
@@ -395,7 +423,7 @@ export const UpdateSchedule = async (req, res, next) => {
 export const deleteSchedule = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const Schedule = await stationModel.findByIdAndDelete(id);
+    const Schedule = await scheduleModel.findByIdAndDelete(id);
     if (!Schedule) return next(custom_error_handler(404, "Schedule not found"));
     res.status(200).json({ msg: "Schedule Removed" });
   } catch (error) {

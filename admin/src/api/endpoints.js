@@ -112,11 +112,13 @@ export const endpoints = {
   update_station: `${api}/bo/place/update`,
   add_station: `${api}/bo/addplace`,
   delete_station: `${api}/bo/schedule/delete`,
+  get_bo_bus_list: `${api}/bo/bus/get`,
 
   //schedule
   get_schedule: `${api}/bo/schedule/get`,
   update_schedule: `${api}/bo/schedule/update`,
   add_schedule: `${api}/bo/addschedule`,
+  delete_schedule: `${api}/bo/schedule/delete`,
 
   //route
   get_route: `${api}/bo/route/get`,
@@ -128,6 +130,7 @@ export const endpoints = {
 
   //tsoo
   booking: `${api}/tso/book`,
+  reschedule_booking: `${api}/tso/reschedule/book`,
   seat: `${api}/tso/seat`,
   get_total_seat: `${api}/bo/total/seat`,
   get_booking: `${api}/tso/booking`,
@@ -138,6 +141,7 @@ export const endpoints = {
 
   //booking
   search_booking: `${api}/tso/search`,
+  list_booking: `${api}/tso/schedule/list`,
 
   //service or prioduct
   update_product: `/admin/service/edit`,

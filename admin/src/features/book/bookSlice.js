@@ -6,6 +6,7 @@ import storage from "redux-persist/lib/storage";
 
 const initialState = {
   scheduleId: null,
+  bookId: null,
   busId: null,
   adults: 0,
   children: 0,
@@ -23,6 +24,9 @@ const passengerSlice = createSlice({
   reducers: {
     setScheduleId: (state, action) => {
       state.scheduleId = action.payload.id;
+    },
+    setBookId: (state, action) => {
+      state.bookId = action.payload.id;
     },
     setConfirmation: (state, action) => {
       state.confirmation = action.payload;
@@ -100,11 +104,13 @@ const passengerSlice = createSlice({
       state.seats = [];
       state.schedulePrice = null;
       state.confirmation = null;
+      state.bookId = null;
     },
   },
 });
 
 export const {
+  setBookId,
   setConfirmation,
   setSchedulePrice,
   setPassengerData,

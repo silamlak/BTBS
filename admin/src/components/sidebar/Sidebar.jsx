@@ -14,19 +14,20 @@ const Sidebar = ({ theme }) => {
   const user = useSelector((state) => state.auth.user);
   const location = useLocation();
   const hrs = [
-    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+    { name: "Dashboard", link: "/", icon: MdOutlineDashboard },
     { name: "BusOperator", link: "/bus-operator", icon: FaBuilding },
     { name: "Drivers", link: "/drivers", icon: MdDriveEta },
     { name: "Buses", link: "/buses", icon: FaBus },
     { name: "Tso", link: "/tso", icon: FaTicketAlt },
   ];
   const bos = [
-    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+    { name: "Dashboard", link: "/", icon: MdOutlineDashboard },
     { name: "Station", link: "/station", icon: AiOutlineUser },
     { name: "Route", link: "/route", icon: AiOutlineUser },
     { name: "Schedule", link: "/schedule", icon: AiOutlineUser },
   ];
   const tsos = [
+    { name: "Dashboard", link: "/", icon: MdOutlineDashboard },
     { name: "Booking", link: "/booking", icon: FiMessageSquare },
     {
       name: "Get Booking",
@@ -36,7 +37,7 @@ const Sidebar = ({ theme }) => {
     },
   ];
   const admin = [
-    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+    { name: "Dashboard", link: "/", icon: MdOutlineDashboard },
     { name: "Hr", link: "/hr", icon: FaUserCog },
   ];
 

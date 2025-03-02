@@ -65,3 +65,14 @@ export const addScheduleFun = async (data) => {
     return handleError(error);
   }
 };
+
+export const deleteScheduleFun = async (id) => {
+  try {
+    const res = await axiosInstance.delete(`${endpoints.delete_schedule}/${id}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};

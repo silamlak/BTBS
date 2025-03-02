@@ -17,6 +17,17 @@ export const getBookingSearchFun = async (fromPlace, toPlace, travelDate) => {
   }
 };
 
+export const listBookingSearchFun = async (id) => {
+  try {
+    const res = await axios.get(`${endpoints.list_booking}/${id}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const getSingleCatagorieFun = async (id) => {
   try {
     const res = await axiosInstance.get(`${endpoints.get_catagories}/${id}`, {
@@ -30,7 +41,6 @@ export const getSingleCatagorieFun = async (id) => {
 
 export const postCatagorieFun = async (form) => {
   try {
-
     const res = await axios.post(`${endpoints.post_product}`, form, {
       withCredentials: true,
     });
