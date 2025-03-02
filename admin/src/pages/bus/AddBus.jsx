@@ -81,8 +81,8 @@ const AddBus = () => {
         {[
           "fuel_type",
           "seating_capacity",
-          "model",
           "make",
+          "model",
           "license_plate",
           "bus_id",
         ].map((field) => (

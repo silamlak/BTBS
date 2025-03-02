@@ -200,14 +200,14 @@ const Drivers = () => {
       <div className="flex flex-row-reverse gap-4 justify-between">
         <div className="mb-4 flex items-center space-x-2">
           <button onClick={handleAddBo}>
-            <IoMdAdd />
+            <IoMdAdd className="text-slate-800 dark:text-slate-100" />
           </button>
           {isLoading && !isError && (
             <div>
               <Loader />
             </div>
           )}
-          {filterType === "date" && (
+          {/* {filterType === "date" && (
             <input
               type="date"
               value={dateValue}
@@ -230,7 +230,7 @@ const Drivers = () => {
             >
               <AiOutlineMinusCircle />
             </button>
-          )}
+          )} */}
         </div>
 
         <input
@@ -284,7 +284,7 @@ const Drivers = () => {
         noDataComponent="No data available"
       />
     </div>
-  )
+  );
 };
 
 export default Drivers;

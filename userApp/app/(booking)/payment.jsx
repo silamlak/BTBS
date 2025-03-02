@@ -45,8 +45,8 @@ const payment = () => {
   const { mutate: seatMutate } = useMutation({
     mutationFn: seatFun,
     onSuccess: (data) => {
-      dispatch(clearAll());
-      router.push("/book"); // Navigate to category after success
+      // dispatch(clearAll());
+      router.push("/book");
     },
   });
 
@@ -153,7 +153,7 @@ const payment = () => {
   const handleSubmit = async () => {
     try {
       handleBooking();
-      const response = await fetch("http://10.10.34.20:8000/accept-payment", {
+      const response = await fetch("http://10.10.34.17:8000/accept-payment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -167,8 +167,7 @@ const payment = () => {
       const data = await response.json();
       console.log(data);
       if (data.data && data.data.checkout_url) {
-        setCheckoutUrl(data.data.checkout_url);
-        setModalVisible(true);
+        Linking.openURL(data.data.checkout_url);
       }
 
     } catch (error) {

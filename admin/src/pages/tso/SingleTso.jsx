@@ -45,7 +45,6 @@ const SingleTso = () => {
     queryFn: () => viewTsoFun(id),
     enabled: !!id,
   });
-  // console.log(data)
   const {
     register,
     handleSubmit,
@@ -256,7 +255,7 @@ const SingleTso = () => {
                       className="bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 p-2 w-full rounded"
                     >
                       <option value="">Select Status</option>
-                      <option value="Active">Active</option>
+                      <option value="active">Active</option>
                       <option value="Inactive">Inactive</option>
                     </select>
                     {errors.employment_status && (

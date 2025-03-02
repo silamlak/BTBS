@@ -17,19 +17,20 @@ const Navbar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
   const hrs = [
-    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+    { name: "Dashboard", link: "/", icon: MdOutlineDashboard },
     { name: "BusOperator", link: "/bus-operator", icon: FiShoppingCart },
     { name: "Drivers", link: "/drivers", icon: FiShoppingCart },
     { name: "Buses", link: "/buses", icon: FiShoppingCart },
     { name: "Tso", link: "/tso", icon: FiShoppingCart },
   ];
   const bos = [
-    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+    { name: "Dashboard", link: "/", icon: MdOutlineDashboard },
     { name: "Station", link: "/station", icon: AiOutlineUser },
     { name: "Route", link: "/route", icon: AiOutlineUser },
     { name: "Schedule", link: "/schedule", icon: AiOutlineUser },
   ];
   const tsos = [
+    { name: "Dashboard", link: "/", icon: MdOutlineDashboard },
     { name: "Booking", link: "/booking", icon: FiMessageSquare },
     {
       name: "Get Booking",
@@ -40,7 +41,7 @@ const Navbar = () => {
   ];
 
   const admin = [
-    { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+    { name: "Dashboard", link: "/", icon: MdOutlineDashboard },
     { name: "Hr", link: "/hr", icon: FiShoppingCart },
   ];
 

@@ -279,7 +279,7 @@ const handleSubmit = () => {
               {showDatePicker && (
                 <DateTimePicker
                   value={date}
-                  minimumDate={new Date()}
+                  // minimumDate={new Date()}
                   mode="date"
                   display="default"
                   onChange={handleDateChange}

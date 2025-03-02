@@ -171,7 +171,7 @@ export const getBuses = async (req, res, next) => {
       };
     }
     if (search) {
-      query.first_name = { $regex: search, $options: "i" };
+      query.bus_id = { $regex: search, $options: "i" };
     }
     const buses = await busModel.find(query).skip(skip).limit(limit);
     const totalCount = await busModel.countDocuments(query);

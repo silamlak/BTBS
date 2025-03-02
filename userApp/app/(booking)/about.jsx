@@ -101,7 +101,7 @@ export default function About() {
             {t("adress")}
           </Text>
           <Text className="text-[#111418] dark:text-[#e4e4e4] text-base">
-            123 Rwanda St., Addis Ababa
+            Stadium, Addis Ababa, Ethiopia
           </Text>
         </View>
 

@@ -196,7 +196,7 @@ const SingleBus = () => {
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col">
+                  {/* <div className="flex flex-col">
                     <label
                       htmlFor="year_of_manufacture"
                       className="text-[13px]"
@@ -214,7 +214,7 @@ const SingleBus = () => {
                         {errors.year_of_manufacture.message}
                       </p>
                     )}
-                  </div>
+                  </div> */}
                   {/* <div className="flex flex-col">
                     <label htmlFor="date" className="text-[13px]">
                       Date

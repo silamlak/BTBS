@@ -58,14 +58,6 @@ const DriverSchema = new mongoose.Schema(
       required: true,
       enum: ["active", "Inactive", "Suspended"],
     },
-    profile_picture_url: {
-      type: String,
-      // required: false,
-    },
-    license_picture_url: {
-      type: String,
-      // required: true,
-    },
   },
   { timestamps: true }
 );

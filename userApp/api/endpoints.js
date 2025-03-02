@@ -1,7 +1,7 @@
 import axios from "axios";
 import { store } from "../store/store";
 import { login, logout } from "../feature/auth/authSlice";
-const api = "http://10.10.34.22:8000/api";
+const api = "http://10.10.34.17:8000/api";
 
 export const endpoints = {
   //tsoo

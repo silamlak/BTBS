@@ -205,7 +205,7 @@ const Customer = () => {
       <div className="flex flex-row-reverse gap-4 justify-between">
         <div className="mb-4 flex items-center space-x-2">
           <button onClick={handleAddBo}>
-            <IoMdAdd />
+            <IoMdAdd className="text-slate-800 dark:text-slate-100" />
           </button>
 
           {isLoading && !isError && (
@@ -213,7 +213,7 @@ const Customer = () => {
               <Loader />
             </div>
           )}
-          {filterType === "date" && (
+          {/* {filterType === "date" && (
             <input
               type="date"
               value={dateValue}
@@ -234,9 +234,9 @@ const Customer = () => {
               onClick={handleResetFilters}
               className="ml-4 p-2 text-2xl text-slate-800 dark:text-slate-100 rounded-full font-extrabold hover:bg-blue-200 hover:dark:bg-orange-100"
             >
-              <AiOutlineMinusCircle />
+              <AiOutlineMinusCircle className="text-slate-800 dark:text-slate-100" />
             </button>
-          )}
+          )} */}
         </div>
 
         <input

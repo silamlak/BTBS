@@ -1,22 +1,24 @@
 import React, { useState } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
-import { MdOutlineDashboard } from "react-icons/md";
+import { MdOutlineDashboard, MdDriveEta } from "react-icons/md";
 import { RiSettings4Line } from "react-icons/ri";
 import { TbReportAnalytics } from "react-icons/tb";
 import { AiOutlineUser, AiOutlineHeart } from "react-icons/ai";
 import { FiMessageSquare, FiFolder, FiShoppingCart } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { FaTicketAlt, FaBus, FaBuilding } from "react-icons/fa";  // FontAwesome Ticket Icon
+
 
 const Sidebar = ({ theme }) => {
   const user = useSelector((state) => state.auth.user);
   const location = useLocation();
   const hrs = [
     { name: "dashboard", link: "/", icon: MdOutlineDashboard },
-    { name: "BusOperator", link: "/bus-operator", icon: FiShoppingCart },
-    { name: "Drivers", link: "/drivers", icon: FiShoppingCart },
-    { name: "Buses", link: "/buses", icon: FiShoppingCart },
-    { name: "Tso", link: "/tso", icon: FiShoppingCart },
+    { name: "BusOperator", link: "/bus-operator", icon: FaBuilding },
+    { name: "Drivers", link: "/drivers", icon: MdDriveEta },
+    { name: "Buses", link: "/buses", icon: FaBus },
+    { name: "Tso", link: "/tso", icon: FaTicketAlt },
   ];
   const bos = [
     { name: "dashboard", link: "/", icon: MdOutlineDashboard },

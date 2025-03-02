@@ -96,6 +96,8 @@ const App = () => {
                   ? AdminDashboard
                   : userRole === "hr"
                   ? HRDashboard
+                  : userRole === "tso"
+                  ? Home
                   : BoDashboard
               }
               allowedRoles={["tso", "hr", "bo", "admin"]}
